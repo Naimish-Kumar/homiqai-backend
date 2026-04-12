@@ -6,50 +6,128 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    /**
+     * Send OTP to Email or Mobile
+     */
+    public function sendOtp(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'identifier' => 'required|string', // Email or Mobile
+            'type' => 'required|in:email,mobile',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        $identifier = $request->identifier;
+        $type = $request->type;
+
+        // Find or create user
+        $user = User::where($type, $identifier)->first();
+        
+        if (!$user) {
+            $user = User::create([
+                'name' => 'User_' . Str::random(5),
+                $type => $identifier,
+            ]);
+        }
+
+        // Generate OTP
+        $otp = rand(100000, 999999);
+        $user->otp_code = $otp;
+        $user->otp_expires_at = Carbon::now()->addMinutes(10);
+        $user->save();
+
+        // Send OTP (Currently via Log)
+        Log::info("OTP for {$identifier}: {$otp}");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP sent successfully',
+            'debug_otp' => config('app.debug') ? $otp : null // Send OTP in response only in debug mode
         ]);
+    }
+
+    /**
+     * Verify OTP and Login
+     */
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'identifier' => 'required|string',
+            'type' => 'required|in:email,mobile',
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $user = User::where($request->type, $request->identifier)
+            ->where('otp_code', $request->otp)
+            ->where('otp_expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired OTP'
+            ], 401);
+        }
+
+        // Clear OTP and mark verified
+        $user->otp_code = null;
+        $user->otp_expires_at = null;
+        $user->otp_verified_at = Carbon::now();
+        $user->save();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'success' => true,
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
         ]);
     }
 
-    public function login(Request $request)
+    /**
+     * Social Login (Google/Apple)
+     */
+    public function socialLogin(Request $request)
     {
         $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
+            'provider' => 'required|in:google,apple',
+            'social_id' => 'required|string',
+            'email' => 'required|email',
+            'name' => 'nullable|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'message' => 'Invalid login details'
-            ], 401);
+        $providerField = $request->provider . '_id';
+
+        // Find user by social ID or email
+        $user = User::where($providerField, $request->social_id)
+            ->orWhere('email', $request->email)
+            ->first();
+
+        if ($user) {
+            // Update social ID if missing
+            if (!$user->$providerField) {
+                $user->$providerField = $request->social_id;
+                $user->save();
+            }
+        } else {
+            // Create new user
+            $user = User::create([
+                'name' => $request->name ?? 'Social User',
+                'email' => $request->email,
+                $providerField => $request->social_id,
+            ]);
         }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'success' => true,
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
@@ -61,12 +139,17 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
+            'success' => true,
             'message' => 'Logged out'
         ]);
     }
 
     public function profile(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json([
+            'success' => true,
+            'user' => $request->user()
+        ]);
     }
 }
+
