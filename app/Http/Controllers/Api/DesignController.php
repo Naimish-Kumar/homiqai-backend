@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\RoomDesign;
 use App\Models\Style;
 use App\Services\AIService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class DesignController extends Controller
 {
@@ -54,8 +51,10 @@ class DesignController extends Controller
         return response()->json($design->load('style'), 201);
     }
 
-    public function show(RoomDesign $design)
+    public function show(Request $request, RoomDesign $design)
     {
+        abort_unless($design->user_id === $request->user()->id, 403);
+
         return response()->json($design->load(['style', 'furnitureRecommendations']));
     }
 }
