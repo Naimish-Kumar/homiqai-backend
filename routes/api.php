@@ -11,8 +11,9 @@ use App\Http\Controllers\Api\DesignController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Guest style route
+// System and Guest routes
 Route::get('/styles', [StyleController::class, 'index']);
+Route::get('/app-settings', [\App\Http\Controllers\Api\SystemController::class, 'index']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {

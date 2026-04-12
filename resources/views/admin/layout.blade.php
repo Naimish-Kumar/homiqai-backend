@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homiq Admin | @yield('title', 'Dashboard')</title>
     <link rel="stylesheet" href="{{ asset('css/modern.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="admin-body">
     <div class="admin-shell">
@@ -16,15 +17,19 @@
 
             <nav class="admin-nav">
                 <a href="{{ route('admin.dashboard') }}" class="admin-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <i class="fa-solid fa-chart-line" style="width: 20px;"></i>
                     <span>Overview</span>
                 </a>
                 <a href="{{ route('admin.users') }}" class="admin-nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                    <i class="fa-solid fa-users" style="width: 20px;"></i>
                     <span>Users</span>
                 </a>
                 <a href="{{ route('admin.subscriptions') }}" class="admin-nav-link {{ request()->routeIs('admin.subscriptions') ? 'active' : '' }}">
+                    <i class="fa-solid fa-credit-card" style="width: 20px;"></i>
                     <span>Revenue</span>
                 </a>
                 <a href="{{ route('admin.settings') }}" class="admin-nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                    <i class="fa-solid fa-gear" style="width: 20px;"></i>
                     <span>Settings</span>
                 </a>
             </nav>

@@ -6,6 +6,7 @@
     <title>Homiq AI | Reimagine Your Space with AI Precision</title>
     <link rel="stylesheet" href="{{ asset('css/modern.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .hero-section {
             min-height: 100vh;
@@ -138,12 +139,16 @@
 
                 <div style="margin-top: 80px; display: flex; gap: 60px;">
                     <div>
-                        <div class="font-heading" style="font-size: 32px; color: var(--text-primary);">25k+</div>
+                        <div class="font-heading" style="font-size: 32px; color: var(--text-primary);">
+                            <i class="fa-solid fa-bolt" style="color: var(--neon-blue); font-size: 24px; margin-right: 10px;"></i> 25k+
+                        </div>
                         <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Home Designs Generated</div>
                     </div>
                     <div style="width: 1px; height: 50px; background: var(--glass-border);"></div>
                     <div>
-                        <div class="font-heading" style="font-size: 32px; color: var(--text-primary);">4.9/5</div>
+                        <div class="font-heading" style="font-size: 32px; color: var(--text-primary);">
+                            <i class="fa-solid fa-star" style="color: var(--warning); font-size: 24px; margin-right: 10px;"></i> 4.9/5
+                        </div>
                         <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Architectural Rating</div>
                     </div>
                 </div>
@@ -161,23 +166,23 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
                 <div class="glass-card" style="padding: 40px;" data-aos="fade-up">
                     <div class="feature-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        <i class="fa-solid fa-cube fa-2x"></i>
                     </div>
-                    <h3 style="font-size: 24px; margin-bottom: 15px;">Depth Awareness</h3>
+                    <h3 style="font-size: 24px; margin-bottom: 15px;">Depth Mapping</h3>
                     <p style="color: var(--text-secondary);">Advanced neural nets map your room's coordinates for hyper-realistic furniture placement and lighting.</p>
                 </div>
                 
                 <div class="glass-card" style="padding: 40px;" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-icon" style="background: rgba(131, 56, 236, 0.1); color: var(--neon-purple);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <i class="fa-solid fa-palette fa-2x"></i>
                     </div>
-                    <h3 style="font-size: 24px; margin-bottom: 15px;">Material Simulation</h3>
+                    <h3 style="font-size: 24px; margin-bottom: 15px;">Material Science</h3>
                     <p style="color: var(--text-secondary);">Simulate textures from marble finish to oak wood with physical accuracy and light reflection.</p>
                 </div>
                 
                 <div class="glass-card" style="padding: 40px;" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-icon" style="background: rgba(6, 214, 160, 0.1); color: var(--success);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                        <i class="fa-solid fa-leaf fa-2x"></i>
                     </div>
                     <h3 style="font-size: 24px; margin-bottom: 15px;">Eco-Optimizer</h3>
                     <p style="color: var(--text-secondary);">Get design suggestions that maximize natural light and energy efficiency for your specific region.</p>
@@ -263,9 +268,8 @@
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); pt-40; padding-top: 40px;">
                 <p style="color: var(--text-secondary); font-size: 12px;">© 2026 Homiq AI Studio. All rights reserved.</p>
                 <div style="display: flex; gap: 20px;">
-                    <!-- Social Icons (Simulated) -->
-                    <span style="color: var(--text-secondary); font-size: 14px;">TW</span>
-                    <span style="color: var(--text-secondary); font-size: 14px;">IG</span>
+                    <a href="#" style="color: var(--text-secondary);"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" style="color: var(--text-secondary);"><i class="fa-brands fa-instagram"></i></a>
                 </div>
             </div>
         </div>
