@@ -25,30 +25,48 @@ class AuthController extends Controller
         $identifier = $request->identifier;
         $type = $request->type;
 
-        // Find or create user
-        $user = User::where($type, $identifier)->first();
-        
-        if (!$user) {
-            $user = User::create([
-                'name' => 'User_' . Str::random(5),
-                $type => $identifier,
+        try {
+            // Find or create user
+            $user = User::where($type, $identifier)->first();
+            
+            if (!$user) {
+                $userData = [
+                    'name' => 'User_' . Str::random(5),
+                    $type => $identifier,
+                ];
+
+                // Set nullable fields explicitly for new phone-only users
+                if ($type === 'mobile') {
+                    $userData['email'] = null;
+                } else {
+                    $userData['mobile'] = null;
+                }
+
+                $user = User::create($userData);
+            }
+
+            // Generate OTP
+            $otp = rand(100000, 999999);
+            $user->otp_code = $otp;
+            $user->otp_expires_at = Carbon::now()->addMinutes(10);
+            $user->save();
+
+            // Send OTP (Currently via Log)
+            Log::info("OTP for {$identifier}: {$otp}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent successfully',
+                'debug_otp' => config('app.debug') ? $otp : null // Send OTP in response only in debug mode
             ]);
+
+        } catch (\Exception $e) {
+            Log::error('SendOTP Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send OTP. Please try again.',
+            ], 500);
         }
-
-        // Generate OTP
-        $otp = rand(100000, 999999);
-        $user->otp_code = $otp;
-        $user->otp_expires_at = Carbon::now()->addMinutes(10);
-        $user->save();
-
-        // Send OTP (Currently via Log)
-        Log::info("OTP for {$identifier}: {$otp}");
-
-        return response()->json([
-            'success' => true,
-            'message' => 'OTP sent successfully',
-            'debug_otp' => config('app.debug') ? $otp : null // Send OTP in response only in debug mode
-        ]);
     }
 
     /**
@@ -78,13 +96,21 @@ class AuthController extends Controller
         $user->otp_code = null;
         $user->otp_expires_at = null;
         $user->otp_verified_at = Carbon::now();
+
+        // Update FCM token if provided
+        if ($request->filled('fcm_id')) {
+            $user->fcm_id = $request->fcm_id;
+        }
+
         $user->save();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'success' => true,
-            'access_token' => $token,
+            'message' => 'Login successful',
+            'token' => $token,              // Flutter reads 'token'
+            'access_token' => $token,       // Keep for backward compatibility
             'token_type' => 'Bearer',
             'user' => $user,
         ]);
@@ -124,11 +150,19 @@ class AuthController extends Controller
             ]);
         }
 
+        // Update FCM token if provided
+        if ($request->filled('fcm_id')) {
+            $user->fcm_id = $request->fcm_id;
+        }
+        $user->save();
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'success' => true,
-            'access_token' => $token,
+            'message' => 'Login successful',
+            'token' => $token,              // Flutter reads 'token'
+            'access_token' => $token,       // Keep for backward compatibility
             'token_type' => 'Bearer',
             'user' => $user,
         ]);
@@ -152,4 +186,3 @@ class AuthController extends Controller
         ]);
     }
 }
-
