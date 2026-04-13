@@ -3,23 +3,40 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<section class="dashboard-hero">
+    <div>
+        <p class="eyebrow">Command center</p>
+        <h2>Rose gold operations for every design moment.</h2>
+        <p>Watch room transformations, user growth, and style demand from one polished workspace.</p>
+    </div>
+    <div class="dashboard-hero-card">
+        <span>Monthly designs</span>
+        <strong>{{ number_format($stats['monthly_designs']) }}</strong>
+        <small>{{ number_format($stats['today_designs']) }} created today</small>
+    </div>
+</section>
+
 <section class="metric-grid">
     <article class="metric-card">
+        <i class="fa-solid fa-users metric-icon"></i>
         <span>Total users</span>
         <strong>{{ number_format($stats['total_users']) }}</strong>
         <small>{{ number_format($stats['monthly_users']) }} joined this month</small>
     </article>
     <article class="metric-card">
+        <i class="fa-solid fa-wand-magic-sparkles metric-icon"></i>
         <span>Designs generated</span>
         <strong>{{ number_format($stats['total_designs']) }}</strong>
         <small>{{ number_format($stats['today_designs']) }} created today</small>
     </article>
     <article class="metric-card">
+        <i class="fa-solid fa-chart-line metric-icon"></i>
         <span>Active users</span>
         <strong>{{ number_format($stats['active_users']) }}</strong>
         <small>Last 30 days</small>
     </article>
     <article class="metric-card">
+        <i class="fa-solid fa-circle-check metric-icon"></i>
         <span>Verified users</span>
         <strong>{{ $stats['conversion_rate'] }}%</strong>
         <small>{{ number_format($stats['verified_users']) }} verified accounts</small>

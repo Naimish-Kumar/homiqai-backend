@@ -74,11 +74,20 @@ class SystemController extends Controller
     {
         return response()->json([
             'error' => false,
+            'message' => 'Payment settings fetched successfully',
             'data' => [
-                'stripe_publishable_key' => null,
+                'bank_transfer_status' => '0',
+                'flutterwave_status' => '0',
+                'razor_key' => null,
+                'paystack_public_key' => null,
+                'paystack_currency' => 'INR',
                 'stripe_currency' => 'INR',
-                'razorpay_key' => null,
-                'paystack_key' => null,
+                'stripe_publishable_key' => null,
+                'stripe_secret_key' => null,
+                'paypal_gateway' => '0',
+                'razorpay_gateway' => '0',
+                'paystack_gateway' => '0',
+                'stripe_gateway' => '0',
                 'paypal_client_id' => null
             ]
         ]);

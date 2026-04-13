@@ -1,20 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --midnight: #10110f;
-    --midnight-light: #181a17;
-    --navy: #22251f;
-    --neon-blue: #2aa198;
-    --neon-purple: #d65f5f;
-    --glass-white: rgba(255, 255, 255, 0.055);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --text-primary: #fbfaf5;
-    --text-secondary: #b7b3a8;
+    --midnight: #111012;
+    --midnight-light: #1a171b;
+    --navy: #272126;
+    --rose: #b76e79;
+    --rose-light: #f0b8b2;
+    --rose-gold: #e4a08f;
+    --copper: #c98267;
+    --accent-cool: #72c5bd;
+    --neon-blue: var(--rose);
+    --neon-purple: var(--rose-light);
+    --glass-white: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(240, 184, 178, 0.18);
+    --text-primary: #fff9f8;
+    --text-secondary: #c9bdc2;
     --success: #42d392;
-    --warning: #f4bf75;
+    --warning: #e4a08f;
     --danger: #e05d5d;
-    --grad-primary: linear-gradient(135deg, #2aa198, #e5a33a);
-    --grad-surface: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    --grad-primary: linear-gradient(135deg, #f0b8b2, #b76e79 54%, #c98267);
+    --grad-surface: linear-gradient(180deg, rgba(240, 184, 178, 0.105), rgba(255, 255, 255, 0.026));
     --sidebar-width: 280px;
     --header-height: 80px;
     --radius-lg: 8px;
@@ -56,7 +61,7 @@ a {
     background: var(--grad-surface);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
 }
 
 .text-gradient {
@@ -95,8 +100,8 @@ a {
 
 .admin-body {
     background:
-        linear-gradient(120deg, rgba(42, 161, 152, 0.16), transparent 38%),
-        linear-gradient(240deg, rgba(229, 163, 58, 0.12), transparent 34%),
+        linear-gradient(120deg, rgba(183, 110, 121, 0.22), transparent 38%),
+        linear-gradient(240deg, rgba(114, 197, 189, 0.10), transparent 34%),
         var(--midnight);
 }
 
@@ -107,7 +112,7 @@ a {
 }
 
 .admin-sidebar {
-    background: rgba(16, 17, 15, 0.94);
+    background: rgba(17, 16, 18, 0.94);
     border-right: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
@@ -156,7 +161,7 @@ a {
 
 .admin-nav-link:hover,
 .admin-nav-link.active {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(183, 110, 121, 0.13);
     border-color: var(--glass-border);
     color: var(--text-primary);
 }
@@ -189,6 +194,57 @@ a {
 
 .admin-main {
     padding: 32px;
+}
+
+.dashboard-hero {
+    align-items: stretch;
+    background:
+        linear-gradient(135deg, rgba(183, 110, 121, 0.24), rgba(228, 160, 143, 0.08)),
+        url('/images/dashboard-icons.png') right center / contain no-repeat;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.32fr);
+    margin-bottom: 24px;
+    overflow: hidden;
+    padding: 28px;
+}
+
+.dashboard-hero h2 {
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1;
+    margin: 0 0 12px;
+    max-width: 680px;
+}
+
+.dashboard-hero p:not(.eyebrow) {
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 560px;
+}
+
+.dashboard-hero-card {
+    align-content: center;
+    background: rgba(17, 16, 18, 0.72);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    display: grid;
+    gap: 4px;
+    padding: 22px;
+}
+
+.dashboard-hero-card span,
+.dashboard-hero-card small {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.dashboard-hero-card strong {
+    font-family: 'Outfit', sans-serif;
+    font-size: 46px;
+    line-height: 1;
 }
 
 .admin-topbar {
@@ -239,7 +295,7 @@ a {
     align-items: center;
     background: var(--grad-primary);
     border-radius: 8px;
-    color: #10110f;
+    color: #111012;
     display: flex;
     font-weight: 900;
     height: 42px;
@@ -259,9 +315,23 @@ a {
 }
 
 .metric-card {
+    position: relative;
     display: grid;
     gap: 4px;
     padding: 22px;
+}
+
+.metric-icon {
+    align-items: center;
+    background: rgba(183, 110, 121, 0.14);
+    border: 1px solid rgba(240, 184, 178, 0.18);
+    border-radius: 8px;
+    color: var(--rose-light);
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    margin-bottom: 8px;
+    width: 40px;
 }
 
 .metric-card span,
@@ -425,7 +495,7 @@ td {
 
 .bar.designs,
 .legend-designs {
-    background: #e5a33a;
+    background: var(--accent-cool);
 }
 
 .chart-legend {
@@ -470,7 +540,7 @@ td {
     background: var(--grad-primary);
     border: 0;
     border-radius: 8px;
-    color: #10110f;
+    color: #111012;
     cursor: pointer;
     font-weight: 900;
     padding: 12px 18px;
@@ -551,7 +621,7 @@ td {
 .login-body {
     min-height: 100vh;
     background:
-        linear-gradient(120deg, rgba(42, 161, 152, 0.18), transparent 42%),
+        linear-gradient(120deg, rgba(183, 110, 121, 0.22), transparent 42%),
         var(--midnight);
 }
 
@@ -576,7 +646,7 @@ td {
 }
 
 .login-visual::after {
-    background: linear-gradient(90deg, rgba(16, 17, 15, 0.88), rgba(16, 17, 15, 0.24));
+    background: linear-gradient(90deg, rgba(17, 16, 18, 0.88), rgba(17, 16, 18, 0.24));
     content: "";
     inset: 0;
     position: absolute;
@@ -603,7 +673,7 @@ td {
 
 .login-panel {
     align-content: center;
-    background: rgba(16, 17, 15, 0.96);
+    background: rgba(17, 16, 18, 0.96);
     display: grid;
     gap: 28px;
     padding: 48px;
@@ -664,6 +734,10 @@ td {
     .dashboard-grid,
     .dashboard-grid.lower {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-hero {
+        grid-template-columns: 1fr;
     }
 
     .login-shell {

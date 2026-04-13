@@ -3,294 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homiq AI | Reimagine Your Space with AI Precision</title>
+    <title>Homiq AI | Rose Gold Interior Studio</title>
     <link rel="stylesheet" href="{{ asset('css/modern.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .hero-section {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            padding-top: 100px;
-            overflow: hidden;
-        }
-
-        .hero-image-overlay {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 55%;
-            height: 100%;
-            background: url("{{ asset('images/hero-studio.png') }}") no-repeat center right;
-            background-size: cover;
-            mask-image: linear-gradient(to left, black 60%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to left, black 60%, transparent 100%);
-            z-index: -1;
-            opacity: 0.8;
-        }
-
-        .glow-sphere {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
-            filter: blur(100px);
-            opacity: 0.15;
-            z-index: -2;
-        }
-
-        .nav-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .nav-bar.scrolled {
-            background: rgba(10, 11, 16, 0.8);
-            backdrop-filter: blur(20px);
-            padding: 15px 0;
+        .site-nav {
+            background: rgba(17, 16, 18, 0.78);
+            backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--glass-border);
+            left: 0;
+            position: fixed;
+            right: 0;
+            top: 0;
+            z-index: 20;
         }
 
-        .container {
-            max-width: 1300px;
+        .site-nav-inner,
+        .site-container {
             margin: 0 auto;
-            padding: 0 40px;
+            max-width: 1180px;
+            padding: 0 24px;
         }
 
-        .text-gradient {
-            background: var(--grad-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .site-nav-inner {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            min-height: 78px;
+            gap: 24px;
+        }
+
+        .site-logo {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .site-logo img {
+            height: 42px;
+            width: auto;
+        }
+
+        .site-logo span {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .site-links {
+            align-items: center;
+            display: flex;
+            gap: 28px;
+        }
+
+        .site-links a {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .site-links a:hover {
+            color: var(--rose);
+        }
+
+        .hero-section {
+            align-items: center;
+            background:
+                linear-gradient(90deg, rgba(17, 16, 18, 0.96) 0%, rgba(17, 16, 18, 0.82) 42%, rgba(17, 16, 18, 0.38) 100%),
+                url("{{ asset('images/hero-studio.png') }}") center right / cover no-repeat;
+            display: flex;
+            min-height: 92svh;
+            padding: 126px 0 82px;
+        }
+
+        .hero-copy {
+            max-width: 680px;
+        }
+
+        .hero-kicker {
+            align-items: center;
+            background: rgba(183, 110, 121, 0.14);
+            border: 1px solid rgba(231, 166, 161, 0.24);
+            border-radius: 8px;
+            color: var(--rose-light);
+            display: inline-flex;
+            font-size: 12px;
+            font-weight: 900;
+            gap: 10px;
+            margin-bottom: 26px;
+            padding: 8px 12px;
+            text-transform: uppercase;
+        }
+
+        .hero-kicker i {
+            color: var(--rose-gold);
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(46px, 8vw, 84px);
+            line-height: 0.98;
+            margin: 0 0 24px;
+            max-width: 820px;
+        }
+
+        .hero-copy p {
+            color: var(--text-secondary);
+            font-size: clamp(17px, 2vw, 21px);
+            margin: 0 0 34px;
+            max-width: 620px;
+        }
+
+        .hero-actions,
+        .hero-stats {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .hero-stats {
+            border-top: 1px solid var(--glass-border);
+            gap: 32px;
+            margin-top: 58px;
+            padding-top: 26px;
+        }
+
+        .hero-stat {
+            display: grid;
+            gap: 2px;
+        }
+
+        .hero-stat strong {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .hero-stat span {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .section-band {
+            padding: 92px 0;
+        }
+
+        .section-band.alt {
+            background: var(--midnight-light);
+        }
+
+        .section-heading {
+            display: grid;
+            gap: 12px;
+            margin: 0 auto 42px;
+            max-width: 720px;
+            text-align: center;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(32px, 5vw, 52px);
+            line-height: 1;
+            margin: 0;
+        }
+
+        .section-heading p {
+            color: var(--text-secondary);
+            font-size: 17px;
+            margin: 0;
+        }
+
+        .feature-grid,
+        .showcase-grid,
+        .pricing-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .feature-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .feature-card,
+        .pricing-card,
+        .showcase-copy {
+            padding: 28px;
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: var(--radius-sm);
-            background: rgba(58, 134, 255, 0.1);
-            display: flex;
             align-items: center;
+            background: rgba(183, 110, 121, 0.13);
+            border: 1px solid rgba(231, 166, 161, 0.24);
+            border-radius: 8px;
+            color: var(--rose-gold);
+            display: flex;
+            height: 54px;
             justify-content: center;
-            margin-bottom: 24px;
-            color: var(--neon-blue);
+            margin-bottom: 22px;
+            width: 54px;
+        }
+
+        .feature-card h3,
+        .pricing-card h3,
+        .showcase-copy h3 {
+            font-size: 24px;
+            margin: 0 0 10px;
+        }
+
+        .feature-card p,
+        .pricing-card p,
+        .showcase-copy p,
+        .feature-card li,
+        .pricing-card li {
+            color: var(--text-secondary);
+        }
+
+        .showcase-grid {
+            align-items: stretch;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        }
+
+        .showcase-image {
+            border-radius: 8px;
+            min-height: 470px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .showcase-image img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .showcase-chip {
+            background: rgba(17, 16, 18, 0.76);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            bottom: 18px;
+            display: grid;
+            gap: 3px;
+            left: 18px;
+            padding: 14px 16px;
+            position: absolute;
+        }
+
+        .showcase-chip strong {
+            color: var(--rose-light);
+        }
+
+        .showcase-copy {
+            display: grid;
+            gap: 18px;
+        }
+
+        .process-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .process-list div {
+            align-items: flex-start;
+            display: flex;
+            gap: 14px;
+        }
+
+        .process-list span {
+            align-items: center;
+            background: var(--grad-primary);
+            border-radius: 8px;
+            color: var(--midnight);
+            display: flex;
+            flex: 0 0 auto;
+            font-weight: 900;
+            height: 34px;
+            justify-content: center;
+            width: 34px;
         }
 
         .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin: 0 auto;
+            max-width: 900px;
         }
 
-        .footer {
-            padding: 80px 0 40px;
+        .pricing-card.featured {
+            background: linear-gradient(180deg, rgba(183, 110, 121, 0.18), rgba(255, 255, 255, 0.035));
+            border-color: rgba(231, 166, 161, 0.48);
+        }
+
+        .price {
+            font-family: 'Outfit', sans-serif;
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 1;
+            margin: 20px 0;
+        }
+
+        .pricing-card ul {
+            display: grid;
+            gap: 12px;
+            list-style: none;
+            margin: 0 0 28px;
+            padding: 0;
+        }
+
+        .site-footer {
             border-top: 1px solid var(--glass-border);
-            margin-top: 100px;
+            padding: 42px 0;
+        }
+
+        .site-footer .site-container {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .site-footer p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        @media (max-width: 900px) {
+            .site-links a:not(.btn-primary) {
+                display: none;
+            }
+
+            .feature-grid,
+            .showcase-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .showcase-image {
+                min-height: 340px;
+            }
+
+            .hero-section {
+                background:
+                    linear-gradient(180deg, rgba(17, 16, 18, 0.94) 0%, rgba(17, 16, 18, 0.7) 100%),
+                    url("{{ asset('images/hero-studio.png') }}") center / cover no-repeat;
+                min-height: 88svh;
+            }
+
+            .site-footer .site-container {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-
-    <nav class="nav-bar">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="logo">
-                <img src="{{ asset('images/logo.png') }}" alt="Homiq AI" style="height: 44px; width: auto;">
-            </div>
-            <div style="display: flex; gap: 40px; align-items: center;">
-                <a href="#features" style="text-decoration: none; color: var(--text-secondary); font-weight: 500;">Features</a>
-                <a href="#pricing" style="text-decoration: none; color: var(--text-secondary); font-weight: 500;">Pricing</a>
-                <a href="{{ route('admin.dashboard') }}" class="btn-glass" style="padding: 10px 24px;">Admin Portal</a>
+    <nav class="site-nav">
+        <div class="site-nav-inner">
+            <a href="{{ route('home') }}" class="site-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="Homiq AI">
+                <span>Rose Gold Studio</span>
+            </a>
+            <div class="site-links">
+                <a href="#features">Features</a>
+                <a href="#studio">Studio</a>
+                <a href="#pricing">Pricing</a>
+                <a href="{{ route('admin.dashboard') }}" class="btn-glass">Dashboard</a>
             </div>
         </div>
     </nav>
 
-    <section class="hero-section">
-        <div class="hero-image-overlay"></div>
-        <div class="glow-sphere" style="top: -200px; left: -200px;"></div>
-        
-        <div class="container" style="position: relative;">
-            <div style="max-width: 650px;" data-aos="fade-right">
-                <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(58, 134, 255, 0.1); padding: 8px 16px; border-radius: 50px; margin-bottom: 30px;">
-                    <span style="width: 8px; height: 8px; background: var(--neon-blue); border-radius: 50%; box-shadow: 0 0 10px var(--neon-blue);"></span>
-                    <span style="font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--neon-blue); text-transform: uppercase;">Next-Gen AI Interior Studio</span>
-                </div>
-                
-                <h1 style="font-size: 84px; line-height: 1; margin-bottom: 30px; letter-spacing: -4px;">
-                    Reimagine Your Home <br>
-                    <span class="text-gradient">With AI Precision.</span>
-                </h1>
-                
-                <p style="font-size: 20px; color: var(--text-secondary); margin-bottom: 50px; line-height: 1.6;">
-                    Upload a photo and watch Homiq AI transform your space in seconds. 
-                    The perfect fusion of architectural intelligence and artistic style.
-                </p>
-                
-                <div style="display: flex; gap: 20px; align-items: center;">
-                    <a href="#" class="btn-primary">Generate Your Design</a>
-                    <a href="#features" class="btn-glass">Explore Features</a>
-                </div>
-
-                <div style="margin-top: 80px; display: flex; gap: 60px;">
-                    <div>
-                        <div class="font-heading" style="font-size: 32px; color: var(--text-primary);">
-                            <i class="fa-solid fa-bolt" style="color: var(--neon-blue); font-size: 24px; margin-right: 10px;"></i> 25k+
+    <main>
+        <section class="hero-section">
+            <div class="site-container">
+                <div class="hero-copy">
+                    <div class="hero-kicker"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Interior Design Studio</div>
+                    <h1>Design a home that feels composed, warm, and unmistakably yours.</h1>
+                    <p>Upload a room photo, choose your mood, and let Homiq AI create refined interiors with rose gold accents, natural textures, and precise layout intelligence.</p>
+                    <div class="hero-actions">
+                        <a href="#pricing" class="btn-primary">Start Designing</a>
+                        <a href="#studio" class="btn-glass">View Studio Flow</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <strong>25k+</strong>
+                            <span>Designs generated</span>
                         </div>
-                        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Home Designs Generated</div>
-                    </div>
-                    <div style="width: 1px; height: 50px; background: var(--glass-border);"></div>
-                    <div>
-                        <div class="font-heading" style="font-size: 32px; color: var(--text-primary);">
-                            <i class="fa-solid fa-star" style="color: var(--warning); font-size: 24px; margin-right: 10px;"></i> 4.9/5
+                        <div class="hero-stat">
+                            <strong>4.9</strong>
+                            <span>Average rating</span>
                         </div>
-                        <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Architectural Rating</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features" style="padding: 120px 0;">
-        <div class="container">
-            <div style="text-align: center; max-width: 800px; margin: 0 auto 80px;">
-                <h2 style="font-size: 48px; margin-bottom: 20px;">Intelligent Design Features</h2>
-                <p style="color: var(--text-secondary); font-size: 18px;">Built for homeowners who demand excellence. Our AI understands depth, material science, and aesthetic harmony.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
-                <div class="glass-card" style="padding: 40px;" data-aos="fade-up">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-cube fa-2x"></i>
-                    </div>
-                    <h3 style="font-size: 24px; margin-bottom: 15px;">Depth Mapping</h3>
-                    <p style="color: var(--text-secondary);">Advanced neural nets map your room's coordinates for hyper-realistic furniture placement and lighting.</p>
-                </div>
-                
-                <div class="glass-card" style="padding: 40px;" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon" style="background: rgba(131, 56, 236, 0.1); color: var(--neon-purple);">
-                        <i class="fa-solid fa-palette fa-2x"></i>
-                    </div>
-                    <h3 style="font-size: 24px; margin-bottom: 15px;">Material Science</h3>
-                    <p style="color: var(--text-secondary);">Simulate textures from marble finish to oak wood with physical accuracy and light reflection.</p>
-                </div>
-                
-                <div class="glass-card" style="padding: 40px;" data-aos="fade-up" data-aos-delay="200">
-                    <div class="feature-icon" style="background: rgba(6, 214, 160, 0.1); color: var(--success);">
-                        <i class="fa-solid fa-leaf fa-2x"></i>
-                    </div>
-                    <h3 style="font-size: 24px; margin-bottom: 15px;">Eco-Optimizer</h3>
-                    <p style="color: var(--text-secondary);">Get design suggestions that maximize natural light and energy efficiency for your specific region.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="pricing" style="padding: 100px 0; background: var(--midnight-light);">
-        <div class="container">
-            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
-                <h2 style="font-size: 48px; margin-bottom: 20px;">Affordable Architectural Luxury</h2>
-                <p style="color: var(--text-secondary); font-size: 18px;">Unlock the full power of Homiq AI with our premium tiers.</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="glass-card" style="padding: 50px; text-align: center;" data-aos="zoom-in">
-                    <h4 style="color: var(--text-secondary); text-transform: uppercase; font-size: 14px; margin-bottom: 10px;">Entry</h4>
-                    <div class="font-heading" style="font-size: 56px; margin-bottom: 30px;">Free</div>
-                    <ul style="list-style: none; text-align: left; margin-bottom: 40px; padding: 0 20px;">
-                        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="color: var(--success);">✓</span> 3 AI Generations Included
-                        </li>
-                        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="color: var(--success);">✓</span> Standard Material Library
-                        </li>
-                        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-secondary); opacity: 0.5;">
-                            <span>✕</span> High-Resolution Exports
-                        </li>
-                    </ul>
-                    <a href="#" class="btn-glass" style="width: 100%;">Get Started</a>
-                </div>
-                
-                <div class="glass-card" style="padding: 50px; text-align: center; border: 1px solid var(--neon-blue); position: relative; background: rgba(58, 134, 255, 0.05);" data-aos="zoom-in" data-aos-delay="100">
-                    <div style="position: absolute; top: 20px; right: 20px; background: var(--neon-blue); font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px;">BEST VALUE</div>
-                    <h4 style="color: var(--neon-blue); text-transform: uppercase; font-size: 14px; margin-bottom: 10px;">Premium Elite</h4>
-                    <div class="font-heading" style="font-size: 56px; margin-bottom: 30px;">₹199<span style="font-size: 20px; color: var(--text-secondary);">/mo</span></div>
-                    <ul style="list-style: none; text-align: left; margin-bottom: 40px; padding: 0 20px;">
-                        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="color: var(--neon-blue);">✓</span> Unlimited AI Generations
-                        </li>
-                        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="color: var(--neon-blue);">✓</span> Elite 8K Materials
-                        </li>
-                        <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <span style="color: var(--neon-blue);">✓</span> Priority Cloud Processing
-                        </li>
-                    </ul>
-                    <a href="#" class="btn-primary" style="width: 100%;">Go Premium Elite</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px;">
-                <div style="max-width: 300px;">
-                    <div class="logo" style="margin-bottom: 20px;">
-                        <img src="{{ asset('images/logo.png') }}" alt="Homiq AI" style="height: 38px; width: auto;">
-                    </div>
-                    <p style="color: var(--text-secondary); font-size: 14px;">Defining the future of interior design with state-of-the-art artificial intelligence.</p>
-                </div>
-                <div style="display: flex; gap: 80px;">
-                    <div>
-                        <h5 style="margin-bottom: 20px;">Studio</h5>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">Styles</a>
-                            <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">Materials</a>
-                            <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">Gallery</a>
-                        </div>
-                    </div>
-                    <div>
-                        <h5 style="margin-bottom: 20px;">Company</h5>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">About</a>
-                            <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">Privacy</a>
-                            <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">Terms</a>
+                        <div class="hero-stat">
+                            <strong>60s</strong>
+                            <span>Concept previews</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); pt-40; padding-top: 40px;">
-                <p style="color: var(--text-secondary); font-size: 12px;">© 2026 Homiq AI Studio. All rights reserved.</p>
-                <div style="display: flex; gap: 20px;">
-                    <a href="#" style="color: var(--text-secondary);"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" style="color: var(--text-secondary);"><i class="fa-brands fa-instagram"></i></a>
+        </section>
+
+        <section class="section-band" id="features">
+            <div class="site-container">
+                <div class="section-heading">
+                    <p class="eyebrow">Refined by intelligence</p>
+                    <h2>A calmer way to redesign every room.</h2>
+                    <p>Homiq reads your photo, understands scale, and prepares design directions you can actually imagine living with.</p>
+                </div>
+
+                <div class="feature-grid">
+                    <article class="glass-card feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+                        <h3>Room-aware layouts</h3>
+                        <p>Furniture placement respects walls, circulation, light, and visual balance for realistic room concepts.</p>
+                    </article>
+                    <article class="glass-card feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-palette"></i></div>
+                        <h3>Curated style moods</h3>
+                        <p>Explore minimalist, Indian, Scandinavian, and premium rose gold palettes without losing the room's character.</p>
+                    </article>
+                    <article class="glass-card feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-layer-group"></i></div>
+                        <h3>Material guidance</h3>
+                        <p>Pair metals, fabrics, floors, lighting, and wall finishes with suggestions that feel cohesive from the first draft.</p>
+                    </article>
                 </div>
             </div>
+        </section>
+
+        <section class="section-band alt" id="studio">
+            <div class="site-container">
+                <div class="showcase-grid">
+                    <div class="showcase-image">
+                        <img src="{{ asset('images/hero_transformation.png') }}" alt="AI transformed living room">
+                        <div class="showcase-chip">
+                            <strong>Rose Gold Luxe</strong>
+                            <span>Warm metal accents, soft seating, balanced light.</span>
+                        </div>
+                    </div>
+                    <article class="glass-card showcase-copy">
+                        <p class="eyebrow">Studio flow</p>
+                        <h3>From room photo to polished direction.</h3>
+                        <p>Move from a blank room to a finished design path with fewer guesses and a clearer sense of what belongs in the space.</p>
+                        <div class="process-list">
+                            <div>
+                                <span>1</span>
+                                <p>Upload your room and choose the style mood that fits your home.</p>
+                            </div>
+                            <div>
+                                <span>2</span>
+                                <p>Generate realistic concepts with coordinated furniture, materials, and lighting.</p>
+                            </div>
+                            <div>
+                                <span>3</span>
+                                <p>Save the direction, compare alternatives, and continue refining your favorite look.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band" id="pricing">
+            <div class="site-container">
+                <div class="section-heading">
+                    <p class="eyebrow">Simple plans</p>
+                    <h2>Start small or keep designing.</h2>
+                    <p>Choose the plan that fits your renovation rhythm.</p>
+                </div>
+                <div class="pricing-grid">
+                    <article class="glass-card pricing-card">
+                        <h3>Free</h3>
+                        <p>For quick room experiments.</p>
+                        <div class="price">₹0</div>
+                        <ul>
+                            <li>3 AI room generations</li>
+                            <li>Core style library</li>
+                            <li>Standard preview quality</li>
+                        </ul>
+                        <a href="#" class="btn-glass">Try Free</a>
+                    </article>
+                    <article class="glass-card pricing-card featured">
+                        <h3>Premium</h3>
+                        <p>For complete home design planning.</p>
+                        <div class="price">₹199<span style="font-size: 18px; color: var(--text-secondary);">/mo</span></div>
+                        <ul>
+                            <li>Unlimited AI generations</li>
+                            <li>Premium material directions</li>
+                            <li>Priority processing and exports</li>
+                        </ul>
+                        <a href="#" class="btn-primary">Go Premium</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-container">
+            <a href="{{ route('home') }}" class="site-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="Homiq AI">
+                <span>Homiq AI</span>
+            </a>
+            <p>© 2026 Homiq AI. Interior design, made softer and smarter.</p>
         </div>
     </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script>
-        AOS.init({
-            duration: 1000,
-            once: true,
-            easing: 'ease-out-cubic'
-        });
-
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('.nav-bar');
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-        });
-    </script>
 </body>
 </html>
