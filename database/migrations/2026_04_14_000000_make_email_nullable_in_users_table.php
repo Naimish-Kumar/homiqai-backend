@@ -15,7 +15,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->nullable()->unique()->change();
+            // Only change nullable — don't re-add unique (it already exists)
+            $table->string('email')->nullable()->change();
 
             if (!Schema::hasColumn('users', 'fcm_id')) {
                 $table->string('fcm_id')->nullable()->after('apple_id');
@@ -29,7 +30,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->nullable(false)->unique()->change();
+            $table->string('email')->nullable(false)->change();
             $table->dropColumn('fcm_id');
         });
     }
