@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StyleController;
 use App\Http\Controllers\Api\DesignController;
+use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ChatController;
 
 // Auth routes
 Route::post('/auth/otp/send', [AuthController::class, 'sendOtp']);
@@ -21,10 +24,21 @@ Route::get('/get_payment_settings', [\App\Http\Controllers\Api\SystemController:
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
+    Route::post('/profile/update', [AuthController::class, 'updateProfile']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Design routes
     Route::get('/designs', [DesignController::class, 'index']);
     Route::post('/designs/generate', [DesignController::class, 'store']);
     Route::get('/designs/{design}', [DesignController::class, 'show']);
+
+    // Subscriptions
+    Route::get('/packages', [SubscriptionController::class, 'packages']);
+    Route::post('/subscription/purchase', [SubscriptionController::class, 'purchase']);
+
+    // Notifications
+    Route::get('/get_notifications', [NotificationController::class, 'index']);
+
+    // Chat
+    Route::post('/chat', [ChatController::class, 'sendMessage']);
 });
