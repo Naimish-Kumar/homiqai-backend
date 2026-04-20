@@ -24,6 +24,14 @@
                     <i class="fa-solid fa-users" style="width: 20px;"></i>
                     <span>Users</span>
                 </a>
+                <a href="{{ route('admin.designs') }}" class="admin-nav-link {{ request()->routeIs('admin.designs') ? 'active' : '' }}">
+                    <i class="fa-solid fa-palette" style="width: 20px;"></i>
+                    <span>Designs</span>
+                </a>
+                <a href="{{ route('admin.styles') }}" class="admin-nav-link {{ request()->routeIs('admin.styles') ? 'active' : '' }}">
+                    <i class="fa-solid fa-swatchbook" style="width: 20px;"></i>
+                    <span>Styles</span>
+                </a>
                 <a href="{{ route('admin.subscriptions') }}" class="admin-nav-link {{ request()->routeIs('admin.subscriptions') ? 'active' : '' }}">
                     <i class="fa-solid fa-credit-card" style="width: 20px;"></i>
                     <span>Revenue</span>

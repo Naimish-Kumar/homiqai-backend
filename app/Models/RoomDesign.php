@@ -13,11 +13,13 @@ class RoomDesign extends Model
         'original_image_path',
         'generated_image_path',
         'status',
+        'is_favorite',
         'metadata',
     ];
 
     protected $casts = [
         'metadata' => 'array',
+        'is_favorite' => 'boolean',
     ];
 
     public function user()

@@ -35,4 +35,24 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | AI Services
+    |--------------------------------------------------------------------------
+    */
+
+    'ai' => [
+        'provider' => env('AI_PROVIDER', 'stability'), // 'stability' or 'openai'
+    ],
+
+    'stability_ai' => [
+        'key' => env('STABILITY_AI_KEY'),
+        'model' => env('STABILITY_AI_MODEL', 'sd3-large'),
+    ],
+
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'model' => env('OPENAI_MODEL', 'dall-e-3'),
+    ],
+
 ];

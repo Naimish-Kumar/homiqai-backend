@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/designs', [DesignController::class, 'index']);
     Route::post('/designs/generate', [DesignController::class, 'store']);
     Route::get('/designs/{design}', [DesignController::class, 'show']);
+    Route::delete('/designs/{design}', [DesignController::class, 'destroy']);
+    Route::put('/designs/{design}/favorite', [DesignController::class, 'toggleFavorite']);
 
     // Subscriptions
     Route::get('/packages', [SubscriptionController::class, 'packages']);

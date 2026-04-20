@@ -95,9 +95,33 @@ class SubscriptionController extends Controller
             'transaction_id' => 'required|string',
             'platform' => 'required|string',
             'amount' => 'required',
+            'razorpay_order_id' => 'nullable|string',
+            'razorpay_signature' => 'nullable|string',
         ]);
 
         $user = $request->user();
+
+        // Server-side payment verification for Razorpay
+        if ($request->platform === 'razorpay' && config('razorpay.key_secret')) {
+            $razorpaySignature = $request->razorpay_signature;
+            $razorpayOrderId = $request->razorpay_order_id;
+            $transactionId = $request->transaction_id;
+
+            if ($razorpaySignature && $razorpayOrderId) {
+                $expectedSignature = hash_hmac(
+                    'sha256',
+                    $razorpayOrderId . '|' . $transactionId,
+                    config('razorpay.key_secret')
+                );
+
+                if (!hash_equals($expectedSignature, $razorpaySignature)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Payment verification failed. Invalid signature.',
+                    ], 422);
+                }
+            }
+        }
 
         // Expire existing active subscriptions
         UserSubscription::where('user_id', $user->id)

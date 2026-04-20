@@ -40,4 +40,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(RoomDesign::class);
     }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(UserSubscription::class);
+    }
 }

@@ -26,6 +26,11 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+        Route::get('/designs', [AdminController::class, 'designs'])->name('admin.designs');
+        Route::delete('/designs/{design}', [AdminController::class, 'deleteDesign'])->name('admin.designs.delete');
+        Route::get('/styles', [AdminController::class, 'styles'])->name('admin.styles');
+        Route::post('/styles', [AdminController::class, 'storeStyle'])->name('admin.styles.store');
+        Route::delete('/styles/{style}', [AdminController::class, 'deleteStyle'])->name('admin.styles.delete');
         Route::get('/subscriptions', [AdminController::class, 'subscriptions'])->name('admin.subscriptions');
         Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
         Route::post('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');

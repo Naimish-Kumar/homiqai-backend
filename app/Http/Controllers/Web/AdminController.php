@@ -187,4 +187,66 @@ class AdminController extends Controller
             ->route('admin.settings')
             ->with('status', 'Settings received. Update production secrets from the server environment, then run php artisan config:clear.');
     }
+
+    public function designs(Request $request)
+    {
+        $status = $request->string('status')->toString();
+
+        $designs = RoomDesign::with(['user', 'style'])
+            ->when($status !== '', fn ($q) => $q->where('status', $status))
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        $summary = [
+            'total' => RoomDesign::count(),
+            'completed' => RoomDesign::where('status', 'completed')->count(),
+            'processing' => RoomDesign::where('status', 'processing')->count(),
+            'failed' => RoomDesign::where('status', 'failed')->count(),
+        ];
+
+        return view('admin.designs', compact('designs', 'summary', 'status'));
+    }
+
+    public function deleteDesign(RoomDesign $design)
+    {
+        // Delete images from storage
+        if ($design->original_image_path) {
+            \Storage::disk('public')->delete($design->original_image_path);
+        }
+        if ($design->generated_image_path) {
+            \Storage::disk('public')->delete($design->generated_image_path);
+        }
+
+        $design->delete();
+
+        return redirect()->route('admin.designs')->with('status', 'Design deleted successfully.');
+    }
+
+    public function styles()
+    {
+        $styles = Style::withCount('roomDesigns')->orderBy('name')->get();
+        return view('admin.styles', compact('styles'));
+    }
+
+    public function storeStyle(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:styles,name',
+            'thumbnail_url' => 'nullable|url|max:500',
+            'prompt_prefix' => 'nullable|string|max:1000',
+        ]);
+
+        Style::create($request->only(['name', 'thumbnail_url', 'prompt_prefix']));
+
+        return redirect()->route('admin.styles')->with('status', "Style '{$request->name}' created successfully.");
+    }
+
+    public function deleteStyle(Style $style)
+    {
+        $name = $style->name;
+        $style->delete();
+
+        return redirect()->route('admin.styles')->with('status', "Style '{$name}' deleted.");
+    }
 }
