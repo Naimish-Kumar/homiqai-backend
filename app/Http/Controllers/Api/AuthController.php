@@ -191,38 +191,58 @@ class AuthController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
 
-        $request->validate([
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:users,email,' . $user->id,
-            'profile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+            $request->validate([
+                'name' => 'nullable|string|max:255',
+                'email' => 'nullable|email|unique:users,email,' . $user->id,
+                'phone_number' => 'nullable|string|max:20',
+                'profile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-        if ($request->has('name')) {
-            $user->name = $request->name;
-        }
-
-        if ($request->has('email')) {
-            $user->email = $request->email;
-        }
-
-        if ($request->hasFile('profile')) {
-            // Delete old profile if exists
-            if ($user->profile && \Storage::disk('public')->exists($user->profile)) {
-                \Storage::disk('public')->delete($user->profile);
+            if ($request->has('name')) {
+                $user->name = $request->name;
             }
 
-            $path = $request->file('profile')->store('profiles', 'public');
-            $user->profile = $path;
+            if ($request->has('email')) {
+                $user->email = $request->email;
+            }
+
+            if ($request->has('phone_number')) {
+                $user->mobile = $request->phone_number;
+            }
+
+            if ($request->hasFile('profile')) {
+                // Delete old profile if exists and it's a local file
+                if ($user->profile && !\Str::startsWith($user->profile, 'http') && \Storage::disk('public')->exists($user->profile)) {
+                    \Storage::disk('public')->delete($user->profile);
+                }
+
+                $path = $request->file('profile')->store('profiles', 'public');
+                $user->profile = $path;
+            }
+
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile updated successfully',
+                'user' => $user->fresh() // fresh() to include appends/new fields
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('UpdateProfile Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update profile. ' . (config('app.debug') ? $e->getMessage() : ''),
+            ], 500);
         }
-
-        $user->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Profile updated successfully',
-            'user' => $user
-        ]);
     }
 }

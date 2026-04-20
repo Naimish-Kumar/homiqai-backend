@@ -12,13 +12,41 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
-#[Fillable(['name', 'email', 'profile', 'password', 'is_admin', 'mobile', 'google_id', 'apple_id', 'otp_code', 'otp_expires_at', 'otp_verified_at', 'fcm_id'])]
+#[Fillable(['name', 'email', 'profile', 'password', 'is_admin', 'mobile', 'google_id', 'apple_id', 'otp_code', 'otp_expires_at', 'otp_verified_at', 'fcm_id', 'free_designs_left', 'is_premium'])]
 #[Hidden(['password', 'remember_token', 'otp_code', 'fcm_id'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['photo_url', 'phone_number'];
+
+    /**
+     * Get the user's profile photo URL.
+     */
+    protected function photoUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->profile ? url('storage/' . $this->profile) : null,
+        );
+    }
+
+    /**
+     * Get the user's phone number (alias for mobile).
+     */
+    protected function phoneNumber(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->mobile,
+        );
+    }
 
     /**
      * Get the attributes that should be cast.

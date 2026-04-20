@@ -1,29 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --midnight: #111012;
-    --midnight-light: #1a171b;
-    --navy: #272126;
-    --rose: #b76e79;
-    --rose-light: #f0b8b2;
-    --rose-gold: #e4a08f;
-    --copper: #c98267;
-    --accent-cool: #72c5bd;
-    --neon-blue: var(--rose);
-    --neon-purple: var(--rose-light);
-    --glass-white: rgba(255, 255, 255, 0.06);
-    --glass-border: rgba(240, 184, 178, 0.18);
-    --text-primary: #fff9f8;
-    --text-secondary: #c9bdc2;
-    --success: #42d392;
-    --warning: #e4a08f;
-    --danger: #e05d5d;
-    --grad-primary: linear-gradient(135deg, #f0b8b2, #b76e79 54%, #c98267);
-    --grad-surface: linear-gradient(180deg, rgba(240, 184, 178, 0.105), rgba(255, 255, 255, 0.026));
-    --sidebar-width: 280px;
+    --midnight: #0a0a0b;
+    --midnight-light: #121214;
+    --navy: #1c1c1f;
+    --rose: #c27d88;
+    --rose-light: #f5c5c1;
+    --rose-gold: #eeb0a2;
+    --copper: #d48e75;
+    --accent-cool: #8ed6cf;
+    --glass-white: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(245, 197, 193, 0.12);
+    --text-primary: #ffffff;
+    --text-secondary: #a19ba0;
+    --success: #52e1a2;
+    --warning: #f1b399;
+    --danger: #ff6b6b;
+    --grad-primary: linear-gradient(135deg, #f5c5c1, #c27d88 54%, #d48e75);
+    --grad-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    --sidebar-width: 260px;
     --header-height: 80px;
-    --radius-lg: 8px;
-    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-md: 10px;
     --radius-sm: 8px;
 }
 
@@ -59,9 +57,10 @@ a {
 .panel,
 .metric-card {
     background: var(--grad-surface);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .text-gradient {
@@ -137,9 +136,9 @@ a {
 
 .admin-brand span {
     color: var(--text-secondary);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
