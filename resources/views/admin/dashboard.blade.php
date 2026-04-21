@@ -36,10 +36,10 @@
         <small>Last 30 days</small>
     </article>
     <article class="metric-card">
-        <i class="fa-solid fa-circle-check metric-icon"></i>
-        <span>Verified users</span>
+        <i class="fa-solid fa-crown metric-icon" style="color: #f59e0b;"></i>
+        <span>Premium users</span>
         <strong>{{ $stats['conversion_rate'] }}%</strong>
-        <small>{{ number_format($stats['verified_users']) }} verified accounts</small>
+        <small>{{ number_format($stats['premium_users']) }} premium accounts</small>
     </article>
 </section>
 

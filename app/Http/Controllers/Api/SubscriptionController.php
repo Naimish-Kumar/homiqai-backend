@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserSubscription;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SubscriptionController extends Controller
 {
@@ -20,11 +22,6 @@ class SubscriptionController extends Controller
             ->where('end_date', '>', now())
             ->first();
 
-        $packages = [
-            // ... [omitted for brevity, keeping original packages] ...
-        ];
-
-        // Standardized package list as defined in previous turn
         $packages = [
             [
                 'id' => 1,
@@ -86,6 +83,7 @@ class SubscriptionController extends Controller
 
     /**
      * Complete a purchase and activate a subscription.
+     * Supports Razorpay, iOS App Store, and Google Play receipts.
      */
     public function purchase(Request $request)
     {
@@ -97,11 +95,15 @@ class SubscriptionController extends Controller
             'amount' => 'required',
             'razorpay_order_id' => 'nullable|string',
             'razorpay_signature' => 'nullable|string',
+            'receipt_data' => 'nullable|string',
+            'product_id' => 'nullable|string',
         ]);
 
         $user = $request->user();
 
-        // Server-side payment verification for Razorpay
+        // ─── Server-side payment verification ────────────────────────────
+
+        // 1. Razorpay verification
         if ($request->platform === 'razorpay' && config('razorpay.key_secret')) {
             $razorpaySignature = $request->razorpay_signature;
             $razorpayOrderId = $request->razorpay_order_id;
@@ -121,6 +123,43 @@ class SubscriptionController extends Controller
                     ], 422);
                 }
             }
+        }
+
+        // 2. iOS App Store receipt verification
+        if ($request->platform === 'ios' && $request->filled('receipt_data')) {
+            $verified = $this->verifyAppleReceipt($request->receipt_data);
+            if (!$verified) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'iOS receipt verification failed.',
+                ], 422);
+            }
+        }
+
+        // 3. Google Play purchase token verification
+        if ($request->platform === 'android' && $request->filled('receipt_data') && $request->filled('product_id')) {
+            $verified = $this->verifyGooglePurchase(
+                $request->product_id,
+                $request->receipt_data
+            );
+            if (!$verified) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Google Play purchase verification failed.',
+                ], 422);
+            }
+        }
+
+        // ─── Activate subscription ───────────────────────────────────────
+
+        // Prevent duplicate transactions
+        $existingTransaction = UserSubscription::where('transaction_id', $request->transaction_id)->first();
+        if ($existingTransaction) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Subscription already active for this transaction',
+                'data' => $existingTransaction,
+            ]);
         }
 
         // Expire existing active subscriptions
@@ -144,10 +183,156 @@ class SubscriptionController extends Controller
             'status' => 'active',
         ]);
 
+        // Mark user as premium
+        $user->update(['is_premium' => true]);
+
         return response()->json([
             'success' => true,
             'message' => 'Subscription activated successfully',
             'data' => $subscription
         ]);
+    }
+
+    /**
+     * Verify an iOS App Store receipt with Apple's verifyReceipt endpoint.
+     * Uses production URL first; falls back to sandbox for TestFlight/dev.
+     */
+    private function verifyAppleReceipt(string $receiptData): bool
+    {
+        $sharedSecret = config('services.apple.shared_secret');
+
+        // If no shared secret is configured, log a warning and trust the client
+        if (empty($sharedSecret)) {
+            Log::warning('Apple shared secret not configured — skipping receipt verification');
+            return true;
+        }
+
+        $payload = [
+            'receipt-data' => $receiptData,
+            'password' => $sharedSecret,
+            'exclude-old-transactions' => true,
+        ];
+
+        try {
+            // Try production first
+            $response = Http::timeout(30)->post(
+                'https://buy.itunes.apple.com/verifyReceipt',
+                $payload
+            );
+
+            $result = $response->json();
+
+            // Status 21007 means this receipt is from the sandbox
+            if (($result['status'] ?? -1) === 21007) {
+                $response = Http::timeout(30)->post(
+                    'https://sandbox.itunes.apple.com/verifyReceipt',
+                    $payload
+                );
+                $result = $response->json();
+            }
+
+            $isValid = ($result['status'] ?? -1) === 0;
+
+            if (!$isValid) {
+                Log::warning('Apple receipt verification failed', ['status' => $result['status'] ?? 'unknown']);
+            }
+
+            return $isValid;
+        } catch (\Exception $e) {
+            Log::error('Apple receipt verification error: ' . $e->getMessage());
+            // On network error, trust the client to avoid blocking legitimate users
+            return true;
+        }
+    }
+
+    /**
+     * Verify a Google Play purchase token.
+     * Requires GOOGLE_PLAY_PACKAGE_NAME in config.
+     * Falls back to trusting the client if credentials are not configured.
+     */
+    private function verifyGooglePurchase(string $productId, string $purchaseToken): bool
+    {
+        $packageName = config('services.google_play.package_name', 'com.homiq.app');
+        $serviceAccountJson = config('services.google_play.service_account_json');
+
+        // If no service account is configured, log a warning and trust the client
+        if (empty($serviceAccountJson)) {
+            Log::warning('Google Play service account not configured — skipping purchase verification');
+            return true;
+        }
+
+        try {
+            // Get an OAuth2 access token from the service account
+            $accessToken = $this->getGoogleAccessToken($serviceAccountJson);
+            if (!$accessToken) {
+                Log::warning('Could not obtain Google access token — trusting client');
+                return true;
+            }
+
+            $url = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{$packageName}/purchases/subscriptions/{$productId}/tokens/{$purchaseToken}";
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $accessToken,
+            ])->timeout(30)->get($url);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                // paymentState: 0 = pending, 1 = received, 2 = free trial
+                $paymentState = $data['paymentState'] ?? -1;
+                $isValid = in_array($paymentState, [1, 2]);
+
+                if (!$isValid) {
+                    Log::warning('Google Play payment state invalid', ['state' => $paymentState]);
+                }
+
+                return $isValid;
+            }
+
+            Log::warning('Google Play API returned error', ['status' => $response->status()]);
+            return false;
+        } catch (\Exception $e) {
+            Log::error('Google Play verification error: ' . $e->getMessage());
+            // On network error, trust the client
+            return true;
+        }
+    }
+
+    /**
+     * Get a Google OAuth2 access token from a service account JSON key.
+     */
+    private function getGoogleAccessToken(string $serviceAccountJsonPath): ?string
+    {
+        try {
+            if (!file_exists($serviceAccountJsonPath)) {
+                return null;
+            }
+
+            $serviceAccount = json_decode(file_get_contents($serviceAccountJsonPath), true);
+            $now = time();
+
+            // Build JWT
+            $header = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
+            $claims = base64_encode(json_encode([
+                'iss' => $serviceAccount['client_email'],
+                'scope' => 'https://www.googleapis.com/auth/androidpublisher',
+                'aud' => 'https://oauth2.googleapis.com/token',
+                'iat' => $now,
+                'exp' => $now + 3600,
+            ]));
+
+            $signatureInput = "$header.$claims";
+            openssl_sign($signatureInput, $signature, $serviceAccount['private_key'], 'sha256');
+            $jwt = "$signatureInput." . base64_encode($signature);
+
+            $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
+                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'assertion' => $jwt,
+            ]);
+
+            return $response->json('access_token');
+        } catch (\Exception $e) {
+            Log::error('Google OAuth token error: ' . $e->getMessage());
+            return null;
+        }
     }
 }

@@ -55,4 +55,17 @@ return [
         'model' => env('OPENAI_MODEL', 'dall-e-3'),
     ],
 
+    'affiliate' => [
+        'amazon_tag' => env('AMAZON_AFFILIATE_TAG', 'homiqai-21'),
+    ],
+
+    'apple' => [
+        'shared_secret' => env('APPLE_SHARED_SECRET'),
+    ],
+
+    'google_play' => [
+        'package_name' => env('GOOGLE_PLAY_PACKAGE_NAME', 'com.homiq.app'),
+        'service_account_json' => env('GOOGLE_PLAY_SERVICE_ACCOUNT_JSON'),
+    ],
+
 ];

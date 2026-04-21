@@ -6,7 +6,7 @@
 <section class="metric-grid compact">
     <article class="metric-card"><span>Total users</span><strong>{{ number_format($summary['total_users']) }}</strong></article>
     <article class="metric-card"><span>Admins</span><strong>{{ number_format($summary['admins']) }}</strong></article>
-    <article class="metric-card"><span>Verified</span><strong>{{ number_format($summary['verified']) }}</strong></article>
+    <article class="metric-card"><span>Premium</span><strong>{{ number_format($summary['premium']) }}</strong></article>
 </section>
 
 <section class="panel">
@@ -28,7 +28,7 @@
                     <th>User</th>
                     <th>Role</th>
                     <th>Designs</th>
-                    <th>Status</th>
+                    <th>Account Type</th>
                     <th>Joined</th>
                 </tr>
             </thead>
@@ -47,10 +47,12 @@
                         <td>{{ $user->is_admin ? 'Admin' : 'Customer' }}</td>
                         <td>{{ number_format($user->room_designs_count) }}</td>
                         <td>
-                            @if($user->email_verified_at)
-                                <span class="status completed">Verified</span>
+                            @if($user->is_premium)
+                                <span class="status completed" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">
+                                    <i class="fa-solid fa-crown" style="font-size: 0.75rem;"></i> Premium
+                                </span>
                             @else
-                                <span class="status pending">Unverified</span>
+                                <span class="status pending">Basic</span>
                             @endif
                         </td>
                         <td>{{ $user->created_at->format('M d, Y') }}</td>

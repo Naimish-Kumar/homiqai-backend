@@ -205,37 +205,41 @@ class AIService
         $style = $roomDesign->style;
         $budget = $roomDesign->budget;
 
+        // Amazon India Affiliate Tag — replace with your own tag from
+        // https://affiliate-program.amazon.in/
+        $affiliateTag = config('services.affiliate.amazon_tag', 'homiqai-21');
+
         // Static furniture suggestions based on style and budget
         $furnitureByStyle = [
             'Modern' => [
-                ['name' => 'Modular Sofa Set', 'price_range' => ['low' => 15000, 'medium' => 35000, 'high' => 85000]],
-                ['name' => 'Glass Coffee Table', 'price_range' => ['low' => 3000, 'medium' => 8000, 'high' => 25000]],
-                ['name' => 'LED Floor Lamp', 'price_range' => ['low' => 1500, 'medium' => 5000, 'high' => 15000]],
-                ['name' => 'Wall-mounted TV Unit', 'price_range' => ['low' => 5000, 'medium' => 15000, 'high' => 45000]],
+                ['name' => 'Modular Sofa Set', 'category' => 'furniture', 'price_range' => ['low' => 15000, 'medium' => 35000, 'high' => 85000]],
+                ['name' => 'Glass Coffee Table', 'category' => 'furniture', 'price_range' => ['low' => 3000, 'medium' => 8000, 'high' => 25000]],
+                ['name' => 'LED Floor Lamp', 'category' => 'lighting', 'price_range' => ['low' => 1500, 'medium' => 5000, 'high' => 15000]],
+                ['name' => 'Wall-mounted TV Unit', 'category' => 'furniture', 'price_range' => ['low' => 5000, 'medium' => 15000, 'high' => 45000]],
             ],
             'Minimal' => [
-                ['name' => 'Platform Bed Frame', 'price_range' => ['low' => 8000, 'medium' => 20000, 'high' => 55000]],
-                ['name' => 'Floating Shelf Set', 'price_range' => ['low' => 1200, 'medium' => 4000, 'high' => 12000]],
-                ['name' => 'Simple Desk Chair', 'price_range' => ['low' => 3000, 'medium' => 10000, 'high' => 30000]],
-                ['name' => 'Linen Curtains', 'price_range' => ['low' => 800, 'medium' => 2500, 'high' => 8000]],
+                ['name' => 'Platform Bed Frame', 'category' => 'furniture', 'price_range' => ['low' => 8000, 'medium' => 20000, 'high' => 55000]],
+                ['name' => 'Floating Shelf Set', 'category' => 'furniture', 'price_range' => ['low' => 1200, 'medium' => 4000, 'high' => 12000]],
+                ['name' => 'Simple Desk Chair', 'category' => 'furniture', 'price_range' => ['low' => 3000, 'medium' => 10000, 'high' => 30000]],
+                ['name' => 'Linen Curtains', 'category' => 'home', 'price_range' => ['low' => 800, 'medium' => 2500, 'high' => 8000]],
             ],
             'Luxury' => [
-                ['name' => 'Chesterfield Sofa', 'price_range' => ['low' => 25000, 'medium' => 60000, 'high' => 150000]],
-                ['name' => 'Crystal Chandelier', 'price_range' => ['low' => 5000, 'medium' => 20000, 'high' => 75000]],
-                ['name' => 'Marble Side Table', 'price_range' => ['low' => 4000, 'medium' => 15000, 'high' => 45000]],
-                ['name' => 'Velvet Accent Chair', 'price_range' => ['low' => 8000, 'medium' => 25000, 'high' => 65000]],
+                ['name' => 'Chesterfield Sofa', 'category' => 'furniture', 'price_range' => ['low' => 25000, 'medium' => 60000, 'high' => 150000]],
+                ['name' => 'Crystal Chandelier', 'category' => 'lighting', 'price_range' => ['low' => 5000, 'medium' => 20000, 'high' => 75000]],
+                ['name' => 'Marble Side Table', 'category' => 'furniture', 'price_range' => ['low' => 4000, 'medium' => 15000, 'high' => 45000]],
+                ['name' => 'Velvet Accent Chair', 'category' => 'furniture', 'price_range' => ['low' => 8000, 'medium' => 25000, 'high' => 65000]],
             ],
             'Traditional Indian' => [
-                ['name' => 'Sheesham Wood Sofa', 'price_range' => ['low' => 12000, 'medium' => 30000, 'high' => 80000]],
-                ['name' => 'Brass Diya Set', 'price_range' => ['low' => 500, 'medium' => 2000, 'high' => 8000]],
-                ['name' => 'Jaipur Block Print Cushions', 'price_range' => ['low' => 300, 'medium' => 1200, 'high' => 4000]],
-                ['name' => 'Carved Wooden Divider', 'price_range' => ['low' => 5000, 'medium' => 15000, 'high' => 45000]],
+                ['name' => 'Sheesham Wood Sofa', 'category' => 'furniture', 'price_range' => ['low' => 12000, 'medium' => 30000, 'high' => 80000]],
+                ['name' => 'Brass Diya Set', 'category' => 'home', 'price_range' => ['low' => 500, 'medium' => 2000, 'high' => 8000]],
+                ['name' => 'Jaipur Block Print Cushions', 'category' => 'home', 'price_range' => ['low' => 300, 'medium' => 1200, 'high' => 4000]],
+                ['name' => 'Carved Wooden Divider', 'category' => 'furniture', 'price_range' => ['low' => 5000, 'medium' => 15000, 'high' => 45000]],
             ],
             'Scandinavian' => [
-                ['name' => 'Oak Dining Table', 'price_range' => ['low' => 10000, 'medium' => 28000, 'high' => 70000]],
-                ['name' => 'Wool Area Rug', 'price_range' => ['low' => 2000, 'medium' => 8000, 'high' => 25000]],
-                ['name' => 'Pendant Light', 'price_range' => ['low' => 1500, 'medium' => 5000, 'high' => 18000]],
-                ['name' => 'Storage Bench', 'price_range' => ['low' => 3000, 'medium' => 10000, 'high' => 30000]],
+                ['name' => 'Oak Dining Table', 'category' => 'furniture', 'price_range' => ['low' => 10000, 'medium' => 28000, 'high' => 70000]],
+                ['name' => 'Wool Area Rug', 'category' => 'home', 'price_range' => ['low' => 2000, 'medium' => 8000, 'high' => 25000]],
+                ['name' => 'Pendant Light', 'category' => 'lighting', 'price_range' => ['low' => 1500, 'medium' => 5000, 'high' => 18000]],
+                ['name' => 'Storage Bench', 'category' => 'furniture', 'price_range' => ['low' => 3000, 'medium' => 10000, 'high' => 30000]],
             ],
         ];
 
@@ -244,14 +248,20 @@ class AIService
 
         foreach ($furniture as $item) {
             $price = $item['price_range'][$budget] ?? $item['price_range']['medium'];
+            $category = $item['category'] ?? 'furniture';
+
+            // Build a proper Amazon India affiliate URL with tracking tag
+            $searchQuery = urlencode($item['name'] . ' for home');
+            $affiliateUrl = "https://www.amazon.in/s?k={$searchQuery}&i={$category}&tag={$affiliateTag}&linkCode=ll2&language=en_IN";
 
             FurnitureRecommendation::create([
                 'room_design_id' => $roomDesign->id,
                 'name' => $item['name'],
                 'price' => $price,
-                'purchase_link' => 'https://www.amazon.in/s?k=' . urlencode($item['name']),
+                'purchase_link' => $affiliateUrl,
                 'image_url' => null,
             ]);
         }
     }
 }
+

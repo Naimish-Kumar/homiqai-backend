@@ -91,19 +91,19 @@ class AdminController extends Controller
         });
 
         $totalUsers = User::count();
-        $verifiedUsers = User::whereNotNull('email_verified_at')->count();
+        $premiumUsers = User::where('is_premium', true)->count();
 
         $stats = [
             'total_users' => $totalUsers,
             'admin_users' => User::where('is_admin', true)->count(),
-            'verified_users' => $verifiedUsers,
+            'premium_users' => $premiumUsers,
             'total_designs' => RoomDesign::count(),
             'total_styles' => Style::count(),
             'today_designs' => RoomDesign::where('created_at', '>=', $today)->count(),
             'monthly_users' => User::where('created_at', '>=', $monthStart)->count(),
             'monthly_designs' => RoomDesign::where('created_at', '>=', $monthStart)->count(),
             'active_users' => User::whereHas('roomDesigns', fn ($query) => $query->where('created_at', '>=', now()->subDays(30)))->count(),
-            'conversion_rate' => $totalUsers > 0 ? round(($verifiedUsers / $totalUsers) * 100, 1) : 0,
+            'conversion_rate' => $totalUsers > 0 ? round(($premiumUsers / $totalUsers) * 100, 1) : 0,
             'completed_designs' => (int) ($statusCounts->get('completed') ?? 0),
             'processing_designs' => (int) ($statusCounts->get('processing') ?? 0),
             'failed_designs' => (int) ($statusCounts->get('failed') ?? 0),
@@ -135,7 +135,7 @@ class AdminController extends Controller
         $summary = [
             'total_users' => User::count(),
             'admins' => User::where('is_admin', true)->count(),
-            'verified' => User::whereNotNull('email_verified_at')->count(),
+            'premium' => User::where('is_premium', true)->count(),
         ];
 
         return view('admin.users', compact('users', 'search', 'summary'));
@@ -143,49 +143,84 @@ class AdminController extends Controller
 
     public function subscriptions()
     {
-        $premiumUsers = User::whereNotNull('email_verified_at')->latest()->take(8)->get();
+        $recentSubscriptions = UserSubscription::with('user')
+            ->latest()
+            ->take(15)
+            ->get();
+
+        $activeSubscriptions = UserSubscription::where('status', 'active')
+            ->where('end_date', '>', now())
+            ->count();
+
         $summary = [
-            'premium_users' => User::whereNotNull('email_verified_at')->count(),
-            'free_users' => User::whereNull('email_verified_at')->count(),
-            'estimated_mrr' => User::whereNotNull('email_verified_at')->count() * 199,
-            'monthly_signups' => User::where('created_at', '>=', now()->startOfMonth())->count(),
+            'active_subscriptions' => $activeSubscriptions,
+            'total_revenue' => UserSubscription::where('status', 'active')->sum('amount'),
+            'ios_users' => UserSubscription::where('platform', 'ios')->where('status', 'active')->count(),
+            'android_users' => UserSubscription::where('platform', 'android')->where('status', 'active')->count(),
+            'estimated_mrr' => UserSubscription::where('status', 'active')->where('end_date', '>', now())->sum('amount'),
         ];
 
-        return view('admin.subscriptions', compact('premiumUsers', 'summary'));
+        return view('admin.subscriptions', compact('recentSubscriptions', 'summary'));
     }
 
     public function settings()
     {
-        $credentials = [
-            'app_url' => config('app.url'),
-            'ai_provider' => config('services.ai.provider', 'Not configured'),
-            'openai' => filled(config('services.openai.key')) ? 'Configured' : 'Missing',
-            'stability_ai' => filled(config('services.stability_ai.key')) ? 'Configured' : 'Missing',
-            'mail_driver' => config('mail.default'),
+        $settings = Setting::all()->keyBy('key');
+
+        $config = [
+            'ai_provider' => $settings->get('ai_provider')->value ?? config('services.ai.provider'),
+            'stability_ai_key' => $settings->get('stability_ai_key')->value ?? config('services.stability_ai.key'),
+            'openai_key' => $settings->get('openai_key')->value ?? config('services.openai.key'),
+            'amazon_affiliate_tag' => $settings->get('amazon_affiliate_tag')->value ?? config('services.affiliate.amazon_tag'),
+            'apple_shared_secret' => $settings->get('apple_shared_secret')->value ?? config('services.apple.shared_secret'),
+            'google_package_name' => $settings->get('google_package_name')->value ?? config('services.google_play.package_name'),
+            'maintenance_mode' => $settings->get('maintenance_mode')->value ?? '0',
+            'app_version' => $settings->get('app_version')->value ?? '1.0.0',
         ];
 
-        $styles = Style::withCount('roomDesigns')->orderBy('name')->get();
         $system = [
             'environment' => app()->environment(),
             'debug' => config('app.debug') ? 'Enabled' : 'Disabled',
-            'queue' => config('queue.default'),
-            'cache' => config('cache.default'),
+            'storage_disk' => config('filesystems.default'),
+            'db_connection' => config('database.default'),
+            'last_sync' => now()->diffForHumans(),
         ];
 
-        return view('admin.settings', compact('credentials', 'styles', 'system'));
+        return view('admin.settings', compact('config', 'system'));
     }
 
     public function updateSettings(Request $request)
     {
-        $request->validate([
-            'stability_ai' => ['nullable', 'string', 'max:255'],
-            'openai' => ['nullable', 'string', 'max:255'],
-            'firebase_project_id' => ['nullable', 'string', 'max:255'],
+        $validated = $request->validate([
+            'ai_provider' => ['required', 'string', 'in:stability,openai'],
+            'stability_ai_key' => ['nullable', 'string'],
+            'openai_key' => ['nullable', 'string'],
+            'amazon_affiliate_tag' => ['nullable', 'string'],
+            'apple_shared_secret' => ['nullable', 'string'],
+            'google_package_name' => ['nullable', 'string'],
+            'maintenance_mode' => ['required', 'string', 'in:0,1'],
+            'app_version' => ['required', 'string'],
         ]);
+
+        foreach ($validated as $key => $value) {
+            Setting::set($key, $value, $this->getGroupForKey($key));
+        }
+
+        // Also update JSON for redundancy/fallback if DB is down during boot
+        file_put_contents(storage_path('app/settings.json'), json_encode($validated, JSON_PRETTY_PRINT));
 
         return redirect()
             ->route('admin.settings')
-            ->with('status', 'Settings received. Update production secrets from the server environment, then run php artisan config:clear.');
+            ->with('status', 'Database settings synchronized successfully! System is now using live values.');
+    }
+
+    protected function getGroupForKey(string $key): string
+    {
+        if (str_contains($key, 'ai') || str_contains($key, 'openai')) return 'ai';
+        if (str_contains($key, 'amazon') || str_contains($key, 'affiliate')) return 'affiliate';
+        if (str_contains($key, 'apple') || str_contains($key, 'google')) return 'payment';
+        if (str_contains($key, 'maintenance') || str_contains($key, 'version')) return 'system';
+        return 'general';
     }
 
     public function designs(Request $request)
