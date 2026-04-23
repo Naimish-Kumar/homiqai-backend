@@ -51,9 +51,12 @@ Route::prefix('admin')->group(function () {
         Route::patch('/feedback/{feedback}', [AdminController::class, 'updateFeedback'])->name('admin.feedback.update');
         Route::get('/notifications', [AdminController::class, 'notifications'])->name('admin.notifications');
         Route::post('/notifications', [AdminController::class, 'sendNotification'])->name('admin.notifications.send');
+        Route::delete('/notifications/{notification}', [AdminController::class, 'deleteNotification'])->name('admin.notifications.delete');
         Route::get('/logs', [AdminController::class, 'logs'])->name('admin.logs');
         Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
         Route::post('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
+        Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+        Route::patch('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
     });
 });

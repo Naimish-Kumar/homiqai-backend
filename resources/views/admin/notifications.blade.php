@@ -66,7 +66,7 @@
 
                 <div class="divide-y divide-black/5">
                     @forelse($notifications as $n)
-                    <div class="p-6 hover:bg-[#fbfaf8] transition">
+                    <div class="p-6 hover:bg-[#fbfaf8] transition group">
                         <div class="flex items-start gap-4">
                             <div class="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/5 bg-[#f8f5ef]">
                                 @if($n->type == 'info') <i class="fa-solid fa-circle-info text-blue-500"></i>
@@ -77,7 +77,16 @@
                             </div>
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">
-                                    <h3 class="text-sm font-bold text-[#171717]">{{ $n->title }}</h3>
+                                    <div class="flex items-center gap-3">
+                                        <h3 class="text-sm font-bold text-[#171717]">{{ $n->title }}</h3>
+                                        <form action="{{ route('admin.notifications.delete', $n->id) }}" method="POST" onsubmit="return confirm('Delete this campaign from history?')" class="opacity-0 group-hover:opacity-100 transition">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-400 hover:text-red-600">
+                                                <i class="fa-solid fa-trash-can text-[10px]"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                     <span class="text-[10px] text-[#5f5a52] uppercase font-bold tracking-widest">{{ $n->sent_at ? $n->sent_at->diffForHumans() : 'Scheduled' }}</span>
                                 </div>
                                 <p class="mt-1 text-sm text-[#5f5a52] leading-relaxed">{{ $n->message }}</p>

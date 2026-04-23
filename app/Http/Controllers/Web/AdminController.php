@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
@@ -576,6 +577,12 @@ class AdminController extends Controller
         return redirect()->route('admin.notifications')->with('status', 'Notification sent successfully.');
     }
 
+    public function deleteNotification(Notification $notification)
+    {
+        $notification->delete();
+        return redirect()->route('admin.notifications')->with('status', 'Campaign history deleted.');
+    }
+
     public function logs(Request $request)
     {
         $logs = ApiLog::with('user')
@@ -621,5 +628,34 @@ class AdminController extends Controller
         $user->update(['is_premium' => (bool) $validated['is_premium']]);
 
         return redirect()->route('admin.users')->with('status', "Subscription status updated for {$user->name}.");
+    }
+
+    public function profile()
+    {
+        $admin = auth()->user();
+        return view('admin.profile', compact('admin'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $admin = auth()->user();
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $admin->id,
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
+
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $admin->update($data);
+
+        return redirect()->route('admin.profile')->with('status', 'Profile updated successfully.');
     }
 }

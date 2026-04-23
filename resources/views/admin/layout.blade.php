@@ -114,6 +114,10 @@
                         <i class="fa-solid fa-sliders w-5"></i>
                         <span>Config</span>
                     </a>
+                    <a href="{{ route('admin.profile') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.profile') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                        <i class="fa-solid fa-user-gear w-5"></i>
+                        <span>My Profile</span>
+                    </a>
                 </div>
             </nav>
 
@@ -137,15 +141,15 @@
                         <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[#7a8a6b]">Homiq Operations</p>
                         <h1 class="mt-3 font-[Playfair Display] text-4xl leading-tight text-[#171717] sm:text-5xl">@yield('title', 'Dashboard')</h1>
                     </div>
-                    <div class="flex items-center gap-4 rounded-[24px] border border-black/6 bg-[#f8f5ef] px-4 py-3">
+                    <a href="{{ route('admin.profile') }}" class="flex items-center gap-4 rounded-[24px] border border-black/6 bg-[#f8f5ef] px-4 py-3 hover:border-black/20 transition group">
                         <div>
-                            <p class="text-sm font-semibold text-[#171717]">{{ auth()->user()->name }}</p>
+                            <p class="text-sm font-semibold text-[#171717] group-hover:text-black">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-[#5f5a52]">{{ auth()->user()->email }}</p>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#171717] text-sm font-semibold text-white">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#171717] text-sm font-semibold text-white shadow-md group-hover:scale-105 transition">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
-                    </div>
+                    </a>
                 </div>
             </header>
 
