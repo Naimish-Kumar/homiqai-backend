@@ -567,7 +567,10 @@ class AdminController extends Controller
             $validated['title'],
             $validated['message'],
             $validated['user_id'],
-            ['type' => $validated['type'], 'notification_id' => $notification->id]
+            [
+                'type' => (string) $validated['type'], 
+                'notification_id' => (string) $notification->id
+            ]
         );
 
         return redirect()->route('admin.notifications')->with('status', 'Notification sent successfully.');

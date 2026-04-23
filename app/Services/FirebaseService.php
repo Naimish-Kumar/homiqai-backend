@@ -46,7 +46,7 @@ class FirebaseService
 
     private function sendToToken($url, $token, $targetToken, $title, $body, $data)
     {
-        $response = Http::withToken($token)->post($url, [
+        $payload = [
             'message' => [
                 'token' => $targetToken,
                 'notification' => [
@@ -54,20 +54,43 @@ class FirebaseService
                     'body' => $body,
                 ],
                 'data' => $data,
+                'android' => [
+                    'priority' => 'high',
+                    'notification' => [
+                        'channel_id' => 'homiq_channel',
+                    ],
+                ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'content-available' => 1,
+                        ],
+                    ],
+                ],
             ],
-        ]);
+        ];
+
+        Log::debug('FCM Sending Payload', $payload);
+
+        $response = Http::withToken($token)->post($url, $payload);
 
         if ($response->failed()) {
-            Log::error('FCM Send Error', ['response' => $response->json()]);
+            Log::error('FCM Send Error (Token)', [
+                'token' => $targetToken,
+                'response' => $response->json(),
+                'status' => $response->status()
+            ]);
             return false;
         }
+
+        Log::info('FCM Sent Success (Token)', ['token' => $targetToken]);
 
         return true;
     }
 
     private function sendToTopic($url, $token, $topic, $title, $body, $data)
     {
-        $response = Http::withToken($token)->post($url, [
+        $payload = [
             'message' => [
                 'topic' => $topic,
                 'notification' => [
@@ -75,10 +98,37 @@ class FirebaseService
                     'body' => $body,
                 ],
                 'data' => $data,
+                'android' => [
+                    'priority' => 'high',
+                    'notification' => [
+                        'channel_id' => 'homiq_channel',
+                    ],
+                ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'content-available' => 1,
+                        ],
+                    ],
+                ],
             ],
-        ]);
+        ];
 
-        return $response->successful();
+        Log::debug('FCM Sending Payload (Topic)', $payload);
+
+        $response = Http::withToken($token)->post($url, $payload);
+
+        if ($response->failed()) {
+            Log::error('FCM Send Error (Topic)', [
+                'topic' => $topic,
+                'response' => $response->json(),
+                'status' => $response->status()
+            ]);
+            return false;
+        }
+
+        Log::info('FCM Sent Success (Topic)', ['topic' => $topic]);
+        return true;
     }
 
     private function getAccessToken($config)
