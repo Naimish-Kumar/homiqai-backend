@@ -23,7 +23,7 @@
         <header class="sticky top-0 z-50 border-b border-white/35 bg-[rgba(247,246,242,0.72)] backdrop-blur-xl">
             <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
                 <a href="#top" class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-11 w-11 rounded-2xl border border-white/60 object-cover shadow-[0_14px_40px_rgba(47,47,47,0.08)]">
+                    <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-11 w-11 rounded-2xl border border-white/60 bg-white/80 object-cover shadow-[0_14px_40px_rgba(47,47,47,0.08)]">
                     <div>
                         <p class="font-[var(--font-display)] text-2xl leading-none tracking-[0.02em]">Homiq</p>
                         <p class="text-xs font-medium uppercase tracking-[0.28em] text-[color:rgba(47,47,47,0.55)]">Interior Design App</p>
@@ -92,11 +92,11 @@
                         </div>
 
                         <div class="absolute -left-2 top-10 w-40 rounded-[28px] border border-white/60 bg-white/75 p-3 shadow-[0_25px_50px_rgba(47,47,47,0.10)] backdrop-blur-xl sm:-left-10 sm:w-44">
-                            <img src="{{ asset('images/sereenshot_1.png') }}" alt="Homiq home screen" class="h-72 w-full rounded-[22px] object-cover object-top">
+                            <img src="{{ asset('images/sereenshot_1.png') }}" alt="Homiq home screen" class="h-[21rem] w-full rounded-[22px] bg-[#101010] object-contain">
                         </div>
 
                         <div class="absolute -right-2 bottom-10 w-40 rounded-[28px] border border-white/60 bg-white/75 p-3 shadow-[0_25px_50px_rgba(47,47,47,0.10)] backdrop-blur-xl sm:-right-10 sm:w-44">
-                            <img src="{{ asset('images/sereenshot_2.png') }}" alt="Homiq planner screen" class="h-72 w-full rounded-[22px] object-cover object-top">
+                            <img src="{{ asset('images/sereenshot_2.png') }}" alt="Homiq planner screen" class="h-[21rem] w-full rounded-[22px] bg-[#101010] object-contain">
                         </div>
 
                         <div class="absolute left-1/2 top-6 hidden -translate-x-1/2 rounded-full border border-white/60 bg-[rgba(247,246,242,0.84)] px-5 py-3 text-sm font-medium text-[var(--color-charcoal)] shadow-[0_18px_40px_rgba(47,47,47,0.08)] backdrop-blur-xl md:flex">
@@ -178,7 +178,7 @@
                                 <img
                                     src="{{ asset('images/sereenshot_' . $screen . '.png') }}"
                                     alt="Homiq app screen {{ $screen }}"
-                                    class="h-[26rem] w-full rounded-[24px] object-cover object-top"
+                                    class="h-[34rem] w-full rounded-[24px] bg-[#111111] object-contain"
                                 >
                             </figure>
                         @endforeach
@@ -291,7 +291,7 @@
             <div class="mx-auto grid max-w-7xl gap-10 px-5 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:px-8">
                 <div class="max-w-md">
                     <div class="flex items-center gap-3">
-                        <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-11 w-11 rounded-2xl border border-white/60 object-cover shadow-[0_14px_36px_rgba(47,47,47,0.08)]">
+                        <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-11 w-11 rounded-2xl border border-white/60 bg-white/80 object-cover shadow-[0_14px_36px_rgba(47,47,47,0.08)]">
                         <div>
                             <p class="font-[var(--font-display)] text-2xl leading-none">Homiq</p>
                             <p class="text-xs font-medium uppercase tracking-[0.24em] text-[color:rgba(47,47,47,0.58)]">Interior Design & Room Planner</p>

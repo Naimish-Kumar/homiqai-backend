@@ -3,21 +3,33 @@
 @section('title', 'Room Transformations')
 
 @section('content')
-<section class="metric-grid">
-    <article class="metric-card"><span>Total Designs</span><strong>{{ number_format($summary['total']) }}</strong></article>
-    <article class="metric-card"><span>Completed</span><strong style="color: #10b981;">{{ number_format($summary['completed']) }}</strong></article>
-    <article class="metric-card"><span>Processing</span><strong style="color: #f59e0b;">{{ number_format($summary['processing']) }}</strong></article>
-    <article class="metric-card"><span>Failed</span><strong style="color: #ef4444;">{{ number_format($summary['failed']) }}</strong></article>
+<section class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Total designs</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['total']) }}</p>
+    </article>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Completed</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-olive)]">{{ number_format($summary['completed']) }}</p>
+    </article>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Processing</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-taupe)]">{{ number_format($summary['processing']) }}</p>
+    </article>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Failed</p>
+        <p class="mt-3 text-3xl font-semibold text-[#9f5656]">{{ number_format($summary['failed']) }}</p>
+    </article>
 </section>
 
-<div class="panel" style="margin-top: 24px;">
-    <div class="panel-header">
+<section class="mt-6 rounded-[32px] border border-white/60 bg-white/72 p-6 shadow-[0_22px_60px_rgba(47,47,47,0.07)] backdrop-blur-xl">
+    <div class="flex flex-col gap-4 border-b border-[rgba(47,47,47,0.08)] pb-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-            <p class="eyebrow">Gallery</p>
-            <h2>All Transformations</h2>
+            <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-olive)]">Gallery</p>
+            <h2 class="mt-3 font-[var(--font-display)] text-3xl leading-tight">All transformations</h2>
         </div>
-        <form method="GET" class="filter-form">
-            <select name="status" onchange="this.form.submit()" class="form-control-sm">
+        <form method="GET" class="flex items-center gap-3">
+            <select name="status" onchange="this.form.submit()" class="rounded-full border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3 text-sm text-[var(--color-charcoal)] outline-none">
                 <option value="">All Status</option>
                 <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>Completed</option>
                 <option value="processing" {{ $status === 'processing' ? 'selected' : '' }}>Processing</option>
@@ -26,72 +38,64 @@
         </form>
     </div>
 
-    <div class="design-gallery">
+    <div class="mt-6 grid gap-6 xl:grid-cols-2">
         @forelse ($designs as $design)
-            <article class="design-card">
-                <div class="design-images">
-                    <div class="img-wrap">
-                        <img src="{{ $design->original_image_url }}" alt="Original">
-                        <span>Original</span>
+            <article class="overflow-hidden rounded-[30px] border border-white/60 bg-[rgba(247,246,242,0.82)] shadow-[0_18px_50px_rgba(47,47,47,0.06)]">
+                <div class="grid gap-px bg-[rgba(47,47,47,0.08)] sm:grid-cols-2">
+                    <div class="relative bg-[rgba(247,246,242,0.92)] p-4">
+                        <img src="{{ $design->original_image_url }}" alt="Original" class="h-72 w-full rounded-[22px] object-cover">
+                        <span class="absolute left-7 top-7 rounded-full bg-[rgba(47,47,47,0.72)] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">Original</span>
                     </div>
-                    <div class="img-wrap">
+                    <div class="relative bg-[rgba(247,246,242,0.92)] p-4">
                         @if($design->generated_image_url)
-                            <img src="{{ $design->generated_image_url }}" alt="Generated">
+                            <img src="{{ $design->generated_image_url }}" alt="Generated" class="h-72 w-full rounded-[22px] object-cover">
                         @else
-                            <div class="placeholder">
-                                <i class="fa-solid fa-spinner fa-spin"></i>
-                                <span>{{ ucfirst($design->status) }}</span>
+                            <div class="flex h-72 w-full flex-col items-center justify-center rounded-[22px] bg-white text-sm text-[color:rgba(47,47,47,0.56)]">
+                                <i class="fa-solid fa-spinner fa-spin text-lg"></i>
+                                <span class="mt-3">{{ ucfirst($design->status) }}</span>
                             </div>
                         @endif
-                        <span>AI Result</span>
+                        <span class="absolute left-7 top-7 rounded-full bg-[rgba(122,138,107,0.80)] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">AI Result</span>
                     </div>
                 </div>
-                <div class="design-info">
-                    <div class="info-top">
-                        <strong>{{ $design->style->name ?? 'Custom Style' }}</strong>
-                        <span class="status-tag status-{{ $design->status }}">{{ ucfirst($design->status) }}</span>
+                <div class="p-6">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <p class="text-xl font-semibold text-[var(--color-charcoal)]">{{ $design->style->name ?? 'Custom Style' }}</p>
+                            <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.62)]">User: {{ $design->user->name ?? 'Guest' }}</p>
+                            <p class="mt-1 text-sm text-[color:rgba(47,47,47,0.52)]">{{ $design->created_at->diffForHumans() }}</p>
+                        </div>
+                        @php
+                            $statusClasses = match($design->status) {
+                                'completed' => 'bg-[rgba(122,138,107,0.14)] text-[var(--color-olive)]',
+                                'processing' => 'bg-[rgba(203,187,160,0.22)] text-[var(--color-taupe)]',
+                                'failed' => 'bg-[rgba(170,80,80,0.12)] text-[#8c4343]',
+                                default => 'bg-[rgba(47,47,47,0.08)] text-[var(--color-charcoal)]',
+                            };
+                        @endphp
+                        <span class="inline-flex rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] {{ $statusClasses }}">
+                            {{ ucfirst($design->status) }}
+                        </span>
                     </div>
-                    <p>User: {{ $design->user->name ?? 'Guest' }}</p>
-                    <small>{{ $design->created_at->diffForHumans() }}</small>
-                    
-                    <div class="card-actions">
+
+                    <div class="mt-5 border-t border-[rgba(47,47,47,0.08)] pt-4 text-right">
                         <form action="{{ route('admin.designs.delete', $design) }}" method="POST" onsubmit="return confirm('Delete this design?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-text-danger">Delete</button>
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="rounded-full border border-[rgba(159,86,86,0.18)] bg-[rgba(159,86,86,0.10)] px-4 py-2 text-sm font-semibold text-[#8c4343] transition hover:bg-[rgba(159,86,86,0.16)]">
+                                Delete
+                            </button>
                         </form>
                     </div>
                 </div>
             </article>
         @empty
-            <p class="empty-state">No designs found matching the criteria.</p>
+            <p class="text-sm text-[color:rgba(47,47,47,0.56)]">No designs found matching the criteria.</p>
         @endforelse
     </div>
 
-    <div class="pagination-row">
+    <div class="mt-6 border-t border-[rgba(47,47,47,0.08)] pt-5">
         {{ $designs->links() }}
     </div>
-</div>
-
-<style>
-    .design-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-    .design-card { background: white; border: 1px solid #e5e7eb; border-radius: 1rem; overflow: hidden; transition: transform 0.2s; }
-    .design-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-    .design-images { display: grid; grid-template-columns: 1fr 1fr; height: 160px; background: #f3f4f6; }
-    .img-wrap { position: relative; height: 100%; overflow: hidden; border-right: 1px solid #e5e7eb; }
-    .img-wrap:last-child { border-right: none; }
-    .img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .img-wrap span { position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.5); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase; }
-    .placeholder { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af; gap: 0.5rem; }
-    .design-info { padding: 1rem; }
-    .info-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-    .status-tag { font-size: 11px; padding: 2px 8px; border-radius: 9999px; font-weight: 600; }
-    .status-completed { background: #ecfdf5; color: #065f46; }
-    .status-failed { background: #fef2f2; color: #991b1b; }
-    .status-processing { background: #fffbeb; color: #92400e; }
-    .card-actions { margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #f3f4f6; text-align: right; }
-    .btn-text-danger { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 13px; }
-    .btn-text-danger:hover { text-decoration: underline; }
-    .form-control-sm { padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #d1d5db; }
-</style>
+</section>
 @endsection
-

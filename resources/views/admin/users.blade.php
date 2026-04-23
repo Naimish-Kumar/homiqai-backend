@@ -3,70 +3,83 @@
 @section('title', 'Users')
 
 @section('content')
-<section class="metric-grid compact">
-    <article class="metric-card"><span>Total users</span><strong>{{ number_format($summary['total_users']) }}</strong></article>
-    <article class="metric-card"><span>Admins</span><strong>{{ number_format($summary['admins']) }}</strong></article>
-    <article class="metric-card"><span>Premium</span><strong>{{ number_format($summary['premium']) }}</strong></article>
+<section class="grid gap-6 md:grid-cols-3">
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Total users</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['total_users']) }}</p>
+    </article>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Admins</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['admins']) }}</p>
+    </article>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Premium users</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['premium']) }}</p>
+    </article>
 </section>
 
-<section class="panel">
-    <div class="panel-header">
+<section class="mt-6 rounded-[32px] border border-white/60 bg-white/72 p-6 shadow-[0_22px_60px_rgba(47,47,47,0.07)] backdrop-blur-xl">
+    <div class="flex flex-col gap-4 border-b border-[rgba(47,47,47,0.08)] pb-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-            <p class="eyebrow">People</p>
-            <h2>Customer directory</h2>
+            <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-olive)]">People</p>
+            <h2 class="mt-3 font-[var(--font-display)] text-3xl leading-tight">Customer directory</h2>
         </div>
-        <form action="{{ route('admin.users') }}" method="GET" class="search-form">
-            <input type="search" name="search" value="{{ $search }}" placeholder="Search name or email">
-            <button type="submit">Search</button>
+        <form action="{{ route('admin.users') }}" method="GET" class="flex w-full max-w-md items-center gap-3 rounded-full border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3">
+            <input type="search" name="search" value="{{ $search }}" placeholder="Search name or email" class="w-full bg-transparent text-sm text-[var(--color-charcoal)] outline-none placeholder:text-[color:rgba(47,47,47,0.42)]">
+            <button type="submit" class="rounded-full bg-[var(--color-charcoal)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-taupe)]">Search</button>
         </form>
     </div>
 
-    <div class="table-wrap">
-        <table>
+    <div class="mt-6 overflow-x-auto">
+        <table class="min-w-full text-left">
             <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Role</th>
-                    <th>Designs</th>
-                    <th>Account Type</th>
-                    <th>Joined</th>
+                <tr class="text-xs font-semibold uppercase tracking-[0.24em] text-[color:rgba(47,47,47,0.46)]">
+                    <th class="pb-4 pr-4">User</th>
+                    <th class="pb-4 pr-4">Role</th>
+                    <th class="pb-4 pr-4">Designs</th>
+                    <th class="pb-4 pr-4">Account Type</th>
+                    <th class="pb-4">Joined</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-[rgba(47,47,47,0.08)]">
                 @forelse($users as $user)
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <span>{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                        <td class="py-4 pr-4">
+                            <div class="flex items-center gap-3">
+                                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(203,187,160,0.25)] font-semibold text-[var(--color-charcoal)]">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </span>
                                 <div>
-                                    <strong>{{ $user->name }}</strong>
-                                    <small>{{ $user->email }}</small>
+                                    <p class="font-semibold text-[var(--color-charcoal)]">{{ $user->name }}</p>
+                                    <p class="text-sm text-[color:rgba(47,47,47,0.56)]">{{ $user->email }}</p>
                                 </div>
                             </div>
                         </td>
-                        <td>{{ $user->is_admin ? 'Admin' : 'Customer' }}</td>
-                        <td>{{ number_format($user->room_designs_count) }}</td>
-                        <td>
+                        <td class="py-4 pr-4 text-sm text-[color:rgba(47,47,47,0.72)]">{{ $user->is_admin ? 'Admin' : 'Customer' }}</td>
+                        <td class="py-4 pr-4 text-sm text-[color:rgba(47,47,47,0.72)]">{{ number_format($user->room_designs_count) }}</td>
+                        <td class="py-4 pr-4">
                             @if($user->is_premium)
-                                <span class="status completed" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">
-                                    <i class="fa-solid fa-crown" style="font-size: 0.75rem;"></i> Premium
+                                <span class="inline-flex items-center gap-2 rounded-full bg-[rgba(203,187,160,0.22)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-taupe)]">
+                                    <i class="fa-solid fa-crown text-[10px]"></i> Premium
                                 </span>
                             @else
-                                <span class="status pending">Basic</span>
+                                <span class="inline-flex rounded-full bg-[rgba(47,47,47,0.08)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-charcoal)]">
+                                    Basic
+                                </span>
                             @endif
                         </td>
-                        <td>{{ $user->created_at->format('M d, Y') }}</td>
+                        <td class="py-4 text-sm text-[color:rgba(47,47,47,0.58)]">{{ $user->created_at->format('M d, Y') }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="empty-state">No users matched your search.</td>
+                        <td colspan="5" class="py-8 text-center text-sm text-[color:rgba(47,47,47,0.56)]">No users matched your search.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="pagination-row">
+    <div class="mt-6 flex flex-col gap-4 border-t border-[rgba(47,47,47,0.08)] pt-5 text-sm text-[color:rgba(47,47,47,0.58)] lg:flex-row lg:items-center lg:justify-between">
         <span>Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} users</span>
         <div>{{ $users->links() }}</div>
     </div>

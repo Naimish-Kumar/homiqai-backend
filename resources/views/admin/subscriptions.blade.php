@@ -3,115 +3,103 @@
 @section('title', 'Revenue & Subscriptions')
 
 @section('content')
-<section class="metric-grid">
-    <article class="metric-card">
-        <span>Estimated MRR</span>
-        <strong>₹{{ number_format($summary['estimated_mrr']) }}</strong>
-        <small>Active monthly recurring revenue</small>
+<section class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Estimated MRR</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">₹{{ number_format($summary['estimated_mrr']) }}</p>
+        <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.58)]">Active monthly recurring revenue</p>
     </article>
-    <article class="metric-card">
-        <span>Total Revenue</span>
-        <strong>₹{{ number_format($summary['total_revenue']) }}</strong>
-        <small>Lifetime processed</small>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Total Revenue</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">₹{{ number_format($summary['total_revenue']) }}</p>
+        <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.58)]">Lifetime processed</p>
     </article>
-    <article class="metric-card">
-        <span>Platform Split</span>
-        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-            <div style="text-align: center;">
-                <small style="display: block;">iOS</small>
-                <strong>{{ $summary['ios_users'] }}</strong>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Platform Split</p>
+        <div class="mt-4 grid grid-cols-2 gap-3">
+            <div class="rounded-[20px] bg-[rgba(247,246,242,0.82)] p-4 text-center">
+                <p class="text-xs uppercase tracking-[0.18em] text-[color:rgba(47,47,47,0.46)]">iOS</p>
+                <p class="mt-2 text-2xl font-semibold text-[var(--color-charcoal)]">{{ $summary['ios_users'] }}</p>
             </div>
-            <div style="text-align: center;">
-                <small style="display: block;">Android</small>
-                <strong>{{ $summary['android_users'] }}</strong>
+            <div class="rounded-[20px] bg-[rgba(247,246,242,0.82)] p-4 text-center">
+                <p class="text-xs uppercase tracking-[0.18em] text-[color:rgba(47,47,47,0.46)]">Android</p>
+                <p class="mt-2 text-2xl font-semibold text-[var(--color-charcoal)]">{{ $summary['android_users'] }}</p>
             </div>
         </div>
     </article>
-    <article class="metric-card">
-        <span>Active Subs</span>
-        <strong>{{ number_format($summary['active_subscriptions']) }}</strong>
-        <small>Currently valid</small>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Active Subs</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['active_subscriptions']) }}</p>
+        <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.58)]">Currently valid</p>
     </article>
 </section>
 
-<section class="panel">
-    <div class="panel-header">
-        <div>
-            <p class="eyebrow">Transactions</p>
-            <h2>Recent Store Purchases</h2>
-        </div>
+<section class="mt-6 rounded-[32px] border border-white/60 bg-white/72 p-6 shadow-[0_22px_60px_rgba(47,47,47,0.07)] backdrop-blur-xl">
+    <div class="border-b border-[rgba(47,47,47,0.08)] pb-5">
+        <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-olive)]">Transactions</p>
+        <h2 class="mt-3 font-[var(--font-display)] text-3xl leading-tight">Recent store purchases</h2>
     </div>
 
-    <div class="table-wrap">
-        <table>
+    <div class="mt-6 overflow-x-auto">
+        <table class="min-w-full text-left">
             <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Plan</th>
-                    <th>Platform</th>
-                    <th>Transaction ID</th>
-                    <th>Status</th>
-                    <th>Expiry</th>
+                <tr class="text-xs font-semibold uppercase tracking-[0.24em] text-[color:rgba(47,47,47,0.46)]">
+                    <th class="pb-4 pr-4">User</th>
+                    <th class="pb-4 pr-4">Plan</th>
+                    <th class="pb-4 pr-4">Platform</th>
+                    <th class="pb-4 pr-4">Transaction ID</th>
+                    <th class="pb-4 pr-4">Status</th>
+                    <th class="pb-4">Expiry</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-[rgba(47,47,47,0.08)]">
                 @forelse($recentSubscriptions as $sub)
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <span style="background: #4f46e5; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        <td class="py-4 pr-4">
+                            <div class="flex items-center gap-3">
+                                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(203,187,160,0.25)] font-semibold text-[var(--color-charcoal)]">
                                     {{ strtoupper(substr($sub->user->name ?? 'U', 0, 1)) }}
                                 </span>
                                 <div>
-                                    <strong>{{ $sub->user->name ?? 'Unknown' }}</strong>
-                                    <small>{{ $sub->user->email ?? 'N/A' }}</small>
+                                    <p class="font-semibold text-[var(--color-charcoal)]">{{ $sub->user->name ?? 'Unknown' }}</p>
+                                    <p class="text-sm text-[color:rgba(47,47,47,0.56)]">{{ $sub->user->email ?? 'N/A' }}</p>
                                 </div>
                             </div>
                         </td>
-                        <td>
-                            <div style="display: flex; flex-direction: column;">
-                                <strong>{{ $sub->package_name }}</strong>
-                                <small>₹{{ number_format($sub->amount) }}</small>
+                        <td class="py-4 pr-4">
+                            <div>
+                                <p class="font-semibold text-[var(--color-charcoal)]">{{ $sub->package_name }}</p>
+                                <p class="text-sm text-[color:rgba(47,47,47,0.56)]">₹{{ number_format($sub->amount) }}</p>
                             </div>
                         </td>
-                        <td>
-                            <span class="badge badge-{{ $sub->platform }}">
+                        <td class="py-4 pr-4">
+                            <span class="inline-flex rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] {{ $sub->platform === 'android' ? 'bg-[rgba(122,138,107,0.14)] text-[var(--color-olive)]' : 'bg-[rgba(47,47,47,0.08)] text-[var(--color-charcoal)]' }}">
                                 {{ strtoupper($sub->platform) }}
                             </span>
                         </td>
-                        <td>
-                            <code style="font-size: 0.75rem; background: #f3f4f6; padding: 0.25rem; border-radius: 0.25rem;">
-                                {{ Str::limit($sub->transaction_id, 12) }}
-                            </code>
+                        <td class="py-4 pr-4">
+                            <code class="rounded-xl bg-[rgba(247,246,242,0.92)] px-3 py-2 text-xs text-[var(--color-charcoal)]">{{ Str::limit($sub->transaction_id, 16) }}</code>
                         </td>
-                        <td>
-                            <span class="status-indicator status-{{ $sub->status }}"></span>
-                            {{ ucfirst($sub->status) }}
+                        <td class="py-4 pr-4">
+                            <span class="inline-flex items-center gap-2 text-sm text-[color:rgba(47,47,47,0.72)]">
+                                <i class="h-2.5 w-2.5 rounded-full {{ $sub->status === 'active' ? 'bg-[var(--color-olive)]' : 'bg-[#9f5656]' }}"></i>
+                                {{ ucfirst($sub->status) }}
+                            </span>
                         </td>
-                        <td>
+                        <td class="py-4 text-sm text-[color:rgba(47,47,47,0.68)]">
                             {{ $sub->end_date->format('d M, Y') }}
-                            <small style="display: block; color: {{ $sub->end_date->isPast() ? '#ef4444' : '#10b981' }}">
+                            <p class="mt-1 {{ $sub->end_date->isPast() ? 'text-[#9f5656]' : 'text-[var(--color-olive)]' }}">
                                 {{ $sub->end_date->diffForHumans() }}
-                            </small>
+                            </p>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="empty-state">No transactions recorded yet.</td>
+                        <td colspan="6" class="py-8 text-center text-sm text-[color:rgba(47,47,47,0.56)]">No transactions recorded yet.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 </section>
-
-<style>
-    .badge { padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-    .badge-ios { background: #f3f4f6; color: #1f2937; }
-    .badge-android { background: #ecfdf5; color: #047857; }
-    .status-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.5rem; }
-    .status-active { background: #10b981; }
-    .status-expired { background: #ef4444; }
-</style>
 @endsection
-
