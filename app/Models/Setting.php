@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 class Setting extends Model
 {
@@ -18,12 +21,42 @@ class Setting extends Model
         'description',
     ];
 
+    public static function tableIsAvailable(): bool
+    {
+        try {
+            return Schema::hasTable((new static())->getTable());
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
+    public static function safeKeyedValues(): Collection
+    {
+        if (! static::tableIsAvailable()) {
+            return collect();
+        }
+
+        try {
+            return static::query()->get()->keyBy('key');
+        } catch (Throwable) {
+            return collect();
+        }
+    }
+
     /**
      * Get a setting value by key.
      */
     public static function get(string $key, mixed $default = null): mixed
     {
-        $setting = self::where('key', $key)->first();
+        if (! static::tableIsAvailable()) {
+            return $default;
+        }
+
+        try {
+            $setting = self::where('key', $key)->first();
+        } catch (Throwable) {
+            return $default;
+        }
 
         if (!$setting) {
             return $default;
@@ -37,6 +70,10 @@ class Setting extends Model
      */
     public static function set(string $key, mixed $value, string $group = 'general'): self
     {
+        if (! static::tableIsAvailable()) {
+            throw new \RuntimeException('Settings table is not available.');
+        }
+
         $type = gettype($value);
         if (is_array($value)) $type = 'json';
         if (is_bool($value)) $type = 'boolean';

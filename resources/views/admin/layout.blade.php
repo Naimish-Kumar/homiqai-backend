@@ -13,6 +13,38 @@
     <link rel="stylesheet" href="{{ asset('css/modern.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .admin-pagination nav > div:first-child {
+            display: none;
+        }
+
+        .admin-pagination nav > div:last-child,
+        .admin-pagination nav span,
+        .admin-pagination nav a {
+            align-items: center;
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-pagination nav a,
+        .admin-pagination nav span[aria-current="page"] span,
+        .admin-pagination nav > div:last-child > span {
+            border: 1px solid rgba(47, 47, 47, 0.10);
+            border-radius: 9999px;
+            color: #2f2f2f;
+            background: rgba(255, 255, 255, 0.82);
+            font-size: 0.875rem;
+            min-height: 2.5rem;
+            padding: 0.6rem 0.95rem;
+        }
+
+        .admin-pagination nav span[aria-current="page"] span {
+            background: #2f2f2f;
+            color: #fff;
+            border-color: #2f2f2f;
+        }
+    </style>
 </head>
 <body class="min-h-screen bg-[var(--color-cream)] text-[var(--color-charcoal)] antialiased">
     <div class="absolute inset-x-0 top-0 -z-10 h-[30rem] bg-[radial-gradient(circle_at_top_left,_rgba(203,187,160,0.34),_transparent_35%),radial-gradient(circle_at_top_right,_rgba(122,138,107,0.14),_transparent_28%),linear-gradient(180deg,_#fbfaf7_0%,_#f7f6f2_64%,_#f4efe7_100%)]"></div>

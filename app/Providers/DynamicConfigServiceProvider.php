@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
 
 class DynamicConfigServiceProvider extends ServiceProvider
 {
@@ -22,12 +22,15 @@ class DynamicConfigServiceProvider extends ServiceProvider
     {
         // Try loading from Database first
         try {
-            if (Schema::hasTable('settings')) {
-                $settings = \App\Models\Setting::all()->pluck('value', 'key')->toArray();
+            if (Setting::tableIsAvailable()) {
+                $settings = Setting::safeKeyedValues()
+                    ->mapWithKeys(fn (Setting $setting) => [$setting->key => $setting->value])
+                    ->toArray();
+
                 $this->applyConfig($settings);
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Database not ready or table missing, fallback to file
         }
 

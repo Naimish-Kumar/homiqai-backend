@@ -168,7 +168,7 @@ class AdminController extends Controller
 
     public function settings()
     {
-        $settings = Setting::all()->keyBy('key');
+        $settings = Setting::safeKeyedValues();
 
         $config = [
             'ai_provider' => $settings->get('ai_provider')->value ?? config('services.ai.provider'),
@@ -204,6 +204,14 @@ class AdminController extends Controller
             'maintenance_mode' => ['required', 'string', 'in:0,1'],
             'app_version' => ['required', 'string'],
         ]);
+
+        if (! Setting::tableIsAvailable()) {
+            file_put_contents(storage_path('app/settings.json'), json_encode($validated, JSON_PRETTY_PRINT));
+
+            return redirect()
+                ->route('admin.settings')
+                ->with('status', 'Settings table is unavailable, so values were saved to the JSON fallback only.');
+        }
 
         foreach ($validated as $key => $value) {
             Setting::set($key, $value, $this->getGroupForKey($key));
