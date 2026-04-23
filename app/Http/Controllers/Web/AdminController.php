@@ -13,6 +13,7 @@ use App\Models\Feedback;
 use App\Models\Notification;
 use App\Models\ApiLog;
 use App\Services\AIService;
+use App\Services\FirebaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -547,7 +548,7 @@ class AdminController extends Controller
         return view('admin.notifications', compact('notifications', 'users', 'summary'));
     }
 
-    public function sendNotification(Request $request)
+    public function sendNotification(Request $request, FirebaseService $firebase)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -556,12 +557,18 @@ class AdminController extends Controller
             'type' => 'required|string|in:info,update,promotion,alert',
         ]);
 
-        Notification::create([
+        $notification = Notification::create([
             ...$validated,
             'sent_at' => now(),
         ]);
 
-        // Logic for FCM would go here
+        // Send actual push notification via Firebase
+        $firebase->sendPush(
+            $validated['title'],
+            $validated['message'],
+            $validated['user_id'],
+            ['type' => $validated['type'], 'notification_id' => $notification->id]
+        );
 
         return redirect()->route('admin.notifications')->with('status', 'Notification sent successfully.');
     }
