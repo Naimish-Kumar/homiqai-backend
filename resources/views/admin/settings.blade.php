@@ -139,7 +139,32 @@
                     <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">Current App Version</span>
                     <input type="text" name="app_version" id="app_version" value="{{ $config['app_version'] ?? '1.0.0' }}" class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3 text-sm outline-none">
                 </label>
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <label class="block">
+                        <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">Max Upload Size (MB)</span>
+                        <input type="number" name="max_upload_size" value="{{ $config['max_upload_size'] }}" class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3 text-sm outline-none">
+                    </label>
+
+                    <label class="block">
+                        <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">AI Request Timeout (s)</span>
+                        <input type="number" name="ai_timeout" value="{{ $config['ai_timeout'] }}" class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3 text-sm outline-none">
+                    </label>
+                </div>
             </div>
+
+            <div class="space-y-5">
+                <label class="block">
+                    <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">Firebase Configuration (JSON)</span>
+                    <textarea name="firebase_config" rows="3" class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3 text-sm font-mono outline-none">{{ $config['firebase_config'] }}</textarea>
+                </label>
+
+                <label class="block">
+                    <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">SMTP / Mail Configuration (JSON)</span>
+                    <textarea name="smtp_config" rows="3" class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3 text-sm font-mono outline-none">{{ $config['smtp_config'] }}</textarea>
+                </label>
+            </div>
+        </div>
 
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 <div class="rounded-[24px] bg-[rgba(247,246,242,0.82)] p-5"><p class="text-sm text-[color:rgba(47,47,47,0.56)]">Environment</p><p class="mt-2 text-xl font-semibold">{{ strtoupper($system['environment']) }}</p></div>

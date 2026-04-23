@@ -178,9 +178,9 @@ class AIService
         $budget = $roomDesign->budget;
 
         $budgetDescriptions = [
-            'low' => Setting::get('budget_low_prompt', 'Use affordable, budget-friendly materials like laminate, MDF, and cotton textiles.'),
-            'medium' => Setting::get('budget_medium_prompt', 'Use mid-range materials like engineered wood, quality fabrics, and ceramic tiles.'),
-            'high' => Setting::get('budget_high_prompt', 'Use premium materials like solid hardwood, marble, brass fixtures, and designer furniture.'),
+            'low' => $style->prompt_low ?: Setting::get('budget_low_prompt', 'Use affordable, budget-friendly materials like laminate, MDF, and cotton textiles.'),
+            'medium' => $style->prompt_medium ?: Setting::get('budget_medium_prompt', 'Use mid-range materials like engineered wood, quality fabrics, and ceramic tiles.'),
+            'high' => $style->prompt_high ?: Setting::get('budget_high_prompt', 'Use premium materials like solid hardwood, marble, brass fixtures, and designer furniture.'),
         ];
 
         $budgetDesc = $budgetDescriptions[$budget] ?? $budgetDescriptions['medium'];

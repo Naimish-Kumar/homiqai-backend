@@ -27,10 +27,20 @@
                     <input type="url" name="thumbnail_url" placeholder="https://..." class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none">
                 </label>
             </div>
-            <label class="block">
-                <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">AI Prompt Prefix</span>
-                <textarea name="prompt_prefix" rows="3" placeholder="Describe the style for AI..." class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none"></textarea>
-            </label>
+            <div class="grid gap-4 md:grid-cols-3">
+                <label class="block">
+                    <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">Prompt (Low Budget)</span>
+                    <textarea name="prompt_low" rows="3" placeholder="Economy materials..." class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none"></textarea>
+                </label>
+                <label class="block">
+                    <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">Prompt (Medium Budget)</span>
+                    <textarea name="prompt_medium" rows="3" placeholder="Standard materials..." class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none"></textarea>
+                </label>
+                <label class="block">
+                    <span class="mb-2 block text-sm font-semibold text-[var(--color-charcoal)]">Prompt (High Budget)</span>
+                    <textarea name="prompt_high" rows="3" placeholder="Luxury materials..." class="w-full rounded-[18px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none"></textarea>
+                </label>
+            </div>
             <div class="flex gap-3">
                 <button type="submit" class="rounded-full bg-[var(--color-charcoal)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--color-taupe)]">Save Style</button>
                 <button type="button" onclick="document.getElementById('addStyleForm').classList.add('hidden')" class="rounded-full border border-[rgba(47,47,47,0.10)] bg-white px-5 py-3 text-sm font-semibold text-[var(--color-charcoal)]">Cancel</button>
@@ -53,21 +63,43 @@
                 @forelse ($styles as $style)
                     <tr>
                         <td colspan="5" class="py-4">
-                            <form action="{{ route('admin.styles.update', $style) }}" method="POST" class="grid gap-3 rounded-[22px] bg-[#faf7f2] p-4 xl:grid-cols-[80px_minmax(0,1fr)_minmax(0,1.6fr)_100px_auto]">
+                            <form action="{{ route('admin.styles.update', $style) }}" method="POST" class="space-y-4 rounded-[22px] bg-[#faf7f2] p-5">
                                 @csrf
                                 @method('PATCH')
-                                <div class="text-sm font-medium text-[color:rgba(47,47,47,0.68)]">#{{ $style->id }}</div>
-                                <input type="text" name="name" value="{{ $style->name }}" class="rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)] outline-none">
-                                <textarea name="prompt_prefix" rows="2" class="rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)] outline-none">{{ $style->prompt_prefix }}</textarea>
-                                <div class="flex items-center text-sm font-semibold text-[var(--color-charcoal)]">{{ $style->room_designs_count }}</div>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <input type="url" name="thumbnail_url" value="{{ $style->thumbnail_url }}" placeholder="Thumbnail URL" class="min-w-[12rem] rounded-full border border-[rgba(47,47,47,0.10)] bg-white px-4 py-2 text-sm text-[var(--color-charcoal)] outline-none">
-                                    <button type="submit" class="rounded-full bg-[var(--color-charcoal)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-taupe)]">
-                                        Update
-                                    </button>
-                                    <button form="delete-style-{{ $style->id }}" type="submit" class="rounded-full border border-[rgba(159,86,86,0.18)] bg-[rgba(159,86,86,0.10)] px-4 py-2 text-sm font-semibold text-[#8c4343] transition hover:bg-[rgba(159,86,86,0.16)]">
-                                        Delete
-                                    </button>
+                                <div class="flex items-center justify-between border-b border-[rgba(47,47,47,0.06)] pb-3">
+                                    <div class="text-sm font-semibold text-[color:rgba(47,47,47,0.68)]">Style #{{ $style->id }} ({{ $style->room_designs_count }} designs)</div>
+                                    <div class="flex gap-2">
+                                        <button type="submit" class="rounded-full bg-[var(--color-charcoal)] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-taupe)]">Update Style</button>
+                                        <button form="delete-style-{{ $style->id }}" type="submit" class="rounded-full border border-[rgba(159,86,86,0.18)] bg-[rgba(159,86,86,0.10)] px-5 py-2 text-sm font-semibold text-[#8c4343] transition hover:bg-[rgba(159,86,86,0.16)]">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="grid gap-4 md:grid-cols-2">
+                                    <label class="block">
+                                        <span class="mb-2 block text-xs font-semibold text-[color:rgba(47,47,47,0.52)]">NAME</span>
+                                        <input type="text" name="name" value="{{ $style->name }}" class="w-full rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none">
+                                    </label>
+                                    <label class="block">
+                                        <span class="mb-2 block text-xs font-semibold text-[color:rgba(47,47,47,0.52)]">THUMBNAIL URL</span>
+                                        <input type="url" name="thumbnail_url" value="{{ $style->thumbnail_url }}" class="w-full rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none">
+                                    </label>
+                                </div>
+                                <label class="block">
+                                    <span class="mb-2 block text-xs font-semibold text-[color:rgba(47,47,47,0.52)]">AI PROMPT PREFIX</span>
+                                    <textarea name="prompt_prefix" rows="2" class="w-full rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none">{{ $style->prompt_prefix }}</textarea>
+                                </label>
+                                <div class="grid gap-4 md:grid-cols-3">
+                                    <label class="block">
+                                        <span class="mb-2 block text-xs font-semibold text-[color:rgba(47,47,47,0.52)]">PROMPT (LOW BUDGET)</span>
+                                        <textarea name="prompt_low" rows="2" class="w-full rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none">{{ $style->prompt_low }}</textarea>
+                                    </label>
+                                    <label class="block">
+                                        <span class="mb-2 block text-xs font-semibold text-[color:rgba(47,47,47,0.52)]">PROMPT (MEDIUM BUDGET)</span>
+                                        <textarea name="prompt_medium" rows="2" class="w-full rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none">{{ $style->prompt_medium }}</textarea>
+                                    </label>
+                                    <label class="block">
+                                        <span class="mb-2 block text-xs font-semibold text-[color:rgba(47,47,47,0.52)]">PROMPT (HIGH BUDGET)</span>
+                                        <textarea name="prompt_high" rows="2" class="w-full rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm outline-none">{{ $style->prompt_high }}</textarea>
+                                    </label>
                                 </div>
                             </form>
                             <form id="delete-style-{{ $style->id }}" action="{{ route('admin.styles.delete', $style) }}" method="POST" onsubmit="return confirm('Delete style \'{{ $style->name }}\'? This will also delete all associated designs.')">

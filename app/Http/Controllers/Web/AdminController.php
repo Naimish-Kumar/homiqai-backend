@@ -217,6 +217,10 @@ class AdminController extends Controller
             'budget_low_prompt' => $settings->get('budget_low_prompt')->value ?? 'Use affordable, budget-friendly materials like laminate, MDF, and cotton textiles.',
             'budget_medium_prompt' => $settings->get('budget_medium_prompt')->value ?? 'Use mid-range materials like engineered wood, quality fabrics, and ceramic tiles.',
             'budget_high_prompt' => $settings->get('budget_high_prompt')->value ?? 'Use premium materials like solid hardwood, marble, brass fixtures, and designer furniture.',
+            'max_upload_size' => $settings->get('max_upload_size')->value ?? '10',
+            'ai_timeout' => $settings->get('ai_timeout')->value ?? '60',
+            'firebase_config' => $settings->get('firebase_config')->value ?? '{}',
+            'smtp_config' => $settings->get('smtp_config')->value ?? '{}',
         ];
 
         $system = [
@@ -255,6 +259,10 @@ class AdminController extends Controller
             'budget_low_prompt' => ['required', 'string', 'max:1000'],
             'budget_medium_prompt' => ['required', 'string', 'max:1000'],
             'budget_high_prompt' => ['required', 'string', 'max:1000'],
+            'max_upload_size' => ['required', 'integer', 'min:1', 'max:100'],
+            'ai_timeout' => ['required', 'integer', 'min:1', 'max:300'],
+            'firebase_config' => ['nullable', 'string'],
+            'smtp_config' => ['nullable', 'string'],
         ]);
 
         if (! Setting::tableIsAvailable()) {
@@ -283,7 +291,7 @@ class AdminController extends Controller
         if (str_contains($key, 'amazon') || str_contains($key, 'affiliate')) return 'affiliate';
         if (str_contains($key, 'apple') || str_contains($key, 'google')) return 'payment';
         if (str_contains($key, 'budget') || str_contains($key, 'prompt')) return 'design';
-        if (str_contains($key, 'maintenance') || str_contains($key, 'version')) return 'system';
+        if (str_contains($key, 'maintenance') || str_contains($key, 'version') || str_contains($key, 'size') || str_contains($key, 'config')) return 'system';
         return 'general';
     }
 
@@ -348,13 +356,16 @@ class AdminController extends Controller
 
     public function storeStyle(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|unique:styles,name',
             'thumbnail_url' => 'nullable|url|max:500',
             'prompt_prefix' => 'nullable|string|max:1000',
+            'prompt_low' => 'nullable|string|max:1000',
+            'prompt_medium' => 'nullable|string|max:1000',
+            'prompt_high' => 'nullable|string|max:1000',
         ]);
 
-        Style::create($request->only(['name', 'thumbnail_url', 'prompt_prefix']));
+        Style::create($validated);
 
         return redirect()->route('admin.styles')->with('status', "Style '{$request->name}' created successfully.");
     }
@@ -365,6 +376,9 @@ class AdminController extends Controller
             'name' => 'required|string|max:255|unique:styles,name,' . $style->id,
             'thumbnail_url' => 'nullable|url|max:500',
             'prompt_prefix' => 'nullable|string|max:1000',
+            'prompt_low' => 'nullable|string|max:1000',
+            'prompt_medium' => 'nullable|string|max:1000',
+            'prompt_high' => 'nullable|string|max:1000',
         ]);
 
         $style->update($validated);
