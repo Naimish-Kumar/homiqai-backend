@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\AdminController;
+use App\Http\Controllers\Web\PublicPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,9 +11,12 @@ use App\Http\Controllers\Web\AdminController;
 */
 
 // Public Landing Page
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [PublicPageController::class, 'home'])->name('home');
+Route::get('/about', [PublicPageController::class, 'about'])->name('about');
+Route::get('/privacy-policy', [PublicPageController::class, 'privacy'])->name('privacy');
+Route::get('/contact', [PublicPageController::class, 'contact'])->name('contact');
+Route::get('/delete-account', [PublicPageController::class, 'showDeleteAccount'])->name('delete-account');
+Route::post('/delete-account', [PublicPageController::class, 'deleteAccount'])->name('delete-account.destroy');
 
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
 

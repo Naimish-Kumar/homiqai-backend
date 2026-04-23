@@ -303,9 +303,10 @@
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--color-olive)]">Links</p>
                     <div class="mt-4 flex flex-col gap-3 text-sm text-[color:rgba(47,47,47,0.7)]">
-                        <a class="transition hover:text-[var(--color-charcoal)]" href="#">About</a>
-                        <a class="transition hover:text-[var(--color-charcoal)]" href="#">Privacy Policy</a>
-                        <a class="transition hover:text-[var(--color-charcoal)]" href="#">Contact</a>
+                        <a class="transition hover:text-[var(--color-charcoal)]" href="{{ route('about') }}">About</a>
+                        <a class="transition hover:text-[var(--color-charcoal)]" href="{{ route('privacy') }}">Privacy Policy</a>
+                        <a class="transition hover:text-[var(--color-charcoal)]" href="{{ route('contact') }}">Contact</a>
+                        <a class="transition hover:text-[var(--color-charcoal)]" href="{{ route('delete-account') }}">Delete Account</a>
                     </div>
                 </div>
 
