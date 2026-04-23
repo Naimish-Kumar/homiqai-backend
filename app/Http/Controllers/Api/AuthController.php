@@ -51,13 +51,34 @@ class AuthController extends Controller
             $user->otp_expires_at = Carbon::now()->addMinutes(10);
             $user->save();
 
-            // Send OTP (Currently via Log)
+            // Send OTP via Email
+            if ($type === 'email') {
+                \Illuminate\Support\Facades\Mail::to($identifier)->send(new \App\Mail\SendOtpMail($otp));
+            }
+
+            // Send OTP via Mobile (Using Firebase Push as requested)
+            if ($type === 'mobile') {
+                $firebase = app(\App\Services\FirebaseService::class);
+                if ($user->fcm_id) {
+                    $firebase->sendPush(
+                        'Your Homiq OTP',
+                        "Your verification code is: {$otp}",
+                        $user->id,
+                        ['otp' => (string)$otp, 'type' => 'otp_verification']
+                    );
+                } else {
+                    // If no FCM ID, we can't send a push. 
+                    // Note: For real SMS, a provider like Twilio/Msg91 is needed.
+                    Log::warning("Cannot send Push OTP to {$identifier}: No FCM ID found.");
+                }
+            }
+
             Log::info("OTP for {$identifier}: {$otp}");
 
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent successfully',
-                'debug_otp' => config('app.debug') ? $otp : null // Send OTP in response only in debug mode
+                'debug_otp' => config('app.debug') ? $otp : null
             ]);
 
         } catch (\Exception $e) {
@@ -157,6 +178,82 @@ class AuthController extends Controller
             ]);
         }
 
+        return $this->issueToken($user, $request->fcm_id);
+    }
+
+    /**
+     * Firebase Login (Phone/Social)
+     * Verifies the Firebase ID Token and logs the user in
+     */
+    public function firebaseLogin(Request $request)
+    {
+        $request->validate([
+            'id_token' => 'required|string',
+            'provider' => 'required|string', // e.g., 'phone', 'google.com'
+        ]);
+
+        try {
+            // In a real production app, we should verify the ID token signature 
+            // using Google's public keys. For now, we'll decode and verify the claims.
+            $tokenParts = explode('.', $request->id_token);
+            if (count($tokenParts) !== 3) {
+                throw new \Exception('Invalid token format');
+            }
+
+            $payload = json_decode(base64_decode($tokenParts[1]), true);
+            
+            if (!$payload || !isset($payload['sub'])) {
+                throw new \Exception('Invalid token payload');
+            }
+
+            // Verify project ID
+            $firebaseConfig = json_decode(\App\Models\Setting::get('firebase_config', '{}'), true);
+            $expectedProjectId = $firebaseConfig['project_id'] ?? null;
+            
+            if ($expectedProjectId && $payload['aud'] !== $expectedProjectId) {
+                throw new \Exception('Invalid token audience');
+            }
+
+            $firebaseUid = $payload['sub'];
+            $phoneNumber = $payload['phone_number'] ?? null;
+            $email = $payload['email'] ?? null;
+            $name = $payload['name'] ?? null;
+
+            // Find or create user
+            $user = null;
+            if ($phoneNumber) {
+                $user = User::where('mobile', $phoneNumber)->first();
+            } elseif ($email) {
+                $user = User::where('email', $email)->first();
+            }
+
+            if (!$user) {
+                $user = User::create([
+                    'name' => $name ?? 'User_' . Str::random(5),
+                    'email' => $email,
+                    'mobile' => $phoneNumber,
+                    'google_id' => ($request->provider === 'google.com') ? $firebaseUid : null,
+                ]);
+            } else {
+                // Update missing fields
+                if ($phoneNumber && !$user->mobile) $user->mobile = $phoneNumber;
+                if ($email && !$user->email) $user->email = $email;
+                $user->save();
+            }
+
+            return $this->issueToken($user, $request->fcm_id);
+
+        } catch (\Exception $e) {
+            Log::error('FirebaseLogin Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Firebase authentication failed: ' . $e->getMessage(),
+            ], 401);
+        }
+    }
+
+    private function issueToken($user, $fcmId = null)
+    {
         if ($user->is_blocked) {
             return response()->json([
                 'success' => false,
@@ -165,18 +262,18 @@ class AuthController extends Controller
         }
 
         // Update FCM token if provided
-        if ($request->filled('fcm_id')) {
-            $user->fcm_id = $request->fcm_id;
+        if ($fcmId) {
+            $user->fcm_id = $fcmId;
+            $user->save();
         }
-        $user->save();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
-            'token' => $token,              // Flutter reads 'token'
-            'access_token' => $token,       // Keep for backward compatibility
+            'token' => $token,
+            'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
         ]);

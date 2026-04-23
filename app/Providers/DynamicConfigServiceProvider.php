@@ -51,8 +51,26 @@ class DynamicConfigServiceProvider extends ServiceProvider
             'services.stability_ai.key' => $settings['stability_ai_key'] ?? $settings['stability_ai_key'] ?? config('services.stability_ai.key'),
             'services.openai.key' => $settings['openai_key'] ?? $settings['openai_key'] ?? config('services.openai.key'),
             'services.affiliate.amazon_tag' => $settings['amazon_affiliate_tag'] ?? $settings['amazon_affiliate_tag'] ?? config('services.affiliate.amazon_tag'),
-            'services.apple.shared_secret' => $settings['apple_shared_secret'] ?? $settings['apple_shared_secret'] ?? config('services.apple.shared_secret'),
-            'services.google_play.package_name' => $settings['google_package_name'] ?? $settings['google_package_name'] ?? config('services.google_play.package_name'),
+            'services.apple.shared_secret' => $settings['apple_shared_secret'] ?? config('services.apple.shared_secret'),
+            'services.google_play.package_name' => $settings['google_package_name'] ?? config('services.google_play.package_name'),
         ]);
+
+        // Apply SMTP Config
+        if (isset($settings['smtp_config'])) {
+            $smtp = json_decode($settings['smtp_config'], true);
+            if (is_array($smtp)) {
+                config([
+                    'mail.mailers.smtp.transport' => $smtp['transport'] ?? 'smtp',
+                    'mail.mailers.smtp.host' => $smtp['host'] ?? config('mail.mailers.smtp.host'),
+                    'mail.mailers.smtp.port' => $smtp['port'] ?? config('mail.mailers.smtp.port'),
+                    'mail.mailers.smtp.encryption' => $smtp['encryption'] ?? config('mail.mailers.smtp.encryption'),
+                    'mail.mailers.smtp.username' => $smtp['username'] ?? config('mail.mailers.smtp.username'),
+                    'mail.mailers.smtp.password' => $smtp['password'] ?? config('mail.mailers.smtp.password'),
+                    'mail.from.address' => $smtp['from_address'] ?? config('mail.from.address'),
+                    'mail.from.name' => $smtp['from_name'] ?? config('mail.from.name'),
+                    'mail.default' => 'smtp',
+                ]);
+            }
+        }
     }
 }
