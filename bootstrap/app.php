@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'log.api' => \App\Http\Middleware\LogApiRequests::class,
+        ]);
+
+        $middleware->appendToGroup('api', [
+            'log.api',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

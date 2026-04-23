@@ -3,83 +3,114 @@
 @section('title', 'Users')
 
 @section('content')
-<section class="grid gap-6 md:grid-cols-3">
-    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
-        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Total users</p>
-        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['total_users']) }}</p>
+<section class="grid gap-6 md:grid-cols-4">
+    <article class="rounded-[28px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
+        <p class="text-sm text-[#5e564e]">Total users</p>
+        <p class="mt-3 text-3xl font-semibold text-[#171717]">{{ number_format($summary['total_users']) }}</p>
     </article>
-    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
-        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Admins</p>
-        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['admins']) }}</p>
+    <article class="rounded-[28px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
+        <p class="text-sm text-[#5e564e]">Admins</p>
+        <p class="mt-3 text-3xl font-semibold text-[#171717]">{{ number_format($summary['admins']) }}</p>
     </article>
-    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
-        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Premium users</p>
-        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['premium']) }}</p>
+    <article class="rounded-[28px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
+        <p class="text-sm text-[#5e564e]">Premium users</p>
+        <p class="mt-3 text-3xl font-semibold text-[#171717]">{{ number_format($summary['premium']) }}</p>
+    </article>
+    <article class="rounded-[28px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
+        <p class="text-sm text-[#5e564e]">Blocked users</p>
+        <p class="mt-3 text-3xl font-semibold text-[#171717]">{{ number_format($summary['blocked']) }}</p>
     </article>
 </section>
 
-<section class="mt-6 rounded-[32px] border border-white/60 bg-white/72 p-6 shadow-[0_22px_60px_rgba(47,47,47,0.07)] backdrop-blur-xl">
-    <div class="flex flex-col gap-4 border-b border-[rgba(47,47,47,0.08)] pb-5 lg:flex-row lg:items-center lg:justify-between">
+<section class="mt-6 rounded-[32px] border border-black/6 bg-white p-6 shadow-[0_22px_60px_rgba(31,31,31,0.07)]">
+    <div class="flex flex-col gap-4 border-b border-black/6 pb-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-olive)]">People</p>
-            <h2 class="mt-3 font-[var(--font-display)] text-3xl leading-tight">Customer directory</h2>
+            <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[#7a8a6b]">People</p>
+            <h2 class="mt-3 font-[Playfair Display] text-3xl leading-tight text-[#171717]">User management</h2>
         </div>
-        <form action="{{ route('admin.users') }}" method="GET" class="flex w-full max-w-md items-center gap-3 rounded-full border border-[rgba(47,47,47,0.10)] bg-[rgba(247,246,242,0.84)] px-4 py-3">
-            <input type="search" name="search" value="{{ $search }}" placeholder="Search name or email" class="w-full bg-transparent text-sm text-[var(--color-charcoal)] outline-none placeholder:text-[color:rgba(47,47,47,0.42)]">
-            <button type="submit" class="rounded-full bg-[var(--color-charcoal)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-taupe)]">Search</button>
+        <form action="{{ route('admin.users') }}" method="GET" class="flex w-full max-w-md items-center gap-3 rounded-full border border-black/8 bg-[#faf7f2] px-4 py-3">
+            <input type="search" name="search" value="{{ $search }}" placeholder="Search name or email" class="w-full bg-transparent text-sm text-[#171717] outline-none placeholder:text-[#8b8175]">
+            <button type="submit" class="rounded-full bg-[#171717] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]">Search</button>
         </form>
     </div>
 
-    <div class="mt-6 overflow-x-auto">
-        <table class="min-w-full text-left">
-            <thead>
-                <tr class="text-xs font-semibold uppercase tracking-[0.24em] text-[color:rgba(47,47,47,0.46)]">
-                    <th class="pb-4 pr-4">User</th>
-                    <th class="pb-4 pr-4">Role</th>
-                    <th class="pb-4 pr-4">Designs</th>
-                    <th class="pb-4 pr-4">Account Type</th>
-                    <th class="pb-4">Joined</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-[rgba(47,47,47,0.08)]">
-                @forelse($users as $user)
-                    <tr>
-                        <td class="py-4 pr-4">
-                            <div class="flex items-center gap-3">
-                                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(203,187,160,0.25)] font-semibold text-[var(--color-charcoal)]">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
-                                </span>
-                                <div>
-                                    <p class="font-semibold text-[var(--color-charcoal)]">{{ $user->name }}</p>
-                                    <p class="text-sm text-[color:rgba(47,47,47,0.56)]">{{ $user->email }}</p>
-                                </div>
+    <div class="mt-6 space-y-5">
+        @forelse($users as $user)
+            @php
+                $latestSubscription = $user->subscriptions->first();
+                $hasActiveSubscription = $latestSubscription && $latestSubscription->status === 'active' && $latestSubscription->end_date?->isFuture();
+            @endphp
+            <article class="rounded-[28px] border border-black/6 bg-[#faf7f2] p-5">
+                <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                    <div class="flex items-start gap-4">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f0e7d9] font-semibold text-[#171717]">
+                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                        </span>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-3">
+                                <p class="text-lg font-semibold text-[#171717]">{{ $user->name }}</p>
+                                @if($user->is_admin)
+                                    <span class="rounded-full bg-[#f1ece6] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#433d36]">Admin</span>
+                                @endif
+                                @if($user->is_blocked)
+                                    <span class="rounded-full bg-[#f7e9e9] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#8c4343]">Blocked</span>
+                                @endif
                             </div>
-                        </td>
-                        <td class="py-4 pr-4 text-sm text-[color:rgba(47,47,47,0.72)]">{{ $user->is_admin ? 'Admin' : 'Customer' }}</td>
-                        <td class="py-4 pr-4 text-sm text-[color:rgba(47,47,47,0.72)]">{{ number_format($user->room_designs_count) }}</td>
-                        <td class="py-4 pr-4">
-                            @if($user->is_premium)
-                                <span class="inline-flex items-center gap-2 rounded-full bg-[rgba(203,187,160,0.22)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-taupe)]">
-                                    <i class="fa-solid fa-crown text-[10px]"></i> Premium
-                                </span>
-                            @else
-                                <span class="inline-flex rounded-full bg-[rgba(47,47,47,0.08)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-charcoal)]">
-                                    Basic
-                                </span>
+                            <p class="mt-1 text-sm text-[#5f5750]">{{ $user->email ?: 'No email provided' }}</p>
+                            <div class="mt-4 flex flex-wrap gap-5 text-sm text-[#5f5750]">
+                                <span><strong class="text-[#171717]">{{ number_format($user->room_designs_count) }}</strong> designs</span>
+                                <span><strong class="text-[#171717]">{{ $user->free_designs_left ?? 0 }}</strong> credits left</span>
+                                <span><strong class="text-[#171717]">{{ $hasActiveSubscription || $user->is_premium ? 'Premium' : 'Free' }}</strong> subscription</span>
+                                <span><strong class="text-[#171717]">{{ $user->created_at->format('M d, Y') }}</strong> joined</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid gap-3 md:grid-cols-3 xl:min-w-[40rem]">
+                        <form action="{{ route('admin.users.credits', $user) }}" method="POST" class="rounded-[22px] border border-black/6 bg-white p-4">
+                            @csrf
+                            @method('PATCH')
+                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-[#7a8a6b]">Credits</label>
+                            <div class="mt-3 flex items-center gap-2">
+                                <input type="number" min="0" name="free_designs_left" value="{{ $user->free_designs_left ?? 0 }}" class="w-full rounded-full border border-black/8 bg-[#faf7f2] px-4 py-2 text-sm text-[#171717] outline-none">
+                                <button type="submit" class="rounded-full bg-[#171717] px-4 py-2 text-xs font-semibold text-white">Save</button>
+                            </div>
+                        </form>
+
+                        <form action="{{ route('admin.users.subscription', $user) }}" method="POST" class="rounded-[22px] border border-black/6 bg-white p-4">
+                            @csrf
+                            @method('PATCH')
+                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-[#7a8a6b]">Subscription</label>
+                            <div class="mt-3 flex items-center gap-2">
+                                <select name="is_premium" class="w-full rounded-full border border-black/8 bg-[#faf7f2] px-4 py-2 text-sm text-[#171717] outline-none">
+                                    <option value="0" @selected(! $user->is_premium)>Free</option>
+                                    <option value="1" @selected($user->is_premium)>Premium</option>
+                                </select>
+                                <button type="submit" class="rounded-full bg-[#171717] px-4 py-2 text-xs font-semibold text-white">Save</button>
+                            </div>
+                            @if($latestSubscription)
+                                <p class="mt-2 text-xs text-[#6a625a]">Latest expiry: {{ $latestSubscription->end_date?->format('M d, Y') }}</p>
                             @endif
-                        </td>
-                        <td class="py-4 text-sm text-[color:rgba(47,47,47,0.58)]">{{ $user->created_at->format('M d, Y') }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="py-8 text-center text-sm text-[color:rgba(47,47,47,0.56)]">No users matched your search.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                        </form>
+
+                        <form action="{{ route('admin.users.block', $user) }}" method="POST" class="rounded-[22px] border border-black/6 bg-white p-4">
+                            @csrf
+                            @method('PATCH')
+                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-[#7a8a6b]">Access</label>
+                            <p class="mt-3 text-sm text-[#5f5750]">{{ $user->is_blocked ? 'Currently blocked from login and AI requests.' : 'Currently allowed to use the app.' }}</p>
+                            <button type="submit" class="mt-3 rounded-full px-4 py-2 text-xs font-semibold {{ $user->is_blocked ? 'bg-[#eef3ea] text-[#405038]' : 'bg-[#f7e9e9] text-[#8c4343]' }}">
+                                {{ $user->is_blocked ? 'Unblock User' : 'Block User' }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        @empty
+            <div class="py-8 text-center text-sm text-[#6a625a]">No users matched your search.</div>
+        @endforelse
     </div>
 
-    <div class="mt-6 flex flex-col gap-4 border-t border-[rgba(47,47,47,0.08)] pt-5 text-sm text-[color:rgba(47,47,47,0.58)] lg:flex-row lg:items-center lg:justify-between">
+    <div class="mt-6 flex flex-col gap-4 border-t border-black/6 pt-5 text-sm text-[#6a625a] lg:flex-row lg:items-center lg:justify-between">
         <span>Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} users</span>
         <div>{{ $users->links() }}</div>
     </div>

@@ -14,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-#[Fillable(['name', 'email', 'profile', 'password', 'is_admin', 'mobile', 'google_id', 'apple_id', 'otp_code', 'otp_expires_at', 'otp_verified_at', 'fcm_id', 'free_designs_left', 'is_premium'])]
+#[Fillable(['name', 'email', 'profile', 'password', 'is_admin', 'mobile', 'google_id', 'apple_id', 'otp_code', 'otp_expires_at', 'otp_verified_at', 'fcm_id', 'free_designs_left', 'is_premium', 'is_blocked'])]
 #[Hidden(['password', 'remember_token', 'otp_code', 'fcm_id'])]
 class User extends Authenticatable
 {
@@ -58,6 +58,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'is_admin' => 'boolean',
+            'is_blocked' => 'boolean',
             'password' => 'hashed',
             'otp_expires_at' => 'datetime',
             'otp_verified_at' => 'datetime',

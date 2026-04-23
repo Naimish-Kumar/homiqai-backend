@@ -92,6 +92,13 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if ($user->is_blocked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been blocked. Please contact support.',
+            ], 403);
+        }
+
         // Clear OTP and mark verified
         $user->otp_code = null;
         $user->otp_expires_at = null;
@@ -148,6 +155,13 @@ class AuthController extends Controller
                 'email' => $request->email,
                 $providerField => $request->social_id,
             ]);
+        }
+
+        if ($user->is_blocked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been blocked. Please contact support.',
+            ], 403);
         }
 
         // Update FCM token if provided

@@ -44,9 +44,9 @@
                 <p class="mt-2 text-sm text-[#7a8a6b]">{{ number_format($stats['monthly_users']) }} joined this month</p>
             </div>
             <div class="rounded-[24px] bg-[#eef3ea] p-5">
-                <p class="text-sm font-medium text-[#4f5a48]">Designs generated</p>
-                <p class="mt-2 text-3xl font-semibold text-[#171717]">{{ number_format($stats['total_designs']) }}</p>
-                <p class="mt-2 text-sm text-[#7a8a6b]">Across all rooms and styles</p>
+                <p class="text-sm font-medium text-[#4f5a48]">Revenue tracked</p>
+                <p class="mt-2 text-3xl font-semibold text-[#171717]">₹{{ number_format($stats['revenue']) }}</p>
+                <p class="mt-2 text-sm text-[#7a8a6b]">Subscriptions and premium earnings</p>
             </div>
         </div>
     </div>
@@ -66,27 +66,45 @@
         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef3ea] text-[#536149]">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
-        <p class="mt-5 text-sm font-medium text-[#5e564e]">Designs generated</p>
-        <p class="mt-2 text-3xl font-semibold text-[#171717]">{{ number_format($stats['total_designs']) }}</p>
-        <p class="mt-2 text-sm text-[#6a625a]">{{ number_format($stats['today_designs']) }} created today</p>
+        <p class="mt-5 text-sm font-medium text-[#5e564e]">AI generations today</p>
+        <p class="mt-2 text-3xl font-semibold text-[#171717]">{{ number_format($stats['today_designs']) }}</p>
+        <p class="mt-2 text-sm text-[#6a625a]">{{ number_format($stats['total_designs']) }} total requests</p>
     </article>
 
     <article class="rounded-[30px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f3ece4] text-[#8b745d]">
             <i class="fa-solid fa-chart-line"></i>
         </div>
-        <p class="mt-5 text-sm font-medium text-[#5e564e]">Active users</p>
-        <p class="mt-2 text-3xl font-semibold text-[#171717]">{{ number_format($stats['active_users']) }}</p>
-        <p class="mt-2 text-sm text-[#6a625a]">Last 30 days</p>
+        <p class="mt-5 text-sm font-medium text-[#5e564e]">Daily active users</p>
+        <p class="mt-2 text-3xl font-semibold text-[#171717]">{{ number_format($stats['daily_active_users']) }}</p>
+        <p class="mt-2 text-sm text-[#6a625a]">{{ number_format($stats['active_users']) }} active in last 30 days</p>
     </article>
 
     <article class="rounded-[30px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f7f2ea] text-[#8b745d]">
             <i class="fa-solid fa-crown"></i>
         </div>
-        <p class="mt-5 text-sm font-medium text-[#5e564e]">Premium users</p>
-        <p class="mt-2 text-3xl font-semibold text-[#171717]">{{ $stats['conversion_rate'] }}%</p>
-        <p class="mt-2 text-sm text-[#6a625a]">{{ number_format($stats['premium_users']) }} premium accounts</p>
+        <p class="mt-5 text-sm font-medium text-[#5e564e]">Failed AI requests</p>
+        <p class="mt-2 text-3xl font-semibold text-[#171717]">{{ number_format($stats['failed_designs']) }}</p>
+        <p class="mt-2 text-sm text-[#6a625a]">{{ number_format($stats['images_processed']) }} images processed overall</p>
+    </article>
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-3">
+    <article class="rounded-[30px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#7a8a6b]">Revenue</p>
+        <p class="mt-4 text-4xl font-semibold text-[#171717]">₹{{ number_format($stats['revenue']) }}</p>
+        <p class="mt-3 text-sm text-[#6a625a]">Current tracked subscription revenue.</p>
+    </article>
+    <article class="rounded-[30px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#7a8a6b]">Top styles</p>
+        <p class="mt-4 text-2xl font-semibold text-[#171717]">{{ $stats['top_style_names'] ?: 'No styles yet' }}</p>
+        <p class="mt-3 text-sm text-[#6a625a]">Most-used aesthetics across generated rooms.</p>
+    </article>
+    <article class="rounded-[30px] border border-black/6 bg-white p-6 shadow-[0_18px_50px_rgba(31,31,31,0.06)]">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#7a8a6b]">User control</p>
+        <p class="mt-4 text-4xl font-semibold text-[#171717]">{{ number_format($stats['blocked_users']) }}</p>
+        <p class="mt-3 text-sm text-[#6a625a]">Blocked accounts currently restricted from logging in or generating designs.</p>
     </article>
 </section>
 
@@ -219,6 +237,30 @@
                     <p class="mt-2 text-xs text-[#6a625a]">{{ $day['users'] }} / {{ $day['designs'] }}</p>
                 </div>
             </div>
+        @endforeach
+    </div>
+</section>
+
+<section class="mt-6 rounded-[34px] border border-black/6 bg-white p-6 shadow-[0_22px_60px_rgba(31,31,31,0.07)]">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[#7a8a6b]">Modules</p>
+            <h2 class="mt-3 font-[Playfair Display] text-3xl leading-tight text-[#171717]">Admin control surface</h2>
+        </div>
+        <p class="text-sm text-[#6a625a]">What is already live today and what still needs dedicated data models.</p>
+    </div>
+
+    <div class="mt-8 grid gap-4 xl:grid-cols-2">
+        @foreach ($stats['feature_modules'] as $module)
+            <article class="rounded-[24px] bg-[#faf7f2] p-5">
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-xl font-semibold text-[#171717]">{{ $module['title'] }}</h3>
+                    <span class="inline-flex rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] {{ $module['status'] === 'Live' ? 'bg-[#eef3ea] text-[#405038]' : ($module['status'] === 'Next' ? 'bg-[#f7f2ea] text-[#7e6852]' : 'bg-[#f1ece6] text-[#433d36]') }}">
+                        {{ $module['status'] }}
+                    </span>
+                </div>
+                <p class="mt-3 text-sm leading-7 text-[#6a625a]">{{ $module['description'] }}</p>
+            </article>
         @endforeach
     </div>
 </section>

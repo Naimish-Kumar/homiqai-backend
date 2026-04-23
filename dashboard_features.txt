@@ -1,0 +1,136 @@
+1. Dashboard (Very Important)
+
+Your main control center:
+
+Total users 👤
+Daily active users 📈
+AI generations today ⚡
+Total images processed 🖼️
+Revenue (subscriptions + credits) 💰
+Top styles (Modern, Minimal, etc.)
+Failed AI requests ❌
+
+👉 This helps you track AI cost + usage
+
+👤 2. User Management
+View users list
+Search / filter
+View:
+Designs generated
+Credits left
+Block / unblock user
+Manage subscription status
+
+👉 Important for freemium model
+
+💳 3. Credits & Subscription System
+
+Core of your business 💰
+
+Add / deduct credits manually
+View user credit usage
+Manage plans:
+Free (3 designs)
+₹99/month unlimited
+Payment tracking
+Subscription expiry management
+🤖 4. AI Request Management (🔥 MOST IMPORTANT)
+
+This is your core feature control panel
+
+View all AI requests:
+Original image
+Generated image
+Style selected
+Budget selected
+Status:
+Processing / Completed / Failed
+Retry failed generations
+Cost per request tracking
+
+👉 Helps you:
+
+Debug AI
+Reduce cost
+Improve output quality
+
+
+🎨 5. Style Management
+Add / edit styles:
+Modern
+Minimal
+Luxury
+Indian 🇮🇳
+Upload reference images
+Customize AI prompts per style
+
+👉 🔥 VERY IMPORTANT:
+You can improve AI results by editing prompts here
+
+💰 6. Budget Configuration
+Define:
+Low / Medium / High budget
+Map furniture suggestions to each budget
+Control pricing ranges
+
+
+🛋️ 7. Furniture Recommendation System
+Add products:
+Name, image, price
+Category (sofa, table, decor)
+Add affiliate links (Amazon, Flipkart)
+Tag products to styles
+
+👉 This drives affiliate income
+
+🖼️ 8. Image & Storage Management
+View uploaded room images
+Manage generated images
+Delete old data (to save storage cost)
+Compression settings
+
+
+📜 9. Prompt Management (🔥 POWER FEATURE)
+
+Control AI output quality:
+
+Edit prompts for:
+Each style
+Each budget
+Example:
+“Generate a modern Indian living room with warm lighting…”
+
+👉 This is your secret weapon for better AI results
+
+⭐ 10. Feedback & Ratings
+User feedback on designs
+Like / dislike tracking
+Improve AI using feedback
+
+🔔 11. Notifications
+Send push notifications:
+“Try new Luxury style ✨”
+“You have 1 free design left”
+Target specific users
+
+📈 12. Analytics (Growth)
+Most used styles
+Conversion:
+Free → Paid
+Retention rate
+Popular design types
+
+⚙️ 13. Settings
+API keys (OpenAI, Stability AI)
+Image size limits
+Max upload size
+AI timeout settings
+firebase Configuration
+smtp configuration
+
+
+
+🔐 14. Security & Logs
+API logs
+Failed requests
+Suspicious activity

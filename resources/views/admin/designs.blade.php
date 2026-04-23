@@ -20,6 +20,10 @@
         <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Failed</p>
         <p class="mt-3 text-3xl font-semibold text-[#9f5656]">{{ number_format($summary['failed']) }}</p>
     </article>
+    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
+        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Estimated AI Cost</p>
+        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">₹{{ number_format($summary['estimated_cost'], 2) }}</p>
+    </article>
 </section>
 
 <section class="mt-6 rounded-[32px] border border-white/60 bg-white/72 p-6 shadow-[0_22px_60px_rgba(47,47,47,0.07)] backdrop-blur-xl">
@@ -63,6 +67,8 @@
                         <div>
                             <p class="text-xl font-semibold text-[var(--color-charcoal)]">{{ $design->style->name ?? 'Custom Style' }}</p>
                             <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.62)]">User: {{ $design->user->name ?? 'Guest' }}</p>
+                            <p class="mt-1 text-sm text-[color:rgba(47,47,47,0.52)]">Budget: <span class="font-medium text-[var(--color-charcoal)]">{{ ucfirst($design->budget) }}</span></p>
+                            <p class="mt-1 text-sm text-[color:rgba(47,47,47,0.52)]">AI Cost: <span class="font-medium text-[var(--color-charcoal)]">₹{{ number_format(($design->metadata['estimated_cost_inr'] ?? 12) / 100, 2) }}</span></p>
                             <p class="mt-1 text-sm text-[color:rgba(47,47,47,0.52)]">{{ $design->created_at->diffForHumans() }}</p>
                         </div>
                         @php
@@ -78,7 +84,15 @@
                         </span>
                     </div>
 
-                    <div class="mt-5 border-t border-[rgba(47,47,47,0.08)] pt-4 text-right">
+                    <div class="mt-5 flex flex-wrap gap-3 border-t border-[rgba(47,47,47,0.08)] pt-4 sm:justify-end">
+                        @if($design->status === 'failed')
+                            <form action="{{ route('admin.designs.retry', $design) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="rounded-full border border-[rgba(122,138,107,0.20)] bg-[rgba(122,138,107,0.12)] px-4 py-2 text-sm font-semibold text-[var(--color-olive)] transition hover:bg-[rgba(122,138,107,0.18)]">
+                                    Retry Generation
+                                </button>
+                            </form>
+                        @endif
                         <form action="{{ route('admin.designs.delete', $design) }}" method="POST" onsubmit="return confirm('Delete this design?')">
                             @csrf
                             @method('DELETE')

@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\FurnitureRecommendation;
+use App\Models\FurnitureProduct;
 use App\Models\RoomDesign;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -176,25 +178,37 @@ class AIService
         $budget = $roomDesign->budget;
 
         $budgetDescriptions = [
-            'low' => 'affordable, budget-friendly materials like laminate, MDF, and cotton textiles',
-            'medium' => 'mid-range materials like engineered wood, quality fabrics, and ceramic tiles',
-            'high' => 'premium materials like solid hardwood, marble, brass fixtures, and designer furniture',
+            'low' => Setting::get('budget_low_prompt', 'Use affordable, budget-friendly materials like laminate, MDF, and cotton textiles.'),
+            'medium' => Setting::get('budget_medium_prompt', 'Use mid-range materials like engineered wood, quality fabrics, and ceramic tiles.'),
+            'high' => Setting::get('budget_high_prompt', 'Use premium materials like solid hardwood, marble, brass fixtures, and designer furniture.'),
         ];
 
         $budgetDesc = $budgetDescriptions[$budget] ?? $budgetDescriptions['medium'];
+        $globalPrefix = trim((string) Setting::get('global_prompt_prefix', ''));
+        $globalSuffix = trim((string) Setting::get('global_prompt_suffix', ''));
 
-        $prompt = "Redesign this interior room in a {$style->name} style. ";
+        $prompt = '';
+
+        if ($globalPrefix !== '') {
+            $prompt .= $globalPrefix . ' ';
+        }
+
+        $prompt .= "Redesign this interior room in a {$style->name} style. ";
         
         if ($style->prompt_prefix) {
             $prompt .= $style->prompt_prefix . ' ';
         }
 
-        $prompt .= "Use {$budgetDesc}. ";
+        $prompt .= rtrim($budgetDesc, '.') . '. ';
         $prompt .= 'Maintain the same room layout and dimensions. ';
         $prompt .= 'Create a photorealistic, high-quality interior design visualization. ';
-        $prompt .= 'Professional interior photography style, well-lit, detailed textures.';
+        $prompt .= 'Professional interior photography style, well-lit, detailed textures. ';
 
-        return $prompt;
+        if ($globalSuffix !== '') {
+            $prompt .= $globalSuffix;
+        }
+
+        return trim($prompt);
     }
 
     /**
@@ -204,6 +218,27 @@ class AIService
     {
         $style = $roomDesign->style;
         $budget = $roomDesign->budget;
+
+        $catalogProducts = FurnitureProduct::query()
+            ->where('is_active', true)
+            ->whereHas('styles', fn ($query) => $query->whereKey($style?->id))
+            ->latest()
+            ->take(6)
+            ->get();
+
+        if ($catalogProducts->isNotEmpty()) {
+            foreach ($catalogProducts as $product) {
+                FurnitureRecommendation::create([
+                    'room_design_id' => $roomDesign->id,
+                    'name' => $product->name,
+                    'price' => $product->priceForBudget($budget),
+                    'purchase_link' => $product->affiliate_link,
+                    'image_url' => $product->image_url,
+                ]);
+            }
+
+            return;
+        }
 
         // Amazon India Affiliate Tag — replace with your own tag from
         // https://affiliate-program.amazon.in/
@@ -264,4 +299,3 @@ class AIService
         }
     }
 }
-

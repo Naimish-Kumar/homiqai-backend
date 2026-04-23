@@ -52,17 +52,27 @@
             <tbody class="divide-y divide-[rgba(47,47,47,0.08)]">
                 @forelse ($styles as $style)
                     <tr>
-                        <td class="py-4 pr-4 text-sm text-[color:rgba(47,47,47,0.68)]">#{{ $style->id }}</td>
-                        <td class="py-4 pr-4 font-semibold text-[var(--color-charcoal)]">{{ $style->name }}</td>
-                        <td class="max-w-[20rem] py-4 pr-4 text-sm text-[color:rgba(47,47,47,0.62)]">{{ $style->prompt_prefix ?? '—' }}</td>
-                        <td class="py-4 pr-4 text-sm text-[color:rgba(47,47,47,0.68)]">{{ $style->room_designs_count }}</td>
-                        <td class="py-4">
-                            <form action="{{ route('admin.styles.delete', $style) }}" method="POST" onsubmit="return confirm('Delete style \'{{ $style->name }}\'? This will also delete all associated designs.')">
+                        <td colspan="5" class="py-4">
+                            <form action="{{ route('admin.styles.update', $style) }}" method="POST" class="grid gap-3 rounded-[22px] bg-[#faf7f2] p-4 xl:grid-cols-[80px_minmax(0,1fr)_minmax(0,1.6fr)_100px_auto]">
+                                @csrf
+                                @method('PATCH')
+                                <div class="text-sm font-medium text-[color:rgba(47,47,47,0.68)]">#{{ $style->id }}</div>
+                                <input type="text" name="name" value="{{ $style->name }}" class="rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)] outline-none">
+                                <textarea name="prompt_prefix" rows="2" class="rounded-[16px] border border-[rgba(47,47,47,0.10)] bg-white px-4 py-3 text-sm text-[var(--color-charcoal)] outline-none">{{ $style->prompt_prefix }}</textarea>
+                                <div class="flex items-center text-sm font-semibold text-[var(--color-charcoal)]">{{ $style->room_designs_count }}</div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <input type="url" name="thumbnail_url" value="{{ $style->thumbnail_url }}" placeholder="Thumbnail URL" class="min-w-[12rem] rounded-full border border-[rgba(47,47,47,0.10)] bg-white px-4 py-2 text-sm text-[var(--color-charcoal)] outline-none">
+                                    <button type="submit" class="rounded-full bg-[var(--color-charcoal)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-taupe)]">
+                                        Update
+                                    </button>
+                                    <button form="delete-style-{{ $style->id }}" type="submit" class="rounded-full border border-[rgba(159,86,86,0.18)] bg-[rgba(159,86,86,0.10)] px-4 py-2 text-sm font-semibold text-[#8c4343] transition hover:bg-[rgba(159,86,86,0.16)]">
+                                        Delete
+                                    </button>
+                                </div>
+                            </form>
+                            <form id="delete-style-{{ $style->id }}" action="{{ route('admin.styles.delete', $style) }}" method="POST" onsubmit="return confirm('Delete style \'{{ $style->name }}\'? This will also delete all associated designs.')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="rounded-full border border-[rgba(159,86,86,0.18)] bg-[rgba(159,86,86,0.10)] px-4 py-2 text-sm font-semibold text-[#8c4343] transition hover:bg-[rgba(159,86,86,0.16)]">
-                                    Delete
-                                </button>
                             </form>
                         </td>
                     </tr>

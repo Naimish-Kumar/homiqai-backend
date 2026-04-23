@@ -82,6 +82,14 @@
                         <i class="fa-solid fa-swatchbook w-5"></i>
                         <span>Library</span>
                     </a>
+                    <a href="{{ route('admin.furniture') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.furniture*') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                        <i class="fa-solid fa-couch w-5"></i>
+                        <span>Furniture</span>
+                    </a>
+                    <a href="{{ route('admin.storage') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.storage') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                        <i class="fa-solid fa-hard-drive w-5"></i>
+                        <span>Storage</span>
+                    </a>
                 </div>
 
                 <div class="space-y-2">
@@ -89,6 +97,18 @@
                     <a href="{{ route('admin.subscriptions') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.subscriptions') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
                         <i class="fa-solid fa-gem w-5"></i>
                         <span>Premium</span>
+                    </a>
+                    <a href="{{ route('admin.feedback') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.feedback') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                        <i class="fa-solid fa-comment-dots w-5"></i>
+                        <span>Feedback</span>
+                    </a>
+                    <a href="{{ route('admin.notifications') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.notifications') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                        <i class="fa-solid fa-bell w-5"></i>
+                        <span>Campaigns</span>
+                    </a>
+                    <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.logs') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                        <i class="fa-solid fa-list-check w-5"></i>
+                        <span>System Logs</span>
                     </a>
                     <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.settings') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
                         <i class="fa-solid fa-sliders w-5"></i>

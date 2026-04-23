@@ -41,6 +41,14 @@ class DesignController extends Controller
         ]);
 
         $user = $request->user();
+
+        if ($user->is_blocked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is blocked from creating new designs.',
+            ], 403);
+        }
+
         $style = Style::find($request->style_id);
 
         // Check free designs limit for non-premium users

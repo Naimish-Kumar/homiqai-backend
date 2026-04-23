@@ -41,6 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Notifications
     Route::get('/get_notifications', [NotificationController::class, 'index']);
 
+    // Feedback
+    Route::post('/feedback', [\App\Http\Controllers\Api\FeedbackController::class, 'store']);
+
     // Chat
     Route::post('/chat', [ChatController::class, 'sendMessage']);
 });
