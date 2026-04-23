@@ -6,6 +6,53 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Playfair Display', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --color-beige: #cbbba0;
+    --color-cream: #f7f6f2;
+    --color-taupe: #a89078;
+    --color-charcoal: #2f2f2f;
+    --color-olive: #7a8a6b;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: var(--font-sans);
+    }
+
+    a,
+    button {
+        transition:
+            transform 320ms ease,
+            background-color 320ms ease,
+            border-color 320ms ease,
+            color 320ms ease,
+            box-shadow 320ms ease,
+            opacity 320ms ease;
+    }
+
+    ::selection {
+        background: rgba(203, 187, 160, 0.55);
+        color: var(--color-charcoal);
+    }
+}
+
+@layer components {
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+            opacity 700ms ease,
+            transform 700ms ease;
+    }
+
+    .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

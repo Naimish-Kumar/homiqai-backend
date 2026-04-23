@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\RoomDesign;
+use App\Models\Setting;
 use App\Models\Style;
+use App\Models\Subscription;
 use App\Models\User;
+use App\Models\UserSubscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
