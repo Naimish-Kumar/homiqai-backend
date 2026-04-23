@@ -56,29 +56,11 @@ class AuthController extends Controller
                 \Illuminate\Support\Facades\Mail::to($identifier)->send(new \App\Mail\SendOtpMail($otp));
             }
 
-            // Send OTP via Mobile (Using Firebase Push as requested)
-            if ($type === 'mobile') {
-                $firebase = app(\App\Services\FirebaseService::class);
-                if ($user->fcm_id) {
-                    $firebase->sendPush(
-                        'Your Homiq OTP',
-                        "Your verification code is: {$otp}",
-                        $user->id,
-                        ['otp' => (string)$otp, 'type' => 'otp_verification']
-                    );
-                } else {
-                    // If no FCM ID, we can't send a push. 
-                    // Note: For real SMS, a provider like Twilio/Msg91 is needed.
-                    Log::warning("Cannot send Push OTP to {$identifier}: No FCM ID found.");
-                }
-            }
-
             Log::info("OTP for {$identifier}: {$otp}");
 
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent successfully',
-                'debug_otp' => config('app.debug') ? $otp : null
             ]);
 
         } catch (\Exception $e) {
