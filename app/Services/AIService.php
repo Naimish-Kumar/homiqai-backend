@@ -176,6 +176,7 @@ class AIService
     {
         $style = $roomDesign->style;
         $budget = $roomDesign->budget;
+        $roomType = $roomDesign->room_type ?: 'room';
 
         $budgetDescriptions = [
             'low' => $style->prompt_low ?: Setting::get('budget_low_prompt', 'Use affordable, budget-friendly materials like laminate, MDF, and cotton textiles.'),
@@ -193,16 +194,16 @@ class AIService
             $prompt .= $globalPrefix . ' ';
         }
 
-        $prompt .= "Redesign this interior room in a {$style->name} style. ";
+        $prompt .= "Redesign this interior $roomType in a {$style->name} style. ";
         
         if ($style->prompt_prefix) {
             $prompt .= $style->prompt_prefix . ' ';
         }
 
         $prompt .= rtrim($budgetDesc, '.') . '. ';
-        $prompt .= 'Maintain the same room layout and dimensions. ';
-        $prompt .= 'Create a photorealistic, high-quality interior design visualization. ';
-        $prompt .= 'Professional interior photography style, well-lit, detailed textures. ';
+        $prompt .= "Ensure the $roomType remains recognizable with the same layout and architectural structure. ";
+        $prompt .= 'Create a photorealistic, high-end interior design visualization. ';
+        $prompt .= 'Professional interior photography, 8k resolution, cinematic lighting, sharp details. ';
 
         if ($globalSuffix !== '') {
             $prompt .= $globalSuffix;

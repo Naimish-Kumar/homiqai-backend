@@ -11,6 +11,9 @@ class Style extends Model
         'name',
         'thumbnail_url',
         'prompt_prefix',
+        'prompt_low',
+        'prompt_medium',
+        'prompt_high',
     ];
 
     public function roomDesigns()

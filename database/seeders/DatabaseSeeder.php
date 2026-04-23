@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $this->call(StyleSeeder::class);
+        $this->call([
+            StyleSeeder::class,
+            FurnitureSeeder::class,
+        ]);
     }
 }

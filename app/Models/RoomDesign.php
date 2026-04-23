@@ -9,6 +9,7 @@ class RoomDesign extends Model
     protected $fillable = [
         'user_id',
         'style_id',
+        'room_type',
         'budget',
         'original_image_path',
         'generated_image_path',

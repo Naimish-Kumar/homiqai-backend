@@ -74,4 +74,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserSubscription::class);
     }
+
+    public function moodboards(): HasMany
+    {
+        return $this->hasMany(Moodboard::class);
+    }
+
+    public function layouts(): HasMany
+    {
+        return $this->hasMany(Layout::class);
+    }
 }

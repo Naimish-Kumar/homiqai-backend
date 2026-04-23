@@ -298,6 +298,36 @@ class SubscriptionController extends Controller
     }
 
     /**
+     * Get the current subscription status for the authenticated user.
+     */
+    public function status(Request $request)
+    {
+        $user = $request->user();
+        $subscription = UserSubscription::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $cancellationMessage = "To cancel your subscription, please visit your account settings in the ";
+        if ($subscription) {
+            if ($subscription->platform === 'ios') {
+                $cancellationMessage .= "Apple App Store.";
+            } elseif ($subscription->platform === 'android') {
+                $cancellationMessage .= "Google Play Store.";
+            } else {
+                $cancellationMessage .= "payment provider's portal.";
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'subscription' => $subscription,
+            'is_premium' => (bool)$user->is_premium,
+            'cancellation_instructions' => $subscription ? $cancellationMessage : null,
+        ]);
+    }
+
+    /**
      * Get a Google OAuth2 access token from a service account JSON key.
      */
     private function getGoogleAccessToken(string $serviceAccountJsonPath): ?string

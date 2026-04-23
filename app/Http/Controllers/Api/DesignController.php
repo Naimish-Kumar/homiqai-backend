@@ -36,6 +36,7 @@ class DesignController extends Controller
     {
         $request->validate([
             'style_id' => 'required|exists:styles,id',
+            'room_type' => 'required|string|max:50',
             'budget' => 'required|in:low,medium,high',
             'image' => 'required|image|max:10240', // 10MB max
         ]);
@@ -75,6 +76,7 @@ class DesignController extends Controller
         $design = RoomDesign::create([
             'user_id' => $user->id,
             'style_id' => $style->id,
+            'room_type' => $request->room_type,
             'budget' => $request->budget,
             'original_image_path' => $path,
             'status' => 'processing',

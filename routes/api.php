@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\DesignController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\MoodboardController;
+use App\Http\Controllers\Api\FurnitureController;
+use App\Http\Controllers\Api\LayoutController;
 
 // Auth routes
 Route::post('/auth/otp/send', [AuthController::class, 'sendOtp']);
@@ -39,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Subscriptions
     Route::get('/packages', [SubscriptionController::class, 'packages']);
     Route::post('/subscription/purchase', [SubscriptionController::class, 'purchase']);
+    Route::get('/subscription/status', [SubscriptionController::class, 'status']);
 
     // Notifications
     Route::get('/get_notifications', [NotificationController::class, 'index']);
@@ -48,4 +52,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Chat
     Route::post('/chat', [ChatController::class, 'sendMessage']);
+
+    // Furniture Routes
+    Route::get('furniture/categories', [FurnitureController::class, 'categories']);
+    Route::apiResource('furniture', FurnitureController::class)->only(['index', 'show']);
+
+    // Moodboard Routes
+    Route::apiResource('moodboards', MoodboardController::class);
+    // Layout Routes
+    Route::apiResource('layouts', LayoutController::class);
 });

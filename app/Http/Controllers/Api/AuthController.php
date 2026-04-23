@@ -25,10 +25,14 @@ class AuthController extends Controller
         $identifier = $request->identifier;
         $type = $request->type;
 
+        // Normalize mobile number if type is mobile
+        if ($type === 'mobile') {
+            $identifier = $this->normalizePhoneNumber($identifier);
+        }
+
         try {
             // Find or create user
             $user = User::where($type, $identifier)->first();
-            
             if (!$user) {
                 $userData = [
                     'name' => 'User_' . Str::random(5),
@@ -83,7 +87,12 @@ class AuthController extends Controller
             'otp' => 'required|string|size:6',
         ]);
 
-        $user = User::where($request->type, $request->identifier)
+        $identifier = $request->identifier;
+        if ($request->type === 'mobile') {
+            $identifier = $this->normalizePhoneNumber($identifier);
+        }
+
+        $user = User::where($request->type, $identifier)
             ->where('otp_code', $request->otp)
             ->where('otp_expires_at', '>', Carbon::now())
             ->first();
@@ -197,13 +206,18 @@ class AuthController extends Controller
             }
 
             $firebaseUid = $payload['sub'];
-            $phoneNumber = $payload['phone_number'] ?? null;
+            $phoneNumber = isset($payload['phone_number']) ? $this->normalizePhoneNumber($payload['phone_number']) : null;
             $email = $payload['email'] ?? null;
             $name = $payload['name'] ?? null;
 
             // Find or create user
             $user = null;
-            if ($phoneNumber) {
+            if ($phoneNumber && $email) {
+                // Check if user exists by either phone or email
+                $user = User::where('mobile', $phoneNumber)
+                    ->orWhere('email', $email)
+                    ->first();
+            } elseif ($phoneNumber) {
                 $user = User::where('mobile', $phoneNumber)->first();
             } elseif ($email) {
                 $user = User::where('email', $email)->first();
@@ -217,9 +231,12 @@ class AuthController extends Controller
                     'google_id' => ($request->provider === 'google.com') ? $firebaseUid : null,
                 ]);
             } else {
-                // Update missing fields
+                // Update missing fields and link account
                 if ($phoneNumber && !$user->mobile) $user->mobile = $phoneNumber;
                 if ($email && !$user->email) $user->email = $email;
+                if ($request->provider === 'google.com' && !$user->google_id) {
+                    $user->google_id = $firebaseUid;
+                }
                 $user->save();
             }
 
@@ -290,7 +307,7 @@ class AuthController extends Controller
             $request->validate([
                 'name' => 'nullable|string|max:255',
                 'email' => 'nullable|email|unique:users,email,' . $user->id,
-                'phone_number' => 'nullable|string|max:20',
+                'phone_number' => 'nullable|string|max:20|unique:users,mobile,' . $user->id,
                 'profile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
@@ -303,7 +320,7 @@ class AuthController extends Controller
             }
 
             if ($request->has('phone_number')) {
-                $user->mobile = $request->phone_number;
+                $user->mobile = $this->normalizePhoneNumber($request->phone_number);
             }
 
             if ($request->hasFile('profile')) {
@@ -356,5 +373,15 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'FCM token updated successfully',
         ]);
+    }
+
+    /**
+     * Normalize phone number to a standard format
+     */
+    private function normalizePhoneNumber($phone)
+    {
+        if (!$phone) return null;
+        // Remove all non-numeric characters except the leading +
+        return preg_replace('/[^\d+]/', '', $phone);
     }
 }
