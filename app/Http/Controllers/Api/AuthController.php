@@ -259,4 +259,23 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update FCM Token for Push Notifications
+     */
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate([
+            'fcm_id' => 'required|string',
+        ]);
+
+        $user = $request->user();
+        $user->fcm_id = $request->fcm_id;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'FCM token updated successfully',
+        ]);
+    }
 }

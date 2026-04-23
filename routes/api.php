@@ -25,6 +25,7 @@ Route::get('/get_payment_settings', [\App\Http\Controllers\Api\SystemController:
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/profile/update', [AuthController::class, 'updateProfile']);
+    Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Design routes
