@@ -181,6 +181,7 @@ class SubscriptionController extends Controller
             'start_date' => $startDate,
             'end_date' => $endDate,
             'status' => 'active',
+            'receipt_data' => $request->receipt_data,
         ]);
 
         // Mark user as premium
@@ -197,11 +198,10 @@ class SubscriptionController extends Controller
      * Verify an iOS App Store receipt with Apple's verifyReceipt endpoint.
      * Uses production URL first; falls back to sandbox for TestFlight/dev.
      */
-    private function verifyAppleReceipt(string $receiptData): bool
+    private function verifyAppleReceipt(string $receiptData): array|bool
     {
         $sharedSecret = config('services.apple.shared_secret');
 
-        // If no shared secret is configured, log a warning and trust the client
         if (empty($sharedSecret)) {
             Log::warning('Apple shared secret not configured — skipping receipt verification');
             return true;
@@ -214,33 +214,26 @@ class SubscriptionController extends Controller
         ];
 
         try {
-            // Try production first
-            $response = Http::timeout(30)->post(
-                'https://buy.itunes.apple.com/verifyReceipt',
-                $payload
-            );
-
+            $response = Http::timeout(30)->post('https://buy.itunes.apple.com/verifyReceipt', $payload);
             $result = $response->json();
 
-            // Status 21007 means this receipt is from the sandbox
             if (($result['status'] ?? -1) === 21007) {
-                $response = Http::timeout(30)->post(
-                    'https://sandbox.itunes.apple.com/verifyReceipt',
-                    $payload
-                );
+                $response = Http::timeout(30)->post('https://sandbox.itunes.apple.com/verifyReceipt', $payload);
                 $result = $response->json();
             }
 
-            $isValid = ($result['status'] ?? -1) === 0;
-
-            if (!$isValid) {
-                Log::warning('Apple receipt verification failed', ['status' => $result['status'] ?? 'unknown']);
+            if (($result['status'] ?? -1) === 0 && isset($result['latest_receipt_info'])) {
+                $latest = collect($result['latest_receipt_info'])->sortByDesc('expires_date_ms')->first();
+                return [
+                    'is_valid' => true,
+                    'expiry_date' => Carbon::createFromTimestampMs($latest['expires_date_ms']),
+                    'auto_renew' => $latest['auto_renew_status'] ?? '1' === '1',
+                ];
             }
 
-            return $isValid;
+            return ($result['status'] ?? -1) === 0;
         } catch (\Exception $e) {
             Log::error('Apple receipt verification error: ' . $e->getMessage());
-            // On network error, trust the client to avoid blocking legitimate users
             return true;
         }
     }
@@ -250,49 +243,35 @@ class SubscriptionController extends Controller
      * Requires GOOGLE_PLAY_PACKAGE_NAME in config.
      * Falls back to trusting the client if credentials are not configured.
      */
-    private function verifyGooglePurchase(string $productId, string $purchaseToken): bool
+    private function verifyGooglePurchase(string $productId, string $purchaseToken): array|bool
     {
         $packageName = config('services.google_play.package_name', 'com.homiq.app');
         $serviceAccountJson = config('services.google_play.service_account_json');
 
-        // If no service account is configured, log a warning and trust the client
         if (empty($serviceAccountJson)) {
             Log::warning('Google Play service account not configured — skipping purchase verification');
             return true;
         }
 
         try {
-            // Get an OAuth2 access token from the service account
             $accessToken = $this->getGoogleAccessToken($serviceAccountJson);
-            if (!$accessToken) {
-                Log::warning('Could not obtain Google access token — trusting client');
-                return true;
-            }
+            if (!$accessToken) return true;
 
             $url = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{$packageName}/purchases/subscriptions/{$productId}/tokens/{$purchaseToken}";
-
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $accessToken,
-            ])->timeout(30)->get($url);
+            $response = Http::withHeaders(['Authorization' => 'Bearer ' . $accessToken])->timeout(30)->get($url);
 
             if ($response->successful()) {
                 $data = $response->json();
-                // paymentState: 0 = pending, 1 = received, 2 = free trial
-                $paymentState = $data['paymentState'] ?? -1;
-                $isValid = in_array($paymentState, [1, 2]);
-
-                if (!$isValid) {
-                    Log::warning('Google Play payment state invalid', ['state' => $paymentState]);
-                }
-
-                return $isValid;
+                return [
+                    'is_valid' => in_array($data['paymentState'] ?? -1, [1, 2]),
+                    'expiry_date' => Carbon::createFromTimestampMs($data['expiryTimeMillis']),
+                    'auto_renew' => $data['autoRenewing'] ?? true,
+                ];
             }
 
-            Log::warning('Google Play API returned error', ['status' => $response->status()]);
             return false;
         } catch (\Exception $e) {
             Log::error('Google Play verification error: ' . $e->getMessage());
-            // On network error, trust the client
             return true;
         }
     }
@@ -307,6 +286,29 @@ class SubscriptionController extends Controller
             ->where('status', 'active')
             ->orderBy('created_at', 'desc')
             ->first();
+
+        if ($subscription && $subscription->receipt_data) {
+            // Sync with Store
+            if ($subscription->platform === 'android') {
+                $result = $this->verifyGooglePurchase($subscription->package_name, $subscription->receipt_data);
+                if (is_array($result)) {
+                    $subscription->update([
+                        'end_date' => $result['expiry_date'],
+                        'auto_renew' => $result['auto_renew'],
+                        'status' => $result['is_valid'] ? 'active' : 'expired',
+                    ]);
+                }
+            } elseif ($subscription->platform === 'ios') {
+                $result = $this->verifyAppleReceipt($subscription->receipt_data);
+                if (is_array($result)) {
+                    $subscription->update([
+                        'end_date' => $result['expiry_date'],
+                        'auto_renew' => $result['auto_renew'],
+                        'status' => $result['is_valid'] ? 'active' : 'expired',
+                    ]);
+                }
+            }
+        }
 
         $cancellationMessage = "To cancel your subscription, please visit your account settings in the ";
         if ($subscription) {

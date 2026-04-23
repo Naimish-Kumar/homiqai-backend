@@ -59,10 +59,33 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'is_admin' => 'boolean',
             'is_blocked' => 'boolean',
+            'is_premium' => 'boolean',
             'password' => 'hashed',
             'otp_expires_at' => 'datetime',
             'otp_verified_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Determine if the user has an active premium subscription.
+     */
+    public function getIsPremiumAttribute($value)
+    {
+        // If explicitly set to true, check if it's still valid
+        if ($value) {
+            $hasActiveSub = $this->subscriptions()
+                ->where('status', 'active')
+                ->where('end_date', '>', now())
+                ->exists();
+            
+            if (!$hasActiveSub) {
+                // If no active subscription found, update the cached value
+                $this->update(['is_premium' => false]);
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     public function roomDesigns(): HasMany
