@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/designs/{design}', [DesignController::class, 'show']);
     Route::delete('/designs/{design}', [DesignController::class, 'destroy']);
     Route::put('/designs/{design}/favorite', [DesignController::class, 'toggleFavorite']);
+    Route::post('/designs/{design}/variations', [DesignController::class, 'generateVariation']);
 
     // Subscriptions
     Route::get('/packages', [SubscriptionController::class, 'packages']);
@@ -55,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Furniture Routes
     Route::get('furniture/categories', [FurnitureController::class, 'categories']);
+    Route::post('furniture/visual-search', [FurnitureController::class, 'visualSearch']);
     Route::apiResource('furniture', FurnitureController::class)->only(['index', 'show']);
 
     // Moodboard Routes

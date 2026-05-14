@@ -129,6 +129,54 @@ class DesignController extends Controller
         ]);
     }
 
+    public function generateVariation(Request $request, RoomDesign $design)
+    {
+        abort_unless($design->user_id === $request->user()->id, 403);
+
+        $request->validate([
+            'variation' => 'required|string|in:golden_hour,rainy_day,night,cyberpunk,nordic_winter',
+        ]);
+
+        $user = $request->user();
+
+        // Variations also count towards the limit
+        if ($user->free_designs_left !== null && $user->free_designs_left <= 0) {
+            $hasSubscription = $user->subscriptions()
+                ->where('status', 'active')
+                ->where('end_date', '>', now())
+                ->exists();
+
+            if (!$hasSubscription) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No free designs remaining. Please upgrade to continue.',
+                ], 403);
+            }
+        }
+
+        // Create a new design record based on the parent
+        $newDesign = RoomDesign::create([
+            'user_id' => $user->id,
+            'style_id' => $design->style_id,
+            'room_type' => $design->room_type,
+            'budget' => $design->budget,
+            'original_image_path' => $design->original_image_path,
+            'status' => 'processing',
+            'metadata' => [
+                'parent_id' => $design->id,
+                'variation_type' => $request->variation,
+            ],
+        ]);
+
+        if ($user->free_designs_left !== null && $user->free_designs_left > 0) {
+            $user->decrement('free_designs_left');
+        }
+
+        $this->aiService->generateDesign($newDesign, $request->variation);
+
+        return response()->json($this->formatDesign($newDesign->fresh(['style', 'furnitureRecommendations'])), 201);
+    }
+
     /**
      * Format a design with full public URLs instead of relative paths.
      * Uses signed/temporary URLs when S3 is configured (image privacy protection).

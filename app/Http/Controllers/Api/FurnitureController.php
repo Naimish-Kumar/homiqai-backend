@@ -31,6 +31,22 @@ class FurnitureController extends Controller
             });
         }
 
+        if ($request->has('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->has('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        if ($request->has('material')) {
+            $query->where('material', 'like', '%' . $request->material . '%');
+        }
+
+        if ($request->has('dimensions')) {
+            $query->where('dimensions', 'like', '%' . $request->dimensions . '%');
+        }
+
         $products = $query->with('styles')->latest()->paginate(20);
 
         return response()->json([
@@ -67,5 +83,52 @@ class FurnitureController extends Controller
             'success' => true,
             'data' => $product
         ]);
+    }
+
+    public function visualSearch(Request $request, \App\Services\AIService $aiService)
+    {
+        $request->validate([
+            'image' => 'required|image|max:5120', // 5MB max
+        ]);
+
+        try {
+            $path = $request->file('image')->store('temp/visual-search', 'public');
+            
+            // Analyze image using AI
+            $analysis = $aiService->analyzeFurnitureImage($path);
+            
+            // Clean up temp image
+            // Storage::disk('public')->delete($path);
+
+            $query = FurnitureProduct::query()->where('is_active', true);
+
+            if (isset($analysis['category'])) {
+                $query->where('category', 'like', '%' . $analysis['category'] . '%');
+            }
+
+            if (isset($analysis['keywords'])) {
+                $keywords = is_array($analysis['keywords']) ? $analysis['keywords'] : explode(' ', $analysis['keywords']);
+                $query->where(function($q) use ($keywords) {
+                    foreach ($keywords as $keyword) {
+                        $q->orWhere('name', 'like', '%' . $keyword . '%')
+                          ->orWhere('description', 'like', '%' . $keyword . '%');
+                    }
+                });
+            }
+
+            $products = $query->with('styles')->latest()->take(10)->get();
+
+            return response()->json([
+                'success' => true,
+                'analysis' => $analysis,
+                'data' => $products
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Visual search failed: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
