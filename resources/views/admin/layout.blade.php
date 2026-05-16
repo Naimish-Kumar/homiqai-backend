@@ -49,85 +49,81 @@
 <body class="min-h-screen bg-[#f5f1ea] font-[Poppins] text-[#1f1f1f] antialiased">
     <div class="fixed inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,_rgba(203,187,160,0.28),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(122,138,107,0.16),_transparent_24%),linear-gradient(180deg,_#fbfaf8_0%,_#f5f1ea_55%,_#efe7dd_100%)]"></div>
 
-    <div class="min-h-screen lg:grid lg:grid-cols-[290px_minmax(0,1fr)]">
-        <aside class="border-b border-black/8 bg-[#171717] px-5 py-6 text-white lg:min-h-screen lg:border-b-0 lg:border-r lg:border-white/8 lg:px-6 lg:py-8">
+    <div class="min-h-screen lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
+        <aside class="z-30 border-b border-black/5 bg-white/70 px-5 py-6 backdrop-blur-xl lg:min-h-screen lg:border-b-0 lg:border-r lg:px-6 lg:py-8">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-12 w-12 rounded-2xl border border-white/10 bg-white/90 object-cover shadow-[0_16px_32px_rgba(0,0,0,0.25)]">
+                <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-11 w-11 rounded-2xl border border-black/5 bg-[#faf7f2] object-cover shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
                 <div>
-                    <p class="font-[Playfair Display] text-2xl leading-none text-white">Homiq</p>
-                    <p class="mt-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#d8cab4]">Admin Studio</p>
+                    <p class="font-[Playfair Display] text-xl font-bold leading-none text-[#171717]">Homiq</p>
+                    <p class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7a8a6b]">Management</p>
                 </div>
             </a>
 
-            <nav class="mt-8 space-y-6">
+            <nav class="mt-10 space-y-7">
                 <div class="space-y-2">
-                    <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#bba884]">Analytics</p>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.dashboard') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">Core Analytics</p>
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.dashboard') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-chart-pie w-5"></i>
                         <span>Insights</span>
                     </a>
                 </div>
 
                 <div class="space-y-2">
-                    <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#bba884]">Resources</p>
-                    <a href="{{ route('admin.users') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.users') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">User Ecosystem</p>
+                    <a href="{{ route('admin.users') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.users') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-user-shield w-5"></i>
                         <span>Users</span>
                     </a>
-                    <a href="{{ route('admin.designs') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.designs') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <a href="{{ route('admin.designs') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.designs') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-wand-magic-sparkles w-5"></i>
                         <span>Gallery</span>
                     </a>
-                    <a href="{{ route('admin.styles') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.styles') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <a href="{{ route('admin.styles') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.styles') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-swatchbook w-5"></i>
                         <span>Library</span>
                     </a>
-                    <a href="{{ route('admin.furniture') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.furniture*') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <a href="{{ route('admin.furniture') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.furniture*') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-couch w-5"></i>
                         <span>Furniture</span>
-                    </a>
-                    <a href="{{ route('admin.storage') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.storage') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
-                        <i class="fa-solid fa-hard-drive w-5"></i>
-                        <span>Storage</span>
                     </a>
                 </div>
 
                 <div class="space-y-2">
-                    <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#bba884]">Operations</p>
-                    <a href="{{ route('admin.subscriptions') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.subscriptions') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">Business Operations</p>
+                    <a href="{{ route('admin.subscriptions') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.subscriptions') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-gem w-5"></i>
                         <span>Premium</span>
                     </a>
-                    <a href="{{ route('admin.feedback') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.feedback') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <a href="{{ route('admin.feedback') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.feedback') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-comment-dots w-5"></i>
                         <span>Feedback</span>
                     </a>
-                    <a href="{{ route('admin.notifications') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.notifications') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                    <a href="{{ route('admin.notifications') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.notifications') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-bell w-5"></i>
                         <span>Campaigns</span>
                     </a>
-                    <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.logs') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
-                        <i class="fa-solid fa-list-check w-5"></i>
-                        <span>System Logs</span>
-                    </a>
-                    <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.settings') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
+                </div>
+
+                <div class="space-y-2">
+                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">System</p>
+                    <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.settings') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
                         <i class="fa-solid fa-sliders w-5"></i>
                         <span>Config</span>
                     </a>
-                    <a href="{{ route('admin.profile') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs('admin.profile') ? 'bg-white text-[#1f1f1f] shadow-[0_18px_32px_rgba(0,0,0,0.22)]' : 'text-white/74 hover:bg-white/8 hover:text-white' }}">
-                        <i class="fa-solid fa-user-gear w-5"></i>
-                        <span>My Profile</span>
+                    <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.logs') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
+                        <i class="fa-solid fa-list-check w-5"></i>
+                        <span>Audit Logs</span>
                     </a>
                 </div>
             </nav>
 
-            <div class="mt-8 rounded-[28px] border border-white/10 bg-white/6 p-4">
-                <a href="{{ route('home') }}" class="inline-flex w-full items-center justify-center rounded-full border border-white/12 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/16">
-                    Back to website
+            <div class="mt-12 rounded-[32px] bg-[#faf7f2] p-5">
+                <a href="{{ route('home') }}" class="flex w-full items-center justify-center rounded-2xl border border-black/5 bg-white py-3 text-sm font-bold text-[#171717] shadow-sm hover:bg-black hover:text-white transition">
+                    Website
                 </a>
                 <form action="{{ route('admin.logout') }}" method="POST" class="mt-3">
                     @csrf
-                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-full bg-[#d8cab4] px-4 py-3 text-sm font-semibold text-[#1f1f1f] transition hover:bg-[#cbbba0]">
+                    <button type="submit" class="flex w-full items-center justify-center rounded-2xl bg-[#eef3ea] py-3 text-sm font-bold text-[#405038] hover:bg-[#d6dfcf] transition">
                         Sign out
                     </button>
                 </form>
