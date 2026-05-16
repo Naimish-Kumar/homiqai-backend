@@ -3,105 +3,100 @@
 @section('title', 'Gallery')
 
 @section('content')
-<section class="grid gap-6 sm:grid-cols-2 xl:grid-cols-5">
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#a89078]">Total Volume</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['total']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#7a8a6b]">Designs generated</p>
+@section('content')
+<!-- Visual Intelligence Metrics -->
+<section class="grid gap-8 sm:grid-cols-2 xl:grid-cols-5">
+    @foreach([
+        ['label' => 'Generation Volume', 'value' => $summary['total'], 'sub' => 'Total Archive', 'color' => 'text-[#7a8a6b]'],
+        ['label' => 'High Quality Output', 'value' => $summary['completed'], 'sub' => 'Successful', 'color' => 'text-[#8b745d]'],
+        ['label' => 'Active Rendering', 'value' => $summary['processing'], 'sub' => 'In Progress', 'color' => 'text-[#a89078]'],
+        ['label' => 'Rendering Failures', 'value' => $summary['failed'], 'sub' => 'Requires Audit', 'color' => 'text-[#8c4343]'],
+        ['label' => 'Operational Cost', 'value' => '₹' . number_format($summary['estimated_cost'], 0), 'sub' => 'Cloud Compute', 'color' => 'text-[#7a8a6b]']
+    ] as $stat)
+    <article class="group rounded-[36px] border border-black/[0.03] bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/[0.04]">
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] {{ $stat['color'] }}">{{ $stat['sub'] }}</p>
+        <p class="mt-6 text-4xl font-bold tracking-tighter text-black">{{ is_numeric($stat['value']) ? number_format($stat['value']) : $stat['value'] }}</p>
+        <p class="mt-3 text-[11px] font-bold text-[#5f5750]/60">{{ $stat['label'] }}</p>
     </article>
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7a8a6b]">Successful</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['completed']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#7a8a6b]">High quality output</p>
-    </article>
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7a8a6b]">In Progress</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['processing']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#a89078]">Active generation</p>
-    </article>
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8c4343]">Failures</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['failed']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#8c4343]">Requires retry</p>
-    </article>
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7a8a6b]">Compute Cost</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">₹{{ number_format($summary['estimated_cost'], 0) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#7a8a6b]">Cloud infrastructure</p>
-    </article>
+    @endforeach
 </section>
 
-<section class="mt-6 rounded-[40px] border border-black/5 bg-white p-8 shadow-[0_22px_60px_rgba(31,31,31,0.06)]">
-    <div class="flex flex-col gap-5 border-b border-black/5 pb-8 lg:flex-row lg:items-center lg:justify-between">
+<!-- Transformation Gallery -->
+<section class="mt-8 rounded-[48px] border border-black/[0.03] bg-white p-10 shadow-xl shadow-black/[0.02]">
+    <div class="flex flex-col gap-8 border-b border-black/[0.03] pb-10 xl:flex-row xl:items-center xl:justify-between">
         <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Visual Archive</p>
-            <h2 class="mt-3 font-[Playfair Display] text-3xl font-bold text-[#171717]">Room Transformations</h2>
+            <h2 class="font-[Playfair Display] text-4xl font-bold text-black italic">Visual Archive</h2>
+            <p class="mt-2 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Room transformations & AI generations</p>
         </div>
-        <form method="GET" class="flex items-center gap-4">
-            <div class="relative">
-                <select name="status" onchange="this.form.submit()" class="appearance-none rounded-2xl border border-black/5 bg-[#fbfaf8] pl-5 pr-12 py-3 text-sm font-bold text-[#171717] outline-none transition hover:bg-[#faf7f2]">
-                    <option value="">All Status</option>
-                    <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>Completed</option>
-                    <option value="processing" {{ $status === 'processing' ? 'selected' : '' }}>Processing</option>
-                    <option value="failed" {{ $status === 'failed' ? 'selected' : '' }}>Failed</option>
-                </select>
-                <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#a89078] text-[10px]"></i>
-            </div>
+        
+        <form method="GET" class="relative group">
+            <select name="status" onchange="this.form.submit()" class="appearance-none rounded-[24px] border border-black/[0.04] bg-[#faf9f6] pl-8 pr-16 py-4 text-[13px] font-bold text-black outline-none transition-all hover:bg-white hover:ring-8 hover:ring-[#7a8a6b]/10 focus:ring-8 focus:ring-[#7a8a6b]/10">
+                <option value="">All Transformation States</option>
+                <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>Successful Renderings</option>
+                <option value="processing" {{ $status === 'processing' ? 'selected' : '' }}>Currently Rendering</option>
+                <option value="failed" {{ $status === 'failed' ? 'selected' : '' }}>Failed Generations</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#a89078] text-[10px]"></i>
         </form>
     </div>
 
-    <div class="mt-10 grid gap-8 xl:grid-cols-2">
+    <div class="mt-12 grid gap-12 xl:grid-cols-2">
         @forelse ($designs as $design)
-            <article class="group overflow-hidden rounded-[40px] border border-black/5 bg-[#fbfaf8] transition hover:bg-[#faf7f2] hover:shadow-xl">
-                <div class="grid gap-4 p-5 sm:grid-cols-2">
-                    <div class="relative group/img overflow-hidden rounded-[32px]">
-                        <img src="{{ $design->original_image_url }}" alt="Original" class="h-80 w-full object-cover transition duration-700 group-hover/img:scale-110">
-                        <div class="absolute inset-0 bg-black/20 opacity-0 transition group-hover/img:opacity-100"></div>
-                        <span class="absolute left-6 top-6 rounded-full bg-white/90 backdrop-blur-md px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-[#171717] shadow-lg">Original</span>
+            <article class="group relative flex flex-col overflow-hidden rounded-[48px] border border-black/[0.04] bg-[#fbfaf8] transition-all hover:bg-white hover:shadow-2xl hover:shadow-black/[0.04]">
+                <div class="grid gap-6 p-6 sm:grid-cols-2">
+                    <!-- Before State -->
+                    <div class="relative aspect-[4/5] overflow-hidden rounded-[36px] bg-black">
+                        <img src="{{ $design->original_image_url }}" alt="Original" class="h-full w-full object-cover transition duration-[1.5s] group-hover:scale-110 opacity-80">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute left-6 top-6 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 text-[9px] font-bold uppercase tracking-widest text-white">Source Input</span>
                     </div>
-                    <div class="relative group/img overflow-hidden rounded-[32px]">
+
+                    <!-- After State -->
+                    <div class="relative aspect-[4/5] overflow-hidden rounded-[36px] bg-black">
                         @if($design->generated_image_url)
-                            <img src="{{ $design->generated_image_url }}" alt="Generated" class="h-80 w-full object-cover transition duration-700 group-hover/img:scale-110">
-                            <div class="absolute inset-0 bg-black/20 opacity-0 transition group-hover/img:opacity-100"></div>
+                            <img src="{{ $design->generated_image_url }}" alt="Generated" class="h-full w-full object-cover transition duration-[1.5s] group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         @else
-                            <div class="flex h-80 w-full flex-col items-center justify-center bg-white text-sm font-bold text-[#a89078]">
-                                <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
-                                <span class="mt-4 uppercase tracking-widest text-[10px]">{{ $design->status }}</span>
+                            <div class="flex h-full w-full flex-col items-center justify-center bg-[#171717] text-white">
+                                <div class="relative">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-4xl animate-pulse text-[#cbbba0]"></i>
+                                    <div class="absolute -inset-4 rounded-full border border-[#cbbba0]/20 animate-ping"></div>
+                                </div>
+                                <p class="mt-8 text-[10px] font-bold uppercase tracking-[0.4em] text-[#cbbba0]">{{ $design->status }}</p>
                             </div>
                         @endif
-                        <span class="absolute left-6 top-6 rounded-full bg-[#171717] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg">AI Vision</span>
+                        <span class="absolute left-6 top-6 rounded-full bg-black/40 backdrop-blur-md border border-white/20 px-4 py-2 text-[9px] font-bold uppercase tracking-widest text-white">AI Vision</span>
                     </div>
                 </div>
                 
-                <div class="px-8 py-7">
-                    <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <h3 class="text-2xl font-bold text-[#171717]">{{ $design->style->name ?? 'Modern Custom' }}</h3>
-                                <span class="inline-flex rounded-full bg-[#eef3ea] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#405038]">
-                                    {{ $design->budget }}
+                <div class="px-10 pb-10 pt-4">
+                    <div class="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <h3 class="font-[Playfair Display] text-3xl font-bold text-black italic leading-tight">{{ $design->style->name ?? 'Atmospheric Custom' }}</h3>
+                                <span class="rounded-full bg-[#f1f3f0] px-4 py-1.5 text-[9px] font-bold uppercase tracking-widest text-[#7a8a6b]">
+                                    {{ $design->budget }} Tier
                                 </span>
                             </div>
-                            <div class="flex flex-wrap gap-6 text-xs font-bold text-[#7a8a6b]">
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-user"></i> {{ $design->user->name ?? 'Guest Member' }}</span>
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-coins"></i> ₹{{ number_format(($design->metadata['estimated_cost_inr'] ?? 12) / 100, 2) }}</span>
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-clock"></i> {{ $design->created_at->diffForHumans() }}</span>
+                            <div class="flex flex-wrap gap-8 text-[11px] font-bold uppercase tracking-widest text-[#a89078]">
+                                <span class="flex items-center gap-2.5"><i class="fa-solid fa-fingerprint text-[10px]"></i> {{ $design->user->name ?? 'Anonymous Client' }}</span>
+                                <span class="flex items-center gap-2.5"><i class="fa-solid fa-microchip text-[10px]"></i> ₹{{ number_format(($design->metadata['estimated_cost_inr'] ?? 12) / 100, 2) }} Gen Cost</span>
+                                <span class="flex items-center gap-2.5"><i class="fa-solid fa-clock-rotate-left text-[10px]"></i> {{ $design->created_at->diffForHumans() }}</span>
                             </div>
                         </div>
 
-                        <div class="flex gap-2">
+                        <div class="flex gap-3">
                             @if($design->status === 'failed')
                                 <form action="{{ route('admin.designs.retry', $design) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="rounded-2xl bg-[#171717] px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg hover:scale-105 transition">
-                                        Retry
+                                    <button type="submit" class="rounded-2xl bg-black px-8 py-3.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-xl transition hover:scale-105 active:scale-95">
+                                        Re-Render
                                     </button>
                                 </form>
                             @endif
-                            <form action="{{ route('admin.designs.delete', $design) }}" method="POST" onsubmit="return confirm('Archive this design?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="rounded-2xl bg-white border border-black/5 p-3 text-[#8c4343] shadow-sm hover:bg-[#f7e9e9] transition">
+                            <form action="{{ route('admin.designs.delete', $design) }}" method="POST" onsubmit="return confirm('Archive this generation permanently?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="rounded-2xl border border-black/[0.04] bg-white p-3.5 text-[#8c4343] shadow-sm hover:bg-[#f7e9e9] hover:border-[#f7e9e9] transition-all">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </form>
@@ -110,22 +105,29 @@
                 </div>
             </article>
         @empty
-            <div class="py-24 text-center xl:col-span-2">
-                <div class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-[#fbfaf8] text-[#a89078]">
-                    <i class="fa-solid fa-images text-3xl"></i>
+            <div class="py-40 text-center xl:col-span-2">
+                <div class="inline-flex h-24 w-24 items-center justify-center rounded-[40px] bg-[#fbfaf8] text-[#a89078] shadow-inner">
+                    <i class="fa-solid fa-camera-retro text-3xl"></i>
                 </div>
-                <p class="mt-6 text-lg font-bold text-[#171717]">No transformations found.</p>
-                <p class="mt-2 text-sm font-medium text-[#7a8a6b]">Either no requests have been made or they don't match your filter.</p>
+                <h3 class="mt-10 font-[Playfair Display] text-3xl font-bold text-black italic">Archive is currently empty</h3>
+                <p class="mt-4 text-sm font-medium text-[#7a8a6b] max-w-md mx-auto">No transformation cycles have been initiated for the selected filter or the database is fresh.</p>
             </div>
         @endforelse
     </div>
 
-    <div class="mt-12 flex items-center justify-between border-t border-black/5 pt-10">
-        <p class="text-xs font-bold text-[#a89078]">Displaying gallery stream</p>
+    <!-- Pagination Intelligence -->
+    <div class="mt-16 flex flex-col gap-8 border-t border-black/[0.03] pt-12 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-center gap-4">
+            <span class="text-[11px] font-bold uppercase tracking-widest text-[#a89078]">Archive Stream</span>
+            <p class="text-[14px] font-bold text-black">
+                Displaying the visual history of Homiq AI
+            </p>
+        </div>
         <div class="admin-pagination">
             {{ $designs->links() }}
         </div>
     </div>
 </section>
 @endsection
+
 

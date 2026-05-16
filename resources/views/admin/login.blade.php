@@ -12,88 +12,123 @@
     >
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-[#f5f1ea] font-[Poppins] text-[#171717] antialiased">
-    <div class="fixed inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,_rgba(203,187,160,0.30),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(122,138,107,0.12),_transparent_24%),linear-gradient(180deg,_#fbfaf8_0%,_#f5f1ea_55%,_#eee4d8_100%)]"></div>
+<body class="min-h-screen selection:bg-[#cbbba0]/30 font-[Poppins] text-[#171717] antialiased overflow-hidden">
+    <!-- Sophisticated Background System -->
+    <div class="fixed inset-0 -z-20 bg-[#faf9f6]"></div>
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-[#f1ece4] blur-[120px] opacity-40 animate-pulse" style="animation-duration: 8s"></div>
+        <div class="absolute top-[20%] -right-[5%] h-[40%] w-[40%] rounded-full bg-[#eef3ea] blur-[100px] opacity-30 animate-pulse" style="animation-duration: 10s"></div>
+        <div class="absolute bottom-[10%] left-[20%] h-[35%] w-[35%] rounded-full bg-[#f7f2ed] blur-[80px] opacity-40 animate-pulse" style="animation-duration: 12s"></div>
+    </div>
 
-    <main class="mx-auto grid min-h-screen max-w-7xl items-center gap-8 px-5 py-8 sm:px-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)] lg:px-8">
-        <section class="relative overflow-hidden rounded-[40px] bg-[#171717] p-6 text-white shadow-[0_35px_100px_rgba(0,0,0,0.22)] sm:p-8 lg:p-10">
-            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,23,23,0.18),rgba(23,23,23,0.78))]"></div>
-            <img src="{{ asset('images/hero.png') }}" alt="Modern Homiq interior" class="absolute inset-0 h-full w-full object-cover opacity-45">
-
-            <div class="relative z-10 flex h-full flex-col justify-between gap-10">
-                <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-14 w-14 rounded-2xl border border-white/10 bg-white/90 object-cover">
+    <main class="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center justify-center px-6 py-12">
+        <div class="grid w-full gap-16 lg:grid-cols-2 lg:items-center">
+            <!-- Brand & Narrative -->
+            <section class="hidden lg:block space-y-12">
+                <div class="flex items-center gap-6">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-[24px] bg-black shadow-2xl shadow-black/20">
+                        <i class="fa-solid fa-h text-2xl text-white"></i>
+                    </div>
                     <div>
-                        <p class="font-[Playfair Display] text-3xl leading-none text-white">Homiq</p>
-                        <p class="mt-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#d8cab4]">Admin Studio</p>
+                        <h1 class="font-[Playfair Display] text-4xl font-bold tracking-tight text-black italic">Homiq</h1>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-[#7a8a6b] mt-1">Admin Studio</p>
                     </div>
                 </div>
 
-                <div class="max-w-xl">
-                    <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[#d8cab4]">Secure admin access</p>
-                    <h1 class="mt-5 font-[Playfair Display] text-5xl leading-[1.02] text-white sm:text-6xl">Manage Homiq with clarity, control, and better visibility.</h1>
-                    <p class="mt-6 max-w-lg text-base leading-8 text-white/78">Monitor users, room transformations, subscriptions, and system settings from a focused workspace designed to feel premium and easy on the eyes.</p>
+                <div class="space-y-8">
+                    <h2 class="font-[Playfair Display] text-6xl font-bold leading-[1.1] text-black italic">
+                        Commanding the <span class="text-[#a89078] not-italic">Future of Interior AI.</span>
+                    </h2>
+                    <p class="max-w-lg text-[16px] leading-relaxed font-medium text-[#5f5750]/80">
+                        Experience total oversight of the Homiq ecosystem. Manage spatial transformations, audit community growth, and steer the trajectory of our generative design engine from a single, high-fidelity workspace.
+                    </p>
                 </div>
 
-                <div class="grid gap-4 sm:grid-cols-3">
-                    <div class="rounded-[24px] border border-white/10 bg-white/8 p-5">
-                        <p class="text-xs uppercase tracking-[0.2em] text-[#d8cab4]">Users</p>
-                        <p class="mt-2 text-2xl font-semibold text-white">People</p>
+                <div class="flex gap-12">
+                    <div class="space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#a89078]">Status</p>
+                        <div class="flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-[#7a8a6b] animate-pulse"></span>
+                            <p class="text-[13px] font-bold text-black">Systems Operational</p>
+                        </div>
                     </div>
-                    <div class="rounded-[24px] border border-white/10 bg-white/8 p-5">
-                        <p class="text-xs uppercase tracking-[0.2em] text-[#d8cab4]">Designs</p>
-                        <p class="mt-2 text-2xl font-semibold text-white">Gallery</p>
-                    </div>
-                    <div class="rounded-[24px] border border-white/10 bg-white/8 p-5">
-                        <p class="text-xs uppercase tracking-[0.2em] text-[#d8cab4]">Revenue</p>
-                        <p class="mt-2 text-2xl font-semibold text-white">Premium</p>
+                    <div class="space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#a89078]">Security</p>
+                        <p class="text-[13px] font-bold text-black">End-to-End Encrypted</p>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="rounded-[36px] border border-black/6 bg-white p-6 shadow-[0_28px_80px_rgba(31,31,31,0.10)] sm:p-8">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[#7a8a6b]">Admin Sign In</p>
-                    <h2 class="mt-3 font-[Playfair Display] text-4xl leading-tight text-[#171717]">Welcome back</h2>
-                </div>
-                <a href="{{ route('home') }}" class="rounded-full border border-black/8 bg-[#faf7f2] px-4 py-2 text-sm font-semibold text-[#171717] transition hover:bg-[#f0e8dc]">
-                    Back
-                </a>
-            </div>
-
-            <p class="mt-4 text-sm leading-7 text-[#5f5a52]">Only approved administrators can access the Homiq control panel.</p>
-
-            <form action="{{ route('admin.login.store') }}" method="POST" class="mt-8 space-y-5">
-                @csrf
-
-                <label class="block">
-                    <span class="mb-2 block text-sm font-semibold text-[#171717]">Email address</span>
-                    <input type="email" name="email" value="{{ old('email') }}" required autofocus class="w-full rounded-[18px] border border-black/10 bg-[#faf7f2] px-4 py-4 text-sm text-[#171717] outline-none transition focus:border-[#a89078] focus:bg-white">
-                </label>
-
-                <label class="block">
-                    <span class="mb-2 block text-sm font-semibold text-[#171717]">Password</span>
-                    <input type="password" name="password" required class="w-full rounded-[18px] border border-black/10 bg-[#faf7f2] px-4 py-4 text-sm text-[#171717] outline-none transition focus:border-[#a89078] focus:bg-white">
-                </label>
-
-                <label class="flex items-center gap-3 text-sm text-[#4f4a43]">
-                    <input type="checkbox" name="remember" value="1" class="h-4 w-4 rounded border-black/20 text-[#171717] focus:ring-[#a89078]">
-                    <span>Keep me signed in</span>
-                </label>
-
-                @if ($errors->any())
-                    <div class="rounded-[20px] border border-[#ebd0d0] bg-[#fbefef] px-4 py-3 text-sm font-medium text-[#8c4343]">
-                        {{ $errors->first() }}
+            <!-- Authentication Interface -->
+            <section class="mx-auto w-full max-w-[500px]">
+                <div class="rounded-[56px] border border-black/[0.03] bg-white p-12 shadow-2xl shadow-black/[0.03]">
+                    <div class="mb-10 lg:hidden flex flex-col items-center text-center">
+                         <div class="h-16 w-16 mb-6 flex items-center justify-center rounded-[24px] bg-black shadow-xl">
+                            <i class="fa-solid fa-h text-2xl text-white"></i>
+                        </div>
+                        <h1 class="font-[Playfair Display] text-3xl font-bold text-black italic">Homiq Admin</h1>
                     </div>
-                @endif
 
-                <button type="submit" class="inline-flex w-full items-center justify-center rounded-full bg-[#171717] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]">
-                    Sign in securely
-                </button>
-            </form>
-        </section>
+                    <header class="mb-10">
+                        <h3 class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b] mb-3">Identity Verification</h3>
+                        <h2 class="font-[Playfair Display] text-4xl font-bold text-black italic">Welcome Back.</h2>
+                    </header>
+
+                    <form action="{{ route('admin.login.store') }}" method="POST" class="space-y-8">
+                        @csrf
+                        <div class="space-y-6">
+                            <label class="block group">
+                                <span class="mb-3 block text-[10px] font-bold uppercase tracking-widest text-[#a89078] group-focus-within:text-black transition-colors">Admin Identifier</span>
+                                <div class="relative">
+                                    <input type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="name@homiq.ai" class="w-full rounded-[24px] border border-black/[0.04] bg-[#faf9f6] px-6 py-5 text-[14px] font-bold text-black outline-none focus:bg-white focus:ring-8 focus:ring-[#7a8a6b]/10 transition-all">
+                                    <i class="fa-solid fa-envelope absolute right-6 top-1/2 -translate-y-1/2 text-[#a89078] text-[12px] opacity-40"></i>
+                                </div>
+                            </label>
+
+                            <label class="block group">
+                                <span class="mb-3 block text-[10px] font-bold uppercase tracking-widest text-[#a89078] group-focus-within:text-black transition-colors">Security Protocol</span>
+                                <div class="relative">
+                                    <input type="password" name="password" required placeholder="••••••••" class="w-full rounded-[24px] border border-black/[0.04] bg-[#faf9f6] px-6 py-5 text-[14px] font-bold text-black outline-none focus:bg-white focus:ring-8 focus:ring-[#7a8a6b]/10 transition-all">
+                                    <i class="fa-solid fa-lock absolute right-6 top-1/2 -translate-y-1/2 text-[#a89078] text-[12px] opacity-40"></i>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="checkbox" name="remember" value="1" class="h-5 w-5 rounded-lg border-black/[0.05] bg-[#faf9f6] text-black focus:ring-offset-0 focus:ring-0 transition-all cursor-pointer">
+                                <span class="text-[11px] font-bold uppercase tracking-widest text-[#a89078] group-hover:text-black transition-colors">Persistent Session</span>
+                            </label>
+                        </div>
+
+                        @if ($errors->any())
+                            <div class="rounded-3xl bg-[#8c4343]/[0.03] border border-[#8c4343]/10 px-6 py-4">
+                                <p class="text-[11px] font-bold text-[#8c4343] uppercase tracking-widest leading-relaxed">
+                                    <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                                    {{ $errors->first() }}
+                                </p>
+                            </div>
+                        @endif
+
+                        <button type="submit" class="group relative w-full overflow-hidden rounded-[28px] bg-black py-6 text-[11px] font-bold uppercase tracking-[0.3em] text-white shadow-2xl shadow-black/20 transition-all hover:scale-[1.02] active:scale-95">
+                            <span class="relative z-10 flex items-center justify-center gap-3">
+                                Initialize Secure Access
+                                <i class="fa-solid fa-arrow-right text-[9px] group-hover:translate-x-2 transition-transform"></i>
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </button>
+                    </form>
+
+                    <footer class="mt-12 text-center">
+                        <a href="{{ route('home') }}" class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#a89078] hover:text-black transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-left text-[8px]"></i>
+                            Return to Public Domain
+                        </a>
+                    </footer>
+                </div>
+            </section>
+        </div>
     </main>
 </body>
+
 </html>

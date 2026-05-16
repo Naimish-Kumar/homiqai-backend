@@ -46,119 +46,174 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-[#f5f1ea] font-[Poppins] text-[#1f1f1f] antialiased">
-    <div class="fixed inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,_rgba(203,187,160,0.28),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(122,138,107,0.16),_transparent_24%),linear-gradient(180deg,_#fbfaf8_0%,_#f5f1ea_55%,_#efe7dd_100%)]"></div>
+<body class="min-h-screen selection:bg-[#cbbba0]/30 font-[Poppins] text-[#171717] antialiased">
+    <!-- Sophisticated Background System -->
+    <div class="fixed inset-0 -z-20 bg-[#faf9f6]"></div>
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-[#f1ece4] blur-[120px] opacity-40 animate-pulse" style="animation-duration: 8s"></div>
+        <div class="absolute top-[20%] -right-[5%] h-[40%] w-[40%] rounded-full bg-[#eef3ea] blur-[100px] opacity-30 animate-pulse" style="animation-duration: 10s"></div>
+        <div class="absolute bottom-[10%] left-[20%] h-[35%] w-[35%] rounded-full bg-[#f7f2ed] blur-[80px] opacity-40 animate-pulse" style="animation-duration: 12s"></div>
+    </div>
 
-    <div class="min-h-screen lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside class="z-30 border-b border-black/5 bg-white/70 px-5 py-6 backdrop-blur-xl lg:min-h-screen lg:border-b-0 lg:border-r lg:px-6 lg:py-8">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Homiq logo" class="h-11 w-11 rounded-2xl border border-black/5 bg-[#faf7f2] object-cover shadow-[0_12px_24px_rgba(0,0,0,0.06)]">
-                <div>
-                    <p class="font-[Playfair Display] text-xl font-bold leading-none text-[#171717]">Homiq</p>
-                    <p class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7a8a6b]">Management</p>
-                </div>
-            </a>
-
-            <nav class="mt-10 space-y-7">
-                <div class="space-y-2">
-                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">Core Analytics</p>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.dashboard') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-chart-pie w-5"></i>
-                        <span>Insights</span>
-                    </a>
-                </div>
-
-                <div class="space-y-2">
-                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">User Ecosystem</p>
-                    <a href="{{ route('admin.users') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.users') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-user-shield w-5"></i>
-                        <span>Users</span>
-                    </a>
-                    <a href="{{ route('admin.designs') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.designs') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-wand-magic-sparkles w-5"></i>
-                        <span>Gallery</span>
-                    </a>
-                    <a href="{{ route('admin.styles') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.styles') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-swatchbook w-5"></i>
-                        <span>Library</span>
-                    </a>
-                    <a href="{{ route('admin.furniture') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.furniture*') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-couch w-5"></i>
-                        <span>Furniture</span>
-                    </a>
+    <div class="flex h-screen min-h-screen overflow-hidden">
+        <!-- Premium Sidebar -->
+        <aside class="relative z-30 hidden w-[320px] shrink-0 border-r border-black/[0.04] bg-white/60 backdrop-blur-3xl transition-all duration-500 lg:block">
+            <div class="flex h-full flex-col p-8">
+                <!-- Brand Identity -->
+                <div class="flex items-center gap-5 px-2">
+                    <div class="group relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-[22px] bg-black shadow-2xl shadow-black/20 transition-transform hover:scale-105 active:scale-95">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
+                        <i class="fa-solid fa-h text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-[Playfair Display] text-2xl font-bold tracking-tight text-black">Homiq</h1>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="h-1.5 w-1.5 rounded-full bg-[#7a8a6b] animate-pulse"></span>
+                            <p class="text-[9px] font-bold uppercase tracking-[0.3em] text-[#a89078]">Admin Studio</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="space-y-2">
-                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">Business Operations</p>
-                    <a href="{{ route('admin.subscriptions') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.subscriptions') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-gem w-5"></i>
-                        <span>Premium</span>
+                <!-- Navigation Architecture -->
+                <nav class="mt-12 flex-1 space-y-10 overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- Section: Intelligence -->
+                    <div class="space-y-4">
+                        <p class="px-3 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]/80">Intelligence</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('admin.dashboard') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.dashboard') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-chart-pie text-sm {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Insights</span>
+                            </a>
+                            <a href="{{ route('admin.subscriptions') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.subscriptions') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-file-invoice-dollar text-sm {{ request()->routeIs('admin.subscriptions') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Revenue</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Section: Operations -->
+                    <div class="space-y-4">
+                        <p class="px-3 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]/80">Operations</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('admin.users') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.users') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-users-viewfinder text-sm {{ request()->routeIs('admin.users') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Community</span>
+                            </a>
+                            <a href="{{ route('admin.designs') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.designs') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-wand-magic-sparkles text-sm {{ request()->routeIs('admin.designs') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Gallery</span>
+                            </a>
+                            <a href="{{ route('admin.styles') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.styles') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-swatchbook text-sm {{ request()->routeIs('admin.styles') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Library</span>
+                            </a>
+                            <a href="{{ route('admin.furniture') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.furniture') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-couch text-sm {{ request()->routeIs('admin.furniture') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Showroom</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Section: Communication -->
+                    <div class="space-y-4">
+                        <p class="px-3 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]/80">Communication</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('admin.notifications') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.notifications') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-paper-plane text-sm {{ request()->routeIs('admin.notifications') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Studio</span>
+                            </a>
+                            <a href="{{ route('admin.feedback') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.feedback') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-comment-dots text-sm {{ request()->routeIs('admin.feedback') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Sentiment</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Section: Management -->
+                    <div class="space-y-4">
+                        <p class="px-3 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]/80">Management</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('admin.storage') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.storage') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-hard-drive text-sm {{ request()->routeIs('admin.storage') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Storage</span>
+                            </a>
+                            <a href="{{ route('admin.logs') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.logs') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-shield-halved text-sm {{ request()->routeIs('admin.logs') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Security Logs</span>
+                            </a>
+                            <a href="{{ route('admin.settings') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.settings') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-sliders text-sm {{ request()->routeIs('admin.settings') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">Configuration</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Actions Footer -->
+                <div class="mt-auto space-y-3 pt-10">
+                    <a href="/" class="group flex items-center justify-center gap-3 rounded-[24px] bg-white border border-black/[0.03] py-4 text-[11px] font-bold uppercase tracking-widest text-black shadow-sm transition-all hover:bg-black hover:text-white hover:shadow-xl hover:shadow-black/10">
+                        <i class="fa-solid fa-globe text-[10px] opacity-70 group-hover:rotate-12 transition-transform"></i>
+                        Live Site
                     </a>
-                    <a href="{{ route('admin.feedback') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.feedback') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-comment-dots w-5"></i>
-                        <span>Feedback</span>
-                    </a>
-                    <a href="{{ route('admin.notifications') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.notifications') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-bell w-5"></i>
-                        <span>Campaigns</span>
-                    </a>
+                    <form action="{{ route('admin.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="flex w-full items-center justify-center gap-3 rounded-[24px] py-4 text-[11px] font-bold uppercase tracking-widest text-[#8c4343] transition-all hover:bg-[#8c4343]/[0.03]">
+                            <i class="fa-solid fa-power-off text-[10px] opacity-70"></i>
+                            Sign out
+                        </button>
+                    </form>
                 </div>
 
-                <div class="space-y-2">
-                    <p class="px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#a89078]">System</p>
-                    <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.settings') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-sliders w-5"></i>
-                        <span>Config</span>
-                    </a>
-                    <a href="{{ route('admin.logs') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition {{ request()->routeIs('admin.logs') ? 'bg-[#171717] text-white shadow-[0_14px_30px_rgba(0,0,0,0.15)]' : 'text-[#5e564e] hover:bg-[#faf7f2] hover:text-[#171717]' }}">
-                        <i class="fa-solid fa-list-check w-5"></i>
-                        <span>Audit Logs</span>
-                    </a>
-                </div>
-            </nav>
-
-            <div class="mt-12 rounded-[32px] bg-[#faf7f2] p-5">
-                <a href="{{ route('home') }}" class="flex w-full items-center justify-center rounded-2xl border border-black/5 bg-white py-3 text-sm font-bold text-[#171717] shadow-sm hover:bg-black hover:text-white transition">
-                    Website
-                </a>
-                <form action="{{ route('admin.logout') }}" method="POST" class="mt-3">
-                    @csrf
-                    <button type="submit" class="flex w-full items-center justify-center rounded-2xl bg-[#eef3ea] py-3 text-sm font-bold text-[#405038] hover:bg-[#d6dfcf] transition">
-                        Sign out
-                    </button>
-                </form>
             </div>
         </aside>
 
-        <main class="px-5 py-6 sm:px-6 lg:px-10 lg:py-8">
-            <header class="mb-8 rounded-[34px] border border-black/6 bg-white px-6 py-6 shadow-[0_22px_60px_rgba(31,31,31,0.08)] lg:px-8">
-                <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[#7a8a6b]">Homiq Operations</p>
-                        <h1 class="mt-3 font-[Playfair Display] text-4xl leading-tight text-[#171717] sm:text-5xl">@yield('title', 'Dashboard')</h1>
-                    </div>
-                    <a href="{{ route('admin.profile') }}" class="flex items-center gap-4 rounded-[24px] border border-black/6 bg-[#f8f5ef] px-4 py-3 hover:border-black/20 transition group">
-                        <div>
-                            <p class="text-sm font-semibold text-[#171717] group-hover:text-black">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-[#5f5a52]">{{ auth()->user()->email }}</p>
-                        </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#171717] text-sm font-semibold text-white shadow-md group-hover:scale-105 transition">
+        <!-- Main Viewport -->
+        <main class="relative flex flex-1 flex-col overflow-hidden">
+            <!-- Glass Header -->
+            <header class="relative z-20 flex h-28 items-center justify-between px-10 shrink-0 lg:px-14">
+                <div class="flex flex-col">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-[#7a8a6b]">Management Console</p>
+                    <h2 class="mt-2 font-[Playfair Display] text-4xl font-bold tracking-tight text-black leading-none">@yield('title', 'Insights')</h2>
+                </div>
+
+                <!-- Admin Profile Card -->
+                <a href="{{ route('admin.settings') }}" class="group relative flex items-center gap-5 rounded-[28px] border border-black/[0.04] bg-white/50 p-2.5 pr-6 backdrop-blur-2xl transition-all hover:bg-white hover:shadow-2xl hover:shadow-black/5 active:scale-95">
+                    <div class="relative">
+                        <div class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-[20px] bg-[#fbfaf8] text-lg font-bold text-black shadow-inner ring-1 ring-black/[0.05]">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
-                    </a>
-                </div>
+                        <span class="absolute -right-0.5 -bottom-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#7a8a6b]"></span>
+                    </div>
+                    <div class="flex flex-col">
+                        <p class="text-[13px] font-bold text-black leading-tight">{{ auth()->user()->name }}</p>
+                        <p class="text-[10px] font-semibold text-[#a89078] leading-tight">Master Admin</p>
+                    </div>
+                </a>
             </header>
 
-            @if (session('status'))
-                <div class="mb-6 rounded-[24px] border border-[#d6dfcf] bg-[#eef3ea] px-5 py-4 text-sm font-medium text-[#243020] shadow-[0_12px_30px_rgba(31,31,31,0.04)]">
-                    {{ session('status') }}
+            <!-- Content Area with Custom Scroll -->
+            <div class="flex-1 overflow-y-auto px-10 pb-16 custom-scrollbar lg:px-14">
+                <div class="max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    @yield('content')
                 </div>
-            @endif
-
-            <div class="admin-pagination">
-                @yield('content')
             </div>
         </main>
     </div>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background: rgba(0, 0, 0, 0.04); 
+            border-radius: 20px; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.08); }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+    </style>
 </body>
 </html>

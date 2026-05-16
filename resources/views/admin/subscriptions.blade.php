@@ -1,105 +1,121 @@
-@extends('admin.layout')
-
-@section('title', 'Revenue & Subscriptions')
-
 @section('content')
-<section class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
-        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Estimated MRR</p>
-        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">₹{{ number_format($summary['estimated_mrr']) }}</p>
-        <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.58)]">Active monthly recurring revenue</p>
-    </article>
-    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
-        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Total Revenue</p>
-        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">₹{{ number_format($summary['total_revenue']) }}</p>
-        <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.58)]">Lifetime processed</p>
-    </article>
-    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
-        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Platform Split</p>
-        <div class="mt-4 grid grid-cols-2 gap-3">
-            <div class="rounded-[20px] bg-[rgba(247,246,242,0.82)] p-4 text-center">
-                <p class="text-xs uppercase tracking-[0.18em] text-[color:rgba(47,47,47,0.46)]">iOS</p>
-                <p class="mt-2 text-2xl font-semibold text-[var(--color-charcoal)]">{{ $summary['ios_users'] }}</p>
+<div class="space-y-10">
+    <!-- Revenue Intelligence -->
+    <section class="grid gap-10 md:grid-cols-2 xl:grid-cols-4">
+        <article class="rounded-[40px] border border-black/[0.03] bg-white p-8 shadow-xl shadow-black/[0.02]">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Monthly Recurring</p>
+            <div class="mt-4">
+                <span class="font-[Playfair Display] text-4xl font-bold text-black italic">₹{{ number_format($summary['estimated_mrr']) }}</span>
+                <p class="mt-2 text-[10px] font-bold text-[#a89078] uppercase tracking-widest opacity-60">Estimated Yield</p>
             </div>
-            <div class="rounded-[20px] bg-[rgba(247,246,242,0.82)] p-4 text-center">
-                <p class="text-xs uppercase tracking-[0.18em] text-[color:rgba(47,47,47,0.46)]">Android</p>
-                <p class="mt-2 text-2xl font-semibold text-[var(--color-charcoal)]">{{ $summary['android_users'] }}</p>
+        </article>
+
+        <article class="rounded-[40px] border border-black/[0.03] bg-white p-8 shadow-xl shadow-black/[0.02]">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Lifetime Ledger</p>
+            <div class="mt-4">
+                <span class="font-[Playfair Display] text-4xl font-bold text-black italic">₹{{ number_format($summary['total_revenue']) }}</span>
+                <p class="mt-2 text-[10px] font-bold text-[#a89078] uppercase tracking-widest opacity-60">Cumulative Revenue</p>
             </div>
-        </div>
-    </article>
-    <article class="rounded-[28px] border border-white/60 bg-white/72 p-6 shadow-[0_18px_50px_rgba(47,47,47,0.06)] backdrop-blur-xl">
-        <p class="text-sm text-[color:rgba(47,47,47,0.62)]">Active Subs</p>
-        <p class="mt-3 text-3xl font-semibold text-[var(--color-charcoal)]">{{ number_format($summary['active_subscriptions']) }}</p>
-        <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.58)]">Currently valid</p>
-    </article>
-</section>
+        </article>
 
-<section class="mt-6 rounded-[32px] border border-white/60 bg-white/72 p-6 shadow-[0_22px_60px_rgba(47,47,47,0.07)] backdrop-blur-xl">
-    <div class="border-b border-[rgba(47,47,47,0.08)] pb-5">
-        <p class="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-olive)]">Transactions</p>
-        <h2 class="mt-3 font-[var(--font-display)] text-3xl leading-tight">Recent store purchases</h2>
-    </div>
+        <article class="rounded-[40px] border border-black/[0.03] bg-white p-8 shadow-xl shadow-black/[0.02]">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Platform Split</p>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+                <div class="rounded-[24px] bg-[#faf9f6] p-4 border border-black/[0.02]">
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-[#a89078]">iOS</p>
+                    <p class="mt-1 text-[18px] font-bold text-black tabular-nums">{{ $summary['ios_users'] }}</p>
+                </div>
+                <div class="rounded-[24px] bg-[#faf9f6] p-4 border border-black/[0.02]">
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-[#a89078]">Droid</p>
+                    <p class="mt-1 text-[18px] font-bold text-black tabular-nums">{{ $summary['android_users'] }}</p>
+                </div>
+            </div>
+        </article>
 
-    <div class="mt-6 overflow-x-auto">
-        <table class="min-w-full text-left">
-            <thead>
-                <tr class="text-xs font-semibold uppercase tracking-[0.24em] text-[color:rgba(47,47,47,0.46)]">
-                    <th class="pb-4 pr-4">User</th>
-                    <th class="pb-4 pr-4">Plan</th>
-                    <th class="pb-4 pr-4">Platform</th>
-                    <th class="pb-4 pr-4">Transaction ID</th>
-                    <th class="pb-4 pr-4">Status</th>
-                    <th class="pb-4">Expiry</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-[rgba(47,47,47,0.08)]">
-                @forelse($recentSubscriptions as $sub)
-                    <tr>
-                        <td class="py-4 pr-4">
-                            <div class="flex items-center gap-3">
-                                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(203,187,160,0.25)] font-semibold text-[var(--color-charcoal)]">
-                                    {{ strtoupper(substr($sub->user->name ?? 'U', 0, 1)) }}
-                                </span>
-                                <div>
-                                    <p class="font-semibold text-[var(--color-charcoal)]">{{ $sub->user->name ?? 'Unknown' }}</p>
-                                    <p class="text-sm text-[color:rgba(47,47,47,0.56)]">{{ $sub->user->email ?? 'N/A' }}</p>
+        <article class="rounded-[40px] border border-black/[0.03] bg-white p-8 shadow-xl shadow-black/[0.02]">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Active Retainers</p>
+            <div class="mt-4">
+                <span class="font-[Playfair Display] text-4xl font-bold text-black italic">{{ number_format($summary['active_subscriptions']) }}</span>
+                <p class="mt-2 text-[10px] font-bold text-[#a89078] uppercase tracking-widest opacity-60">Valid Contracts</p>
+            </div>
+        </article>
+    </section>
+
+    <!-- Ledger Manifest -->
+    <section class="rounded-[56px] border border-black/[0.03] bg-white overflow-hidden shadow-2xl shadow-black/[0.03]">
+        <header class="px-12 py-10 bg-[#faf9f6] border-b border-black/[0.03]">
+            <h2 class="font-[Playfair Display] text-3xl font-bold text-black italic">Financial Ledger</h2>
+            <p class="mt-2 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Real-time transactional audit stream</p>
+        </header>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#a89078] bg-white border-b border-black/[0.02]">
+                        <th class="pl-12 pr-6 py-8">Identity</th>
+                        <th class="px-6 py-8">Contract</th>
+                        <th class="px-6 py-8">Vector</th>
+                        <th class="px-6 py-8">Manifest ID</th>
+                        <th class="px-6 py-8">Status</th>
+                        <th class="pl-6 pr-12 py-8 text-right">Maturity</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-black/[0.02]">
+                    @forelse($recentSubscriptions as $sub)
+                        <tr class="hover:bg-[#faf9f6]/50 transition-colors group">
+                            <td class="pl-12 pr-6 py-7">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-black text-white font-bold text-[13px] shadow-lg shadow-black/5">
+                                        {{ strtoupper(substr($sub->user->name ?? 'U', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p class="text-[14px] font-bold text-black">{{ $sub->user->name ?? 'Unknown Client' }}</p>
+                                        <p class="text-[11px] font-medium text-[#a89078] uppercase tracking-widest mt-0.5 opacity-60">{{ $sub->user->email ?? 'no-email@identity.com' }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="py-4 pr-4">
-                            <div>
-                                <p class="font-semibold text-[var(--color-charcoal)]">{{ $sub->package_name }}</p>
-                                <p class="text-sm text-[color:rgba(47,47,47,0.56)]">₹{{ number_format($sub->amount) }}</p>
-                            </div>
-                        </td>
-                        <td class="py-4 pr-4">
-                            <span class="inline-flex rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] {{ $sub->platform === 'android' ? 'bg-[rgba(122,138,107,0.14)] text-[var(--color-olive)]' : 'bg-[rgba(47,47,47,0.08)] text-[var(--color-charcoal)]' }}">
-                                {{ strtoupper($sub->platform) }}
-                            </span>
-                        </td>
-                        <td class="py-4 pr-4">
-                            <code class="rounded-xl bg-[rgba(247,246,242,0.92)] px-3 py-2 text-xs text-[var(--color-charcoal)]">{{ Str::limit($sub->transaction_id, 16) }}</code>
-                        </td>
-                        <td class="py-4 pr-4">
-                            <span class="inline-flex items-center gap-2 text-sm text-[color:rgba(47,47,47,0.72)]">
-                                <i class="h-2.5 w-2.5 rounded-full {{ $sub->status === 'active' ? 'bg-[var(--color-olive)]' : 'bg-[#9f5656]' }}"></i>
-                                {{ ucfirst($sub->status) }}
-                            </span>
-                        </td>
-                        <td class="py-4 text-sm text-[color:rgba(47,47,47,0.68)]">
-                            {{ $sub->end_date->format('d M, Y') }}
-                            <p class="mt-1 {{ $sub->end_date->isPast() ? 'text-[#9f5656]' : 'text-[var(--color-olive)]' }}">
-                                {{ $sub->end_date->diffForHumans() }}
-                            </p>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="py-8 text-center text-sm text-[color:rgba(47,47,47,0.56)]">No transactions recorded yet.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</section>
+                            </td>
+                            <td class="px-6 py-7">
+                                <div>
+                                    <p class="text-[14px] font-bold text-black">{{ $sub->package_name }}</p>
+                                    <p class="text-[12px] font-bold text-[#7a8a6b] tabular-nums mt-0.5">₹{{ number_format($sub->amount) }}</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-7">
+                                <span class="inline-flex items-center gap-2 rounded-full px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest {{ $sub->platform === 'android' ? 'bg-[#7a8a6b]/10 text-[#7a8a6b]' : 'bg-black/5 text-black' }}">
+                                    <i class="fa-brands fa-{{ $sub->platform === 'android' ? 'android' : 'apple' }} text-[12px]"></i>
+                                    {{ $sub->platform }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-7">
+                                <code class="rounded-[14px] bg-[#faf9f6] px-4 py-2 text-[11px] font-mono font-medium text-black border border-black/[0.03]">{{ Str::limit($sub->transaction_id, 12) }}</code>
+                            </td>
+                            <td class="px-6 py-7">
+                                <span class="inline-flex items-center gap-3">
+                                    <span class="h-2.5 w-2.5 rounded-full {{ $sub->status === 'active' ? 'bg-[#7a8a6b]' : 'bg-[#8c4343]' }} animate-pulse"></span>
+                                    <span class="text-[11px] font-bold uppercase tracking-[0.2em] {{ $sub->status === 'active' ? 'text-black' : 'text-[#8c4343]' }}">{{ $sub->status }}</span>
+                                </span>
+                            </td>
+                            <td class="pl-6 pr-12 py-7 text-right">
+                                <p class="text-[13px] font-bold text-black tabular-nums">{{ $sub->end_date->format('d M, Y') }}</p>
+                                <p class="mt-1 text-[10px] font-bold uppercase tracking-widest {{ $sub->end_date->isPast() ? 'text-[#8c4343]' : 'text-[#7a8a6b]' }} opacity-60">
+                                    {{ $sub->end_date->diffForHumans() }}
+                                </p>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="py-32 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fa-solid fa-file-invoice-dollar text-4xl text-black/5 mb-6"></i>
+                                    <p class="text-[13px] font-bold text-black uppercase tracking-[0.2em] opacity-30">Ledger clear. No transactions documented.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
 @endsection
+

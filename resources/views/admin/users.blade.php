@@ -1,118 +1,113 @@
-@extends('admin.layout')
-
-@section('title', 'Community')
-
 @section('content')
-<section class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#a89078]">Ecosystem total</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['total_users']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#7a8a6b]">Registered members</p>
+<!-- Community Intelligence Metrics -->
+<section class="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
+    @foreach([
+        ['label' => 'Total Members', 'value' => $summary['total_users'], 'sub' => 'Ecosystem total', 'bg' => 'bg-[#f1f3f0]', 'color' => 'text-[#7a8a6b]'],
+        ['label' => 'System Admins', 'value' => $summary['admins'], 'sub' => 'Platform control', 'bg' => 'bg-[#f7f2ed]', 'color' => 'text-[#a89078]'],
+        ['label' => 'Pro Members', 'value' => $summary['premium'], 'sub' => 'Premium tier', 'bg' => 'bg-[#f9f7f4]', 'color' => 'text-[#8b745d]'],
+        ['label' => 'Restricted', 'value' => $summary['blocked'], 'sub' => 'Account blocks', 'bg' => 'bg-[#f7e9e9]', 'color' => 'text-[#8c4343]']
+    ] as $stat)
+    <article class="group rounded-[36px] border border-black/[0.03] bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/[0.04]">
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] {{ $stat['color'] }}">{{ $stat['sub'] }}</p>
+        <p class="mt-6 text-4xl font-bold tracking-tighter text-black">{{ number_format($stat['value']) }}</p>
+        <p class="mt-3 text-[11px] font-bold text-[#5f5750]/60">{{ $stat['label'] }}</p>
     </article>
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7a8a6b]">Administration</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['admins']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#7a8a6b]">Full system access</p>
-    </article>
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#a89078]">Premium Tier</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['premium']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#7a8a6b]">Paid subscriptions</p>
-    </article>
-    <article class="rounded-[32px] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(31,31,31,0.04)]">
-        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8c4343]">Restrictions</p>
-        <p class="mt-4 text-3xl font-bold text-[#171717]">{{ number_format($summary['blocked']) }}</p>
-        <p class="mt-2 text-xs font-semibold text-[#8c4343]">Blocked accounts</p>
-    </article>
+    @endforeach
 </section>
 
-<section class="mt-6 rounded-[40px] border border-black/5 bg-white p-8 shadow-[0_22px_60px_rgba(31,31,31,0.06)]">
-    <div class="flex flex-col gap-5 border-b border-black/5 pb-8 lg:flex-row lg:items-center lg:justify-between">
+<!-- Member Directory Surface -->
+<section class="mt-8 rounded-[48px] border border-black/[0.03] bg-white p-10 shadow-xl shadow-black/[0.02]">
+    <div class="flex flex-col gap-8 border-b border-black/[0.03] pb-10 xl:flex-row xl:items-center xl:justify-between">
         <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Member Database</p>
-            <h2 class="mt-3 font-[Playfair Display] text-3xl font-bold text-[#171717]">User Directory</h2>
+            <h2 class="font-[Playfair Display] text-4xl font-bold text-black italic">Member Directory</h2>
+            <p class="mt-2 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Audit & moderate user ecosystem</p>
         </div>
-        <form action="{{ route('admin.users') }}" method="GET" class="flex w-full max-w-lg items-center gap-4 rounded-3xl border border-black/5 bg-[#fbfaf8] px-5 py-3 focus-within:ring-2 focus-within:ring-[#7a8a6b]/20 transition-all">
-            <i class="fa-solid fa-magnifying-glass text-[#a89078]"></i>
-            <input type="search" name="search" value="{{ $search }}" placeholder="Search name, email, or ID" class="w-full bg-transparent text-sm font-medium text-[#171717] outline-none placeholder:text-[#8b8175]">
-            <button type="submit" class="rounded-2xl bg-[#171717] px-6 py-2.5 text-xs font-bold text-white transition hover:bg-black">Find</button>
+        
+        <form action="{{ route('admin.users') }}" method="GET" class="relative group w-full max-w-xl">
+            <div class="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                <i class="fa-solid fa-magnifying-glass text-[#a89078] text-sm group-focus-within:rotate-12 transition-transform"></i>
+            </div>
+            <input type="search" name="search" value="{{ $search }}" placeholder="Search members by identity or ID..." class="w-full rounded-[28px] border border-black/[0.04] bg-[#faf9f6] py-5 pl-14 pr-32 text-[14px] font-bold text-black outline-none ring-[#7a8a6b]/20 transition-all focus:bg-white focus:ring-8">
+            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-2xl bg-black px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white shadow-lg transition hover:scale-105 active:scale-95">Find</button>
         </form>
     </div>
 
-    <div class="mt-8 space-y-6">
+    <div class="mt-10 space-y-8">
         @forelse($users as $user)
             @php
                 $latestSubscription = $user->subscriptions->first();
                 $hasActiveSubscription = $latestSubscription && $latestSubscription->status === 'active' && $latestSubscription->end_date?->isFuture();
             @endphp
-            <article class="group relative overflow-hidden rounded-[36px] border border-black/5 bg-[#fbfaf8] p-6 transition hover:bg-[#faf7f2] hover:shadow-md">
-                <div class="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-                    <div class="flex items-center gap-5">
+            <article class="group relative overflow-hidden rounded-[40px] border border-black/[0.04] bg-[#fbfaf8] p-8 transition-all hover:bg-white hover:shadow-2xl hover:shadow-black/[0.04]">
+                <div class="flex flex-col gap-10 xl:flex-row xl:items-center">
+                    <!-- Identity Block -->
+                    <div class="flex flex-1 items-center gap-6">
                         <div class="relative">
-                            <span class="flex h-16 w-16 items-center justify-center rounded-[22px] bg-white text-xl font-bold text-[#171717] shadow-sm ring-1 ring-black/5">
+                            <div class="flex h-20 w-20 items-center justify-center rounded-[32px] bg-white text-2xl font-bold text-black shadow-lg ring-1 ring-black/[0.05]">
                                 {{ strtoupper(substr($user->name, 0, 1)) }}
-                            </span>
+                            </div>
                             @if($hasActiveSubscription || $user->is_premium)
-                                <span class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#171717] text-[10px] text-white shadow-lg ring-2 ring-white">
+                                <div class="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black text-[12px] text-white shadow-xl ring-4 ring-[#fbfaf8] group-hover:ring-white transition-all">
                                     <i class="fa-solid fa-crown"></i>
-                                </span>
+                                </div>
                             @endif
                         </div>
                         <div>
-                            <div class="flex flex-wrap items-center gap-3">
-                                <p class="text-xl font-bold text-[#171717]">{{ $user->name }}</p>
+                            <div class="flex items-center gap-4">
+                                <h3 class="text-2xl font-bold text-black tracking-tight">{{ $user->name }}</h3>
                                 @if($user->is_admin)
-                                    <span class="rounded-full bg-[#eef3ea] px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-[#405038]">Admin</span>
+                                    <span class="rounded-full bg-[#7a8a6b] px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white">Admin</span>
                                 @endif
                                 @if($user->is_blocked)
-                                    <span class="rounded-full bg-[#f7e9e9] px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-[#8c4343]">Restricted</span>
+                                    <span class="rounded-full bg-[#8c4343] px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white">Restricted</span>
                                 @endif
                             </div>
-                            <p class="mt-1 text-sm font-medium text-[#7a8a6b]">{{ $user->email ?: 'private@no-email' }}</p>
-                            <div class="mt-4 flex flex-wrap gap-6 text-[11px] font-bold uppercase tracking-wider text-[#a89078]">
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> {{ number_format($user->room_designs_count) }} Designs</span>
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-bolt"></i> {{ $user->free_designs_left ?? 0 }} Credits</span>
-                                <span class="flex items-center gap-2"><i class="fa-solid fa-calendar"></i> {{ $user->created_at->format('M d, Y') }}</span>
+                            <p class="mt-1 text-[13px] font-medium text-[#7a8a6b]">{{ $user->email ?: 'Identity Protected' }}</p>
+                            <div class="mt-5 flex gap-6 text-[11px] font-bold uppercase tracking-widest text-[#a89078]/80">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> {{ number_format($user->room_designs_count) }} Generations</span>
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-bolt-lightning text-[10px]"></i> {{ $user->free_designs_left ?? 0 }} Available</span>
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-calendar text-[10px]"></i> Joined {{ $user->created_at->format('M Y') }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid gap-4 md:grid-cols-3 xl:min-w-[42rem]">
-                        <form action="{{ route('admin.users.credits', $user) }}" method="POST" class="rounded-[28px] border border-black/5 bg-white p-5 shadow-sm">
-                            @csrf
-                            @method('PATCH')
-                            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#a89078]">Credit Balance</p>
-                            <div class="mt-3 flex items-center gap-3">
-                                <input type="number" min="0" name="free_designs_left" value="{{ $user->free_designs_left ?? 0 }}" class="w-full rounded-xl border border-black/5 bg-[#fbfaf8] px-4 py-2.5 text-sm font-bold text-[#171717] outline-none focus:ring-1 focus:ring-[#7a8a6b]">
-                                <button type="submit" class="shrink-0 rounded-xl bg-[#171717] p-2.5 text-white transition hover:bg-black">
-                                    <i class="fa-solid fa-check"></i>
+                    <!-- Actions Command Center -->
+                    <div class="grid gap-6 sm:grid-cols-3 xl:w-[700px]">
+                        <!-- Credit Control -->
+                        <form action="{{ route('admin.users.credits', $user) }}" method="POST" class="rounded-[28px] bg-white p-5 border border-black/[0.03] shadow-sm group/form">
+                            @csrf @method('PATCH')
+                            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#a89078]">Allocate Credits</p>
+                            <div class="mt-4 flex items-center gap-2">
+                                <input type="number" name="free_designs_left" value="{{ $user->free_designs_left ?? 0 }}" class="w-full rounded-xl border border-black/[0.04] bg-[#faf9f6] px-4 py-3 text-[13px] font-bold text-black outline-none focus:bg-white focus:ring-1 focus:ring-[#7a8a6b]">
+                                <button type="submit" class="shrink-0 rounded-xl bg-black px-4 py-3 text-white transition hover:scale-105 active:scale-95">
+                                    <i class="fa-solid fa-check text-[10px]"></i>
                                 </button>
                             </div>
                         </form>
 
-                        <form action="{{ route('admin.users.subscription', $user) }}" method="POST" class="rounded-[28px] border border-black/5 bg-white p-5 shadow-sm">
-                            @csrf
-                            @method('PATCH')
-                            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7a8a6b]">Membership Status</p>
-                            <div class="mt-3 flex items-center gap-3">
-                                <select name="is_premium" class="w-full rounded-xl border border-black/5 bg-[#fbfaf8] px-4 py-2.5 text-sm font-bold text-[#171717] outline-none appearance-none focus:ring-1 focus:ring-[#7a8a6b]">
+                        <!-- Tier Management -->
+                        <form action="{{ route('admin.users.subscription', $user) }}" method="POST" class="rounded-[28px] bg-white p-5 border border-black/[0.03] shadow-sm group/form">
+                            @csrf @method('PATCH')
+                            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7a8a6b]">Member Grade</p>
+                            <div class="mt-4 flex items-center gap-2">
+                                <select name="is_premium" class="w-full rounded-xl border border-black/[0.04] bg-[#faf9f6] px-4 py-3 text-[13px] font-bold text-black outline-none appearance-none focus:bg-white focus:ring-1 focus:ring-[#7a8a6b]">
                                     <option value="0" @selected(! $user->is_premium)>Standard</option>
-                                    <option value="1" @selected($user->is_premium)>Premium</option>
+                                    <option value="1" @selected($user->is_premium)>Premium Pro</option>
                                 </select>
-                                <button type="submit" class="shrink-0 rounded-xl bg-[#171717] p-2.5 text-white transition hover:bg-black">
-                                    <i class="fa-solid fa-check"></i>
+                                <button type="submit" class="shrink-0 rounded-xl bg-black px-4 py-3 text-white transition hover:scale-105 active:scale-95">
+                                    <i class="fa-solid fa-check text-[10px]"></i>
                                 </button>
                             </div>
                         </form>
 
-                        <div class="rounded-[28px] border border-black/5 bg-white p-5 shadow-sm">
-                            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#a89078]">Quick Controls</p>
-                            <div class="mt-3 flex gap-2">
-                                <form action="{{ route('admin.users.block', $user) }}" method="POST" class="w-full">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="w-full rounded-xl py-2.5 text-[10px] font-bold uppercase tracking-widest transition {{ $user->is_blocked ? 'bg-[#eef3ea] text-[#405038] hover:bg-[#d6dfcf]' : 'bg-[#f7e9e9] text-[#8c4343] hover:bg-[#f2d3d3]' }}">
-                                        {{ $user->is_blocked ? 'Reinstate' : 'Suspend' }}
+                        <!-- Security Control -->
+                        <div class="rounded-[28px] bg-white p-5 border border-black/[0.03] shadow-sm">
+                            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8c4343]">Security Protocol</p>
+                            <div class="mt-4">
+                                <form action="{{ route('admin.users.block', $user) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" class="w-full rounded-xl py-3 text-[11px] font-bold uppercase tracking-widest transition-all {{ $user->is_blocked ? 'bg-[#eef3ea] text-[#405038] hover:bg-[#7a8a6b] hover:text-white' : 'bg-[#f7e9e9] text-[#8c4343] hover:bg-[#8c4343] hover:text-white' }}">
+                                        {{ $user->is_blocked ? 'Reinstate Access' : 'Suspend Account' }}
                                     </button>
                                 </form>
                             </div>
@@ -121,22 +116,29 @@
                 </div>
             </article>
         @empty
-            <div class="py-20 text-center">
-                <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#fbfaf8] text-[#a89078]">
+            <div class="py-32 text-center">
+                <div class="inline-flex h-20 w-20 items-center justify-center rounded-[32px] bg-[#fbfaf8] text-[#a89078] shadow-inner">
                     <i class="fa-solid fa-user-slash text-2xl"></i>
                 </div>
-                <p class="mt-4 text-sm font-bold text-[#171717]">No users match your criteria.</p>
-                <p class="mt-2 text-xs font-medium text-[#7a8a6b]">Try refining your search terms or filters.</p>
+                <h3 class="mt-8 font-[Playfair Display] text-2xl font-bold text-black">No matching identities found.</h3>
+                <p class="mt-2 text-sm font-medium text-[#7a8a6b]">The specified criteria did not return any records from the member database.</p>
             </div>
         @endforelse
     </div>
 
-    <div class="mt-10 flex flex-col gap-6 border-t border-black/5 pt-8 lg:flex-row lg:items-center lg:justify-between">
-        <p class="text-xs font-bold text-[#a89078]">Showing <span class="text-[#171717]">{{ $users->firstItem() ?? 0 }}</span> to <span class="text-[#171717]">{{ $users->lastItem() ?? 0 }}</span> of <span class="text-[#171717]">{{ $users->total() }}</span> members</p>
+    <!-- Pagination Footer -->
+    <div class="mt-12 flex flex-col gap-8 border-t border-black/[0.03] pt-10 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-center gap-4">
+            <span class="text-[11px] font-bold uppercase tracking-widest text-[#a89078]">Audit Range</span>
+            <p class="text-[13px] font-bold text-black">
+                Showing {{ $users->firstItem() ?? 0 }}—{{ $users->lastItem() ?? 0 }} of {{ number_format($users->total()) }} members
+            </p>
+        </div>
         <div class="admin-pagination">
             {{ $users->links() }}
         </div>
     </div>
 </section>
 @endsection
+
 

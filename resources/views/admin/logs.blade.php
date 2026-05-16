@@ -1,81 +1,99 @@
-@extends('admin.layout')
-
-@section('title', 'Security & System Logs')
-
 @section('content')
-<div class="space-y-8">
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-        <div class="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(31,31,31,0.04)]">
-            <p class="text-xs font-semibold uppercase tracking-wider text-[#7a8a6b]">Total API Calls (24h)</p>
-            <p class="mt-2 text-3xl font-bold text-[#171717]">{{ $summary['total_requests'] }}</p>
-        </div>
-        <div class="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(31,31,31,0.04)]">
-            <p class="text-xs font-semibold uppercase tracking-wider text-red-500">Failed Requests</p>
-            <p class="mt-2 text-3xl font-bold text-[#171717]">{{ $summary['failed_requests'] }}</p>
-        </div>
-        <div class="rounded-[32px] border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(31,31,31,0.04)]">
-            <p class="text-xs font-semibold uppercase tracking-wider text-[#7a8a6b]">Avg Latency</p>
-            <p class="mt-2 text-3xl font-bold text-[#171717]">{{ $summary['avg_duration'] }}ms</p>
-        </div>
-    </div>
+<div class="space-y-10">
+    <!-- Telemetry Surfaces -->
+    <section class="grid grid-cols-1 gap-10 sm:grid-cols-3">
+        <article class="rounded-[40px] border border-black/[0.03] bg-white p-8 shadow-xl shadow-black/[0.02] transition-transform hover:scale-[1.02]">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Traffic Volume</p>
+            <div class="mt-4 flex items-baseline gap-2">
+                <span class="font-[Playfair Display] text-4xl font-bold text-black italic">{{ number_format($summary['total_requests']) }}</span>
+                <span class="text-[10px] font-bold text-[#7a8a6b]/60 uppercase tracking-widest">Calls / 24h</span>
+            </div>
+        </article>
 
-    <div class="rounded-[34px] border border-black/6 bg-white overflow-hidden shadow-[0_22px_60px_rgba(31,31,31,0.06)]">
-        <div class="px-8 py-6 border-b border-black/5 bg-[#fbfaf8] flex justify-between items-center">
-            <h2 class="font-[Playfair Display] text-2xl text-[#171717]">Live API Traffic</h2>
-            <form action="{{ route('admin.logs') }}" method="GET" class="flex gap-2">
-                <select name="status" onchange="this.form.submit()" class="rounded-full border-black/10 bg-white px-4 py-1.5 text-xs font-bold focus:border-[#7a8a6b] focus:ring-[#7a8a6b]">
-                    <option value="">All Status</option>
+        <article class="rounded-[40px] border border-black/[0.03] bg-white p-8 shadow-xl shadow-black/[0.02] transition-transform hover:scale-[1.02]">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8c4343]">Error Manifest</p>
+            <div class="mt-4 flex items-baseline gap-2">
+                <span class="font-[Playfair Display] text-4xl font-bold text-black italic">{{ number_format($summary['failed_requests']) }}</span>
+                <span class="text-[10px] font-bold text-[#8c4343]/60 uppercase tracking-widest">Failed</span>
+            </div>
+        </article>
+
+        <article class="rounded-[40px] border border-black/[0.03] bg-white p-8 shadow-xl shadow-black/[0.02] transition-transform hover:scale-[1.02]">
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">System Pulse</p>
+            <div class="mt-4 flex items-baseline gap-2">
+                <span class="font-[Playfair Display] text-4xl font-bold text-black italic">{{ $summary['avg_duration'] }}ms</span>
+                <span class="text-[10px] font-bold text-[#7a8a6b]/60 uppercase tracking-widest">Avg Latency</span>
+            </div>
+        </article>
+    </section>
+
+    <!-- Activity Manifest -->
+    <section class="rounded-[56px] border border-black/[0.03] bg-white overflow-hidden shadow-2xl shadow-black/[0.03]">
+        <header class="px-12 py-10 bg-[#faf9f6] flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between border-b border-black/[0.03]">
+            <div>
+                <h2 class="font-[Playfair Display] text-3xl font-bold text-black italic">Traffic Manifest</h2>
+                <p class="mt-2 text-[10px] font-bold uppercase tracking-[0.3em] text-[#7a8a6b]">Live cryptographic stream monitoring</p>
+            </div>
+            
+            <form action="{{ route('admin.logs') }}" method="GET">
+                <select name="status" onchange="this.form.submit()" class="rounded-full border border-black/[0.05] bg-white px-8 py-3 text-[11px] font-bold uppercase tracking-widest text-black focus:border-black focus:ring-8 focus:ring-black/5 outline-none transition-all appearance-none cursor-pointer">
+                    <option value="">Full Archive</option>
                     <option value="200" {{ request('status') == '200' ? 'selected' : '' }}>200 OK</option>
-                    <option value="400" {{ request('status') == '400' ? 'selected' : '' }}>400 Bad Request</option>
-                    <option value="401" {{ request('status') == '401' ? 'selected' : '' }}>401 Unauthorized</option>
-                    <option value="500" {{ request('status') == '500' ? 'selected' : '' }}>500 Server Error</option>
+                    <option value="400" {{ request('status') == '400' ? 'selected' : '' }}>400 Fault</option>
+                    <option value="401" {{ request('status') == '401' ? 'selected' : '' }}>401 Guard</option>
+                    <option value="500" {{ request('status') == '500' ? 'selected' : '' }}>500 Critical</option>
                 </select>
             </form>
-        </div>
+        </header>
         
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-black/5 text-[10px] font-bold uppercase tracking-widest text-[#7a8a6b] bg-[#f8f5ef]">
-                        <th class="px-8 py-4">Status</th>
-                        <th class="py-4">Method & URL</th>
-                        <th class="py-4">User</th>
-                        <th class="py-4">Latency</th>
-                        <th class="px-8 py-4 text-right">Time</th>
+                    <tr class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#a89078] bg-white border-b border-black/[0.02]">
+                        <th class="pl-12 pr-6 py-8">Protocol</th>
+                        <th class="px-6 py-8">Resource Vector</th>
+                        <th class="px-6 py-8">Identity</th>
+                        <th class="px-6 py-8 text-center">Pulse</th>
+                        <th class="pl-6 pr-12 py-8 text-right">Timestamp</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-black/5">
+                <tbody class="divide-y divide-black/[0.02]">
                     @forelse($logs as $log)
-                    <tr class="hover:bg-[#fbfaf8] transition group">
-                        <td class="px-8 py-4">
-                            <span class="inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold {{ $log->status_code < 400 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                    <tr class="hover:bg-[#faf9f6]/50 transition-colors group">
+                        <td class="pl-12 pr-6 py-7">
+                            <span class="inline-flex items-center justify-center rounded-full px-4 py-1 text-[10px] font-bold tracking-tighter {{ $log->status_code < 400 ? 'bg-[#7a8a6b]/10 text-[#7a8a6b]' : 'bg-[#8c4343]/10 text-[#8c4343]' }}">
                                 {{ $log->status_code }}
                             </span>
                         </td>
-                        <td class="py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold text-[#171717] w-10">{{ $log->method }}</span>
-                                <span class="text-xs text-[#5f5a52] truncate max-w-[250px] font-mono">{{ Str::after($log->url, 'api/') }}</span>
+                        <td class="px-6 py-7">
+                            <div class="flex items-center gap-4">
+                                <span class="text-[11px] font-bold text-black uppercase tracking-widest w-8 opacity-40 group-hover:opacity-100 transition-opacity">{{ $log->method }}</span>
+                                <span class="text-[13px] font-medium text-black font-mono tracking-tight">{{ Str::after($log->url, 'api/') }}</span>
                             </div>
                         </td>
-                        <td class="py-4">
-                            <span class="text-xs font-medium text-[#171717]">{{ $log->user->name ?? 'Guest' }}</span>
-                            <p class="text-[10px] text-[#7a8a6b]">{{ $log->ip_address }}</p>
+                        <td class="px-6 py-7">
+                            <div class="flex flex-col">
+                                <span class="text-[13px] font-bold text-black">{{ $log->user->name ?? 'System Guest' }}</span>
+                                <span class="text-[10px] font-medium text-[#a89078] tracking-widest uppercase mt-0.5 opacity-60">{{ $log->ip_address }}</span>
+                            </div>
                         </td>
-                        <td class="py-4">
-                            <span class="text-xs font-mono {{ $log->duration_ms > 500 ? 'text-red-500 font-bold' : 'text-[#5f5a52]' }}">
-                                {{ $log->duration_ms }}ms
+                        <td class="px-6 py-7 text-center">
+                            <span class="text-[13px] font-mono {{ $log->duration_ms > 500 ? 'text-[#8c4343] font-bold' : 'text-[#7a8a6b]' }}">
+                                {{ $log->duration_ms }}<span class="text-[10px] opacity-40 ml-0.5">ms</span>
                             </span>
                         </td>
-                        <td class="px-8 py-4 text-right text-[10px] font-bold text-[#5f5a52] uppercase tracking-tighter">
-                            {{ $log->created_at->format('H:i:s.v') }}
+                        <td class="pl-6 pr-12 py-7 text-right">
+                            <span class="text-[12px] font-bold text-black tabular-nums">{{ $log->created_at->format('H:i:s') }}</span>
+                            <span class="text-[10px] text-[#a89078] font-bold block mt-0.5 opacity-40">{{ $log->created_at->format('M d') }}</span>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="p-20 text-center">
-                            <i class="fa-solid fa-shield-halved text-5xl text-black/10 mb-4"></i>
-                            <p class="text-[#5f5a52]">No activity logs found.</p>
+                        <td colspan="5" class="py-32 text-center">
+                            <div class="flex flex-col items-center">
+                                <i class="fa-solid fa-wind text-4xl text-black/5 mb-6"></i>
+                                <p class="text-[13px] font-bold text-black uppercase tracking-[0.2em] opacity-30">Manifest empty. No traffic detected.</p>
+                            </div>
                         </td>
                     </tr>
                     @endforelse
@@ -84,10 +102,13 @@
         </div>
 
         @if($logs->hasPages())
-        <div class="px-8 py-4 border-t border-black/5 bg-[#fbfaf8]">
-            {{ $logs->links() }}
-        </div>
+        <footer class="px-12 py-10 bg-[#faf9f6] border-t border-black/[0.03]">
+            <div class="pagination-editorial">
+                {{ $logs->links() }}
+            </div>
+        </footer>
         @endif
-    </div>
+    </section>
 </div>
 @endsection
+
