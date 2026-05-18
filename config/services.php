@@ -42,7 +42,7 @@ return [
     */
 
     'ai' => [
-        'provider' => env('AI_PROVIDER', 'stability'), // 'stability' or 'openai'
+        'provider' => env('AI_PROVIDER', 'openai'), // 'stability' or 'openai'
     ],
 
     'stability_ai' => [

@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\FurnitureRecommendation;
 use App\Models\FurnitureProduct;
+use App\Models\FurnitureRecommendation;
 use App\Models\RoomDesign;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
@@ -67,9 +67,31 @@ class AIService
                             'primary_error' => $e->getMessage(),
                         ],
                     ]);
+
                     return $roomDesign;
                 } catch (\Exception $fallbackError) {
-                    Log::error('AI Fallback Also Failed', [
+                    Log::error('AI Fallback to OpenAI Also Failed', [
+                        'error' => $fallbackError->getMessage(),
+                    ]);
+                }
+            } elseif ($provider === 'openai' && config('services.stability_ai.key')) {
+                try {
+                    $generatedPath = $this->generateWithStabilityAI($roomDesign, $variation);
+                    $roomDesign->update([
+                        'generated_image_path' => $generatedPath,
+                        'status' => 'completed',
+                        'metadata' => [
+                            'ai_provider' => 'stability_fallback',
+                            'variation' => $variation,
+                            'prompt_used' => $this->buildPrompt($roomDesign, $variation),
+                            'processed_at' => now()->toDateTimeString(),
+                            'primary_error' => $e->getMessage(),
+                        ],
+                    ]);
+
+                    return $roomDesign;
+                } catch (\Exception $fallbackError) {
+                    Log::error('AI Fallback to Stability Also Failed', [
                         'error' => $fallbackError->getMessage(),
                     ]);
                 }
@@ -101,27 +123,27 @@ class AIService
         $prompt = $this->buildPrompt($roomDesign, $variation);
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $apiKey,
+            'Authorization' => 'Bearer '.$apiKey,
             'Accept' => 'image/*',
         ])
-        ->timeout(120)
-        ->attach('image', file_get_contents($originalPath), 'room.jpg')
-        ->post('https://api.stability.ai/v2beta/stable-image/generate/sd3', [
-            ['name' => 'prompt', 'contents' => $prompt],
-            ['name' => 'mode', 'contents' => 'image-to-image'],
-            ['name' => 'model', 'contents' => config('services.stability_ai.model', 'sd3-large')],
-            ['name' => 'strength', 'contents' => '0.65'],
-            ['name' => 'output_format', 'contents' => 'jpeg'],
-        ]);
+            ->timeout(120)
+            ->attach('image', file_get_contents($originalPath), 'room.jpg')
+            ->post('https://api.stability.ai/v2beta/stable-image/generate/sd3', [
+                ['name' => 'prompt', 'contents' => $prompt],
+                ['name' => 'mode', 'contents' => 'image-to-image'],
+                ['name' => 'model', 'contents' => config('services.stability_ai.model', 'sd3-large')],
+                ['name' => 'strength', 'contents' => '0.65'],
+                ['name' => 'output_format', 'contents' => 'jpeg'],
+            ]);
 
         if ($response->failed()) {
             throw new \RuntimeException(
-                'Stability AI API error: ' . $response->status() . ' — ' . $response->body()
+                'Stability AI API error: '.$response->status().' — '.$response->body()
             );
         }
 
         // Save the generated image
-        $filename = 'designs/generated/' . Str::uuid() . '.jpg';
+        $filename = 'designs/generated/'.Str::uuid().'.jpg';
         Storage::disk('public')->put($filename, $response->body());
 
         return $filename;
@@ -142,31 +164,31 @@ class AIService
         $prompt = $this->buildPrompt($roomDesign, $variation);
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $apiKey,
+            'Authorization' => 'Bearer '.$apiKey,
         ])
-        ->timeout(120)
-        ->post('https://api.openai.com/v1/images/generations', [
-            'model' => config('services.openai.model', 'dall-e-3'),
-            'prompt' => $prompt,
-            'n' => 1,
-            'size' => '1024x1024',
-            'quality' => 'hd',
-        ]);
+            ->timeout(120)
+            ->post('https://api.openai.com/v1/images/generations', [
+                'model' => config('services.openai.model', 'dall-e-3'),
+                'prompt' => $prompt,
+                'n' => 1,
+                'size' => '1024x1024',
+                'quality' => 'hd',
+            ]);
 
         if ($response->failed()) {
             throw new \RuntimeException(
-                'OpenAI API error: ' . $response->status() . ' — ' . $response->body()
+                'OpenAI API error: '.$response->status().' — '.$response->body()
             );
         }
 
         $imageUrl = $response->json('data.0.url');
-        if (!$imageUrl) {
+        if (! $imageUrl) {
             throw new \RuntimeException('OpenAI returned no image URL.');
         }
 
         // Download and save the generated image
         $imageData = Http::timeout(60)->get($imageUrl)->body();
-        $filename = 'designs/generated/' . Str::uuid() . '.jpg';
+        $filename = 'designs/generated/'.Str::uuid().'.jpg';
         Storage::disk('public')->put($filename, $imageData);
 
         return $filename;
@@ -202,19 +224,19 @@ class AIService
         $prompt = '';
 
         if ($globalPrefix !== '') {
-            $prompt .= $globalPrefix . ' ';
+            $prompt .= $globalPrefix.' ';
         }
 
         $prompt .= "Redesign this interior $roomType in a {$style->name} style. ";
-        
+
         if ($style->prompt_prefix) {
-            $prompt .= $style->prompt_prefix . ' ';
+            $prompt .= $style->prompt_prefix.' ';
         }
 
-        $prompt .= rtrim($budgetDesc, '.') . '. ';
+        $prompt .= rtrim($budgetDesc, '.').'. ';
 
         if ($variation && isset($variationPrompts[$variation])) {
-            $prompt .= $variationPrompts[$variation] . ' ';
+            $prompt .= $variationPrompts[$variation].' ';
         } else {
             $prompt .= 'Create a photorealistic, high-end interior design visualization. ';
         }
@@ -304,7 +326,7 @@ class AIService
             $category = $item['category'] ?? 'furniture';
 
             // Build a proper Amazon India affiliate URL with tracking tag
-            $searchQuery = urlencode($item['name'] . ' for home');
+            $searchQuery = urlencode($item['name'].' for home');
             $affiliateUrl = "https://www.amazon.in/s?k={$searchQuery}&i={$category}&tag={$affiliateTag}&linkCode=ll2&language=en_IN";
 
             FurnitureRecommendation::create([
@@ -322,10 +344,10 @@ class AIService
         try {
             // In a production environment, we would use a Vision AI model (GPT-4o, Gemini Pro Vision, or AWS Rekognition)
             // to analyze the image and return structured keywords.
-            
-            // For this project, we'll implement a robust simulation that returns 
+
+            // For this project, we'll implement a robust simulation that returns
             // diverse attributes to allow for good matching in the database.
-            
+
             // Let's assume we can detect these categories from common interior photos
             $categories = ['Chair', 'Sofa', 'Table', 'Bed', 'Lamp', 'Cabinet', 'Rug', 'Vase'];
             $styles = ['Modern', 'Minimalist', 'Luxury', 'Traditional', 'Scandinavian', 'Industrial'];
@@ -337,7 +359,7 @@ class AIService
             // Realistically, we'd use the filename or image metadata if we weren't doing real CV
             // For the demo, we'll just pick a random set or match keywords from the filename if possible
             $name = strtolower(basename($imagePath));
-            
+
             $detectedCategory = 'Sofa';
             foreach ($categories as $cat) {
                 if (str_contains($name, strtolower($cat))) {
@@ -354,17 +376,18 @@ class AIService
                     $detectedCategory,
                     'comfortable',
                     'stylish',
-                    'premium'
+                    'premium',
                 ],
-                'ai_message' => "I've analyzed your photo and found a {$detectedCategory}. Searching for similar items in our catalog..."
+                'ai_message' => "I've analyzed your photo and found a {$detectedCategory}. Searching for similar items in our catalog...",
             ];
 
         } catch (\Exception $e) {
             Log::error('AI Visual Analysis Failed', ['error' => $e->getMessage()]);
+
             return [
                 'category' => 'Furniture',
                 'keywords' => ['furniture'],
-                'ai_message' => "Searching for similar furniture pieces..."
+                'ai_message' => 'Searching for similar furniture pieces...',
             ];
         }
     }
