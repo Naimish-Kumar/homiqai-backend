@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Storage')
+
 @section('content')
 <div class="space-y-12">
     <!-- Resource Telemetry -->

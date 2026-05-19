@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Sentiment')
+
 @section('content')
 <div class="space-y-12">
     <!-- Sentiment Intelligence -->

@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Revenue')
+
 @section('content')
 <div class="space-y-10">
     <!-- Revenue Intelligence -->

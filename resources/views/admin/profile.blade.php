@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Profile')
+
 @section('content')
 <div class="max-w-5xl space-y-12">
     <!-- Identity Header -->

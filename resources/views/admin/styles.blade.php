@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Library')
+
 @section('content')
 <!-- Aesthetic Configuration Surface -->
 <section class="rounded-[48px] border border-black/[0.03] bg-white p-10 shadow-xl shadow-black/[0.02]">

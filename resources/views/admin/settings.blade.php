@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Configuration')
+
 @section('content')
 <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-10">
     @csrf

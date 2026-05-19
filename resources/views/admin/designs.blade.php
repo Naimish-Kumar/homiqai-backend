@@ -3,7 +3,6 @@
 @section('title', 'Gallery')
 
 @section('content')
-@section('content')
 <!-- Visual Intelligence Metrics -->
 <section class="grid gap-8 sm:grid-cols-2 xl:grid-cols-5">
     @foreach([

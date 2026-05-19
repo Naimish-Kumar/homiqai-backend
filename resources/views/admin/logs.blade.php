@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Security Logs')
+
 @section('content')
 <div class="space-y-10">
     <!-- Telemetry Surfaces -->

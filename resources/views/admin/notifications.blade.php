@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Studio')
+
 @section('content')
 <div class="space-y-10">
     <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">

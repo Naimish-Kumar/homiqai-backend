@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Showroom')
+
 @section('content')
 <div class="space-y-10">
     <!-- Catalog Intelligence -->

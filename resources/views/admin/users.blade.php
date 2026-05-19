@@ -1,3 +1,7 @@
+@extends('admin.layout')
+
+@section('title', 'Community')
+
 @section('content')
 <!-- Community Intelligence Metrics -->
 <section class="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
