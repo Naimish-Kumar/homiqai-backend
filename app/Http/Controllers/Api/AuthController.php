@@ -404,11 +404,17 @@ class AuthController extends Controller
     public function forgotPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
         ]);
 
         try {
             $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No account found with this email address.',
+                ], 404);
+            }
 
             // Generate OTP
             $otp = rand(100000, 999999);
@@ -441,10 +447,18 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
             'otp' => 'required|string|size:6',
             'password' => 'required|string|min:6',
         ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No account found with this email address.',
+            ], 404);
+        }
 
         $user = User::where('email', $request->email)
             ->where('otp_code', $request->otp)
