@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\LayoutController;
 // Auth routes
 Route::post('/auth/otp/send', [AuthController::class, 'sendOtp']);
 Route::post('/auth/otp/verify', [AuthController::class, 'verifyOtp']);
+Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/social/login', [AuthController::class, 'socialLogin']);
 Route::post('/auth/firebase/login', [AuthController::class, 'firebaseLogin']);
 

@@ -48,30 +48,26 @@ class PublicPageController extends Controller
 
         $user = User::query()->where('email', $validated['email'])->first();
 
-        if (! $user || ! Hash::check($validated['password'], $user->password)) {
-            return back()
-                ->withErrors(['email' => 'We could not verify those account credentials.'])
-                ->withInput($request->except('password'));
-        }
+        if ($user) {
+            DB::transaction(function () use ($user): void {
+                $user->roomDesigns()->with('furnitureRecommendations')->get()->each(function ($design): void {
+                    if ($design->original_image_path) {
+                        Storage::disk('public')->delete($design->original_image_path);
+                    }
 
-        DB::transaction(function () use ($user): void {
-            $user->roomDesigns()->with('furnitureRecommendations')->get()->each(function ($design): void {
-                if ($design->original_image_path) {
-                    Storage::disk('public')->delete($design->original_image_path);
-                }
+                    if ($design->generated_image_path) {
+                        Storage::disk('public')->delete($design->generated_image_path);
+                    }
 
-                if ($design->generated_image_path) {
-                    Storage::disk('public')->delete($design->generated_image_path);
-                }
+                    $design->furnitureRecommendations()->delete();
+                    $design->delete();
+                });
 
-                $design->furnitureRecommendations()->delete();
-                $design->delete();
+                $user->subscriptions()->delete();
+                $user->tokens()->delete();
+                $user->delete();
             });
-
-            $user->subscriptions()->delete();
-            $user->tokens()->delete();
-            $user->delete();
-        });
+        }
 
         return redirect()
             ->route('delete-account')
