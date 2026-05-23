@@ -19,6 +19,8 @@ Route::post('/auth/otp/verify', [AuthController::class, 'verifyOtp']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/social/login', [AuthController::class, 'socialLogin']);
 Route::post('/auth/firebase/login', [AuthController::class, 'firebaseLogin']);
+Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
 // System and Guest routes
 Route::get('/styles', [StyleController::class, 'index']);
@@ -30,6 +32,7 @@ Route::get('/get_payment_settings', [\App\Http\Controllers\Api\SystemController:
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/profile/update', [AuthController::class, 'updateProfile']);
+    Route::post('/profile/change-password', [AuthController::class, 'changePassword']);
     Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
 

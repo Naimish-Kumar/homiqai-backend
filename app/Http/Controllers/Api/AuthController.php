@@ -399,6 +399,106 @@ class AuthController extends Controller
     }
 
     /**
+     * Send password reset OTP
+     */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        try {
+            $user = User::where('email', $request->email)->first();
+
+            // Generate OTP
+            $otp = rand(100000, 999999);
+            $user->otp_code = $otp;
+            $user->otp_expires_at = Carbon::now()->addMinutes(10);
+            $user->save();
+
+            // Send OTP via Email
+            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\SendOtpMail($otp));
+
+            Log::info("Password reset OTP for {$user->email}: {$otp}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password reset OTP sent successfully',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('ForgotPassword Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send reset OTP. Please try again.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Reset password using OTP
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|string|size:6',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $user = User::where('email', $request->email)
+            ->where('otp_code', $request->otp)
+            ->where('otp_expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired OTP',
+            ], 400);
+        }
+
+        // Reset password
+        $user->password = Hash::make($request->password);
+        $user->otp_code = null;
+        $user->otp_expires_at = null;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password reset successfully',
+        ]);
+    }
+
+    /**
+     * Change Password (authenticated users)
+     */
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6',
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect current password',
+            ], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password changed successfully',
+        ]);
+    }
+
+    /**
      * Normalize phone number to a standard format
      */
     private function normalizePhoneNumber($phone)
