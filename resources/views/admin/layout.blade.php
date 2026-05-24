@@ -103,6 +103,10 @@
                                 <i class="fa-solid fa-wand-magic-sparkles text-sm {{ request()->routeIs('admin.designs') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
                                 <span class="text-[14px] font-bold tracking-tight">Gallery</span>
                             </a>
+                            <a href="{{ route('admin.layouts') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.layouts') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
+                                <i class="fa-solid fa-cube text-sm {{ request()->routeIs('admin.layouts') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
+                                <span class="text-[14px] font-bold tracking-tight">3D Layouts</span>
+                            </a>
                             <a href="{{ route('admin.styles') }}" class="group relative flex items-center gap-4 rounded-2xl px-5 py-4 transition-all duration-300 {{ request()->routeIs('admin.styles') ? 'bg-black text-white shadow-xl shadow-black/10 translate-x-1' : 'text-[#5f5750] hover:bg-black/[0.03] hover:text-black' }}">
                                 <i class="fa-solid fa-swatchbook text-sm {{ request()->routeIs('admin.styles') ? 'text-white' : 'text-[#a89078] group-hover:text-[#7a8a6b]' }}"></i>
                                 <span class="text-[14px] font-bold tracking-tight">Library</span>

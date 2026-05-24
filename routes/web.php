@@ -18,6 +18,10 @@ Route::get('/contact', [PublicPageController::class, 'contact'])->name('contact'
 Route::get('/delete-account', [PublicPageController::class, 'showDeleteAccount'])->name('delete-account');
 Route::post('/delete-account', [PublicPageController::class, 'deleteAccount'])->name('delete-account.destroy');
 
+// Public shared design & moodboard routes
+Route::get('/shared/design/{hash}', [PublicPageController::class, 'sharedDesign'])->name('shared.design');
+Route::get('/shared/moodboard/{hash}', [PublicPageController::class, 'sharedMoodboard'])->name('shared.moodboard');
+
 Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
 
 // Admin Portal Group
@@ -36,6 +40,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/designs', [AdminController::class, 'designs'])->name('admin.designs');
         Route::post('/designs/{design}/retry', [AdminController::class, 'retryDesign'])->name('admin.designs.retry');
         Route::delete('/designs/{design}', [AdminController::class, 'deleteDesign'])->name('admin.designs.delete');
+        Route::get('/layouts', [AdminController::class, 'layouts'])->name('admin.layouts');
+        Route::delete('/layouts/{layout}', [AdminController::class, 'deleteLayout'])->name('admin.layouts.delete');
         Route::get('/styles', [AdminController::class, 'styles'])->name('admin.styles');
         Route::post('/styles', [AdminController::class, 'storeStyle'])->name('admin.styles.store');
         Route::patch('/styles/{style}', [AdminController::class, 'updateStyle'])->name('admin.styles.update');

@@ -31,12 +31,26 @@ class FurnitureController extends Controller
             });
         }
 
+        $budget = $request->input('budget');
+        if (!$budget && $request->user()) {
+            $lastDesign = $request->user()->roomDesigns()->latest()->first();
+            $budget = $lastDesign ? $lastDesign->budget : 'medium';
+        }
+        if (!$budget) {
+            $budget = 'medium';
+        }
+        $priceColumn = match ($budget) {
+            'low' => 'low_price',
+            'high' => 'high_price',
+            default => 'medium_price',
+        };
+
         if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $query->where($priceColumn, '>=', $request->min_price);
         }
 
         if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $query->where($priceColumn, '<=', $request->max_price);
         }
 
         if ($request->has('material')) {

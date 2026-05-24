@@ -16,6 +16,7 @@ class RoomDesign extends Model
         'status',
         'is_favorite',
         'metadata',
+        'project_id',
     ];
 
     protected $casts = [
@@ -36,5 +37,10 @@ class RoomDesign extends Model
     public function furnitureRecommendations()
     {
         return $this->hasMany(FurnitureRecommendation::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
     }
 }

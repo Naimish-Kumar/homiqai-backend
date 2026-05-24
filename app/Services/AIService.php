@@ -391,4 +391,262 @@ class AIService
             ];
         }
     }
+
+    public function getDominantColor(string $imagePath): string
+    {
+        try {
+            $path = Storage::disk('public')->path($imagePath);
+            if (!file_exists($path)) {
+                return '#E5E5E7';
+            }
+            
+            if (!extension_loaded('gd')) {
+                return '#E5E5E7';
+            }
+            
+            $img = null;
+            $type = exif_imagetype($path);
+            if ($type === IMAGETYPE_JPEG) {
+                $img = imagecreatefromjpeg($path);
+            } elseif ($type === IMAGETYPE_PNG) {
+                $img = imagecreatefrompng($path);
+            } elseif ($type === IMAGETYPE_GIF) {
+                $img = imagecreatefromgif($path);
+            } elseif ($type === IMAGETYPE_WEBP) {
+                $img = imagecreatefromwebp($path);
+            }
+            
+            if (!$img) {
+                return '#E5E5E7';
+            }
+            
+            // Downsample image to 1x1 pixel to average colors
+            $tmp = imagecreatetruecolor(1, 1);
+            imagecopyresampled($tmp, $img, 0, 0, 0, 0, 1, 1, imagesx($img), imagesy($img));
+            $rgb = imagecolorat($tmp, 0, 0);
+            
+            $r = ($rgb >> 16) & 0xFF;
+            $g = ($rgb >> 8) & 0xFF;
+            $b = $rgb & 0xFF;
+            
+            imagedestroy($img);
+            imagedestroy($tmp);
+            
+            return sprintf("#%02X%02X%02X", $r, $g, $b);
+        } catch (\Exception $e) {
+            Log::error('Dominant color extraction failed: ' . $e->getMessage());
+            return '#E5E5E7';
+        }
+    }
+
+    public function generateColorPalettes(string $baseColorHex): array
+    {
+        $apiKey = config('services.openai.key');
+        if (empty($apiKey)) {
+            return $this->generatePalettesAlgorithmic($baseColorHex);
+        }
+
+        try {
+            $prompt = "You are a professional interior design color expert. Generate 5 distinct, sophisticated color palettes for room decoration based on the base color: {$baseColorHex}.\n"
+                . "Each palette must contain exactly 5 colors (the base color, plus 4 matching colors) formatted as HEX codes starting with '#'.\n"
+                . "Provide a designer name for the palette (e.g. 'Warm Scandinavian', 'Luxury Emerald', 'Industrial Loft') and a 1-sentence description of the mood.\n"
+                . "Format the output ONLY as a raw JSON array matching this structure:\n"
+                . "[\n"
+                . "  {\n"
+                . "    \"name\": \"Palette Name\",\n"
+                . "    \"description\": \"One sentence description of the mood.\",\n"
+                . "    \"colors\": [\"#HEX1\", \"#HEX2\", \"#HEX3\", \"#HEX4\", \"#HEX5\"]\n"
+                . "  },\n"
+                . "  ...\n"
+                . "]";
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer '.$apiKey,
+            ])
+                ->timeout(15)
+                ->post('https://api.openai.com/v1/chat/completions', [
+                    'model' => 'gpt-3.5-turbo',
+                    'messages' => [
+                        ['role' => 'system', 'content' => 'You output only raw JSON blocks.'],
+                        ['role' => 'user', 'content' => $prompt]
+                    ],
+                    'temperature' => 0.7,
+                ]);
+
+            if ($response->failed()) {
+                throw new \RuntimeException('OpenAI API request failed: '.$response->body());
+            }
+
+            $content = $response->json('choices.0.message.content');
+            $data = json_decode(trim(str_replace('```json', '', str_replace('```', '', $content))), true);
+
+            if (is_array($data) && count($data) >= 3) {
+                return $data;
+            }
+
+            throw new \RuntimeException('Invalid JSON structure returned by OpenAI.');
+
+        } catch (\Exception $e) {
+            Log::error('AI Palette Generation Failed, falling back to algorithmic: ' . $e->getMessage());
+            return $this->generatePalettesAlgorithmic($baseColorHex);
+        }
+    }
+
+    private function rgbToHsl($r, $g, $b) {
+        $r /= 255; $g /= 255; $b /= 255;
+        $max = max($r, $g, $b);
+        $min = min($r, $g, $b);
+        $h = $s = $l = ($max + $min) / 2;
+
+        if ($max == $min) {
+            $h = $s = 0; // achromatic
+        } else {
+            $d = $max - $min;
+            $s = $l > 0.5 ? $d / (2 - $max - $min) : $d / ($max + $min);
+            switch ($max) {
+                case $r: $h = ($g - $b) / $d + ($g < $b ? 6 : 0); break;
+                case $g: $h = ($b - $r) / $d + 2; break;
+                case $b: $h = ($r - $g) / $d + 4; break;
+            }
+            $h /= 6;
+        }
+        return [$h * 360, $s, $l];
+    }
+
+    private function hslToRgb($h, $s, $l) {
+        $h /= 360;
+        if ($s == 0) {
+            $r = $g = $b = $l; // achromatic
+        } else {
+            $hue2rgb = function($p, $q, $t) {
+                if ($t < 0) $t += 1;
+                if ($t > 1) $t -= 1;
+                if ($t < 1/6) return $p + ($q - $p) * 6 * $t;
+                if ($t < 1/2) return $q;
+                if ($t < 2/3) return $p + ($q - $p) * (2/3 - $t) * 6;
+                return $p;
+            };
+
+            $q = $l < 0.5 ? $l * (1 + $s) : $l + $s - $l * $s;
+            $p = 2 * $l - $q;
+            $r = $hue2rgb($p, $q, $h + 1/3);
+            $g = $hue2rgb($p, $q, $h);
+            $b = $hue2rgb($p, $q, $h - 1/3);
+        }
+        return [round($r * 255), round($g * 255), round($b * 255)];
+    }
+
+    private function rgbToHex($r, $g, $b) {
+        return sprintf("#%02X%02X%02X", $r, $g, $b);
+    }
+
+    private function hexToRgb($hex) {
+        $hex = str_replace('#', '', $hex);
+        if (strlen($hex) == 3) {
+            $r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+            $g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+            $b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+        } else {
+            $r = hexdec(substr($hex, 0, 2));
+            $g = hexdec(substr($hex, 2, 2));
+            $b = hexdec(substr($hex, 4, 2));
+        }
+        return [$r, $g, $b];
+    }
+
+    public function generatePalettesAlgorithmic(string $hex): array
+    {
+        list($r, $g, $b) = $this->hexToRgb($hex);
+        list($h, $s, $l) = $this->rgbToHsl($r, $g, $b);
+
+        $palettes = [];
+
+        // 1. Monochromatic
+        $monoColors = [];
+        for ($i = 0; $i < 5; $i++) {
+            $light = 0.15 + ($i * 0.18);
+            list($nr, $ng, $nb) = $this->hslToRgb($h, $s, $light);
+            $monoColors[] = $this->rgbToHex($nr, $ng, $nb);
+        }
+        $palettes[] = [
+            'name' => 'Monochromatic Minimalist',
+            'description' => 'A clean, modern look using varying shades of a single color tone.',
+            'colors' => $monoColors
+        ];
+
+        // 2. Analogous
+        $analogousColors = [];
+        $offsets = [-40, -20, 0, 20, 40];
+        foreach ($offsets as $o) {
+            $nh = ($h + $o + 360) % 360;
+            list($nr, $ng, $nb) = $this->hslToRgb($nh, $s, $l);
+            $analogousColors[] = $this->rgbToHex($nr, $ng, $nb);
+        }
+        $palettes[] = [
+            'name' => 'Analogous Serenity',
+            'description' => 'Comforting and harmonious colors adjacent to each other on the color wheel.',
+            'colors' => $analogousColors
+        ];
+
+        // 3. Complementary
+        $compColors = [];
+        $compColors[] = $this->rgbToHex($r, $g, $b);
+        list($nr, $ng, $nb) = $this->hslToRgb($h, $s * 0.8, $l * 1.3);
+        $compColors[] = $this->rgbToHex($nr, $ng, $nb);
+        list($nr, $ng, $nb) = $this->hslToRgb($h, $s * 0.8, $l * 0.7);
+        $compColors[] = $this->rgbToHex($nr, $ng, $nb);
+        $ch = ($h + 180) % 360;
+        list($nr, $ng, $nb) = $this->hslToRgb($ch, $s, $l);
+        $compColors[] = $this->rgbToHex($nr, $ng, $nb);
+        list($nr, $ng, $nb) = $this->hslToRgb($ch, $s * 0.8, $l * 1.3);
+        $compColors[] = $this->rgbToHex($nr, $ng, $nb);
+        
+        $palettes[] = [
+            'name' => 'High-Contrast Complementary',
+            'description' => 'Dynamic energy that pairs the warm base with its cool opposite tone.',
+            'colors' => $compColors
+        ];
+
+        // 4. Triadic Vibrant
+        $triColors = [];
+        $triColors[] = $this->rgbToHex($r, $g, $b);
+        $th1 = ($h + 120) % 360;
+        list($nr, $ng, $nb) = $this->hslToRgb($th1, $s, $l);
+        $triColors[] = $this->rgbToHex($nr, $ng, $nb);
+        list($nr, $ng, $nb) = $this->hslToRgb($th1, $s * 0.7, $l * 1.3);
+        $triColors[] = $this->rgbToHex($nr, $ng, $nb);
+        $th2 = ($h + 240) % 360;
+        list($nr, $ng, $nb) = $this->hslToRgb($th2, $s, $l);
+        $triColors[] = $this->rgbToHex($nr, $ng, $nb);
+        list($nr, $ng, $nb) = $this->hslToRgb($th2, $s * 0.7, $l * 0.7);
+        $triColors[] = $this->rgbToHex($nr, $ng, $nb);
+
+        $palettes[] = [
+            'name' => 'Vibrant Triadic',
+            'description' => 'A lively, balanced three-point color harmony for eclectic styles.',
+            'colors' => $triColors
+        ];
+
+        // 5. Earthy Warmth
+        $earthColors = [];
+        $earthColors[] = $this->rgbToHex($r, $g, $b);
+        $sh1 = ($h + 150) % 360;
+        list($nr, $ng, $nb) = $this->hslToRgb($sh1, $s * 0.6, $l * 0.9);
+        $earthColors[] = $this->rgbToHex($nr, $ng, $nb);
+        $sh2 = ($h + 210) % 360;
+        list($nr, $ng, $nb) = $this->hslToRgb($sh2, $s * 0.6, $l * 1.1);
+        $earthColors[] = $this->rgbToHex($nr, $ng, $nb);
+        list($nr, $ng, $nb) = $this->hslToRgb(($h + 30) % 360, 0.15, 0.85);
+        $earthColors[] = $this->rgbToHex($nr, $ng, $nb);
+        list($nr, $ng, $nb) = $this->hslToRgb(($h + 180) % 360, 0.15, 0.25);
+        $earthColors[] = $this->rgbToHex($nr, $ng, $nb);
+
+        $palettes[] = [
+            'name' => 'Earthy Split-Harmony',
+            'description' => 'A sophisticated split-complementary scheme with cozy neutral undertones.',
+            'colors' => $earthColors
+        ];
+
+        return $palettes;
+    }
 }

@@ -107,4 +107,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Layout::class);
     }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
 }

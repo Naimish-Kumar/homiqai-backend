@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\RoomDesign;
+use App\Models\Layout;
 use App\Models\Setting;
 use App\Models\Style;
 use App\Models\FurnitureProduct;
@@ -127,6 +128,10 @@ class AdminController extends Controller
             'processing_designs' => (int) ($statusCounts->get('processing') ?? 0),
             'failed_designs' => (int) ($statusCounts->get('failed') ?? 0),
             'pending_designs' => (int) ($statusCounts->get('pending') ?? 0),
+            'total_layouts' => Layout::count(),
+            'completed_layouts' => Layout::where('status', 'completed')->count(),
+            'processing_layouts' => Layout::where('status', 'processing')->count(),
+            'failed_layouts' => Layout::where('status', 'failed')->count(),
             'recent_activity' => RoomDesign::with(['user', 'style'])->latest()->take(8)->get(),
             'top_styles' => $topStyles,
             'top_style_names' => $topStyles->pluck('name')->implode(', '),
@@ -331,6 +336,38 @@ class AdminController extends Controller
         $design->delete();
 
         return redirect()->route('admin.designs')->with('status', 'Design deleted successfully.');
+    }
+
+    public function layouts(Request $request)
+    {
+        $status = $request->string('status')->toString();
+
+        $layouts = Layout::with(['user'])
+            ->when($status !== '', fn ($q) => $q->where('status', $status))
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        $summary = [
+            'total' => Layout::count(),
+            'completed' => Layout::where('status', 'completed')->count(),
+            'processing' => Layout::where('status', 'processing')->count(),
+            'failed' => Layout::where('status', 'failed')->count(),
+        ];
+
+        return view('admin.layouts', compact('layouts', 'summary', 'status'));
+    }
+
+    public function deleteLayout(Layout $layout)
+    {
+        if ($layout->floor_plan_url) {
+            $path = str_replace(Storage::disk('public')->url(''), '', $layout->floor_plan_url);
+            Storage::disk('public')->delete(trim($path, '/'));
+        }
+
+        $layout->delete();
+
+        return redirect()->route('admin.layouts')->with('status', 'Layout deleted successfully.');
     }
 
     public function retryDesign(RoomDesign $design, AIService $aiService)

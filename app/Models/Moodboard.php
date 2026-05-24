@@ -13,6 +13,7 @@ class Moodboard extends Model
         'style_id',
         'color_palette',
         'items',
+        'project_id',
     ];
 
     protected $casts = [
@@ -28,5 +29,10 @@ class Moodboard extends Model
     public function style()
     {
         return $this->belongsTo(Style::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
     }
 }

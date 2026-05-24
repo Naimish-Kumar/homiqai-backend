@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\MoodboardController;
 use App\Http\Controllers\Api\FurnitureController;
 use App\Http\Controllers\Api\LayoutController;
+use App\Http\Controllers\Api\ProjectController;
 
 // Auth routes
 Route::post('/auth/otp/send', [AuthController::class, 'sendOtp']);
@@ -43,6 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/designs/{design}', [DesignController::class, 'destroy']);
     Route::put('/designs/{design}/favorite', [DesignController::class, 'toggleFavorite']);
     Route::post('/designs/{design}/variations', [DesignController::class, 'generateVariation']);
+    Route::post('/designs/{design}/share', [DesignController::class, 'share']);
+    Route::post('/ai/color-palette', [DesignController::class, 'generateColorPalette']);
 
     // Subscriptions
     Route::get('/packages', [SubscriptionController::class, 'packages']);
@@ -65,6 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Moodboard Routes
     Route::apiResource('moodboards', MoodboardController::class);
+    Route::post('/moodboards/{moodboard}/share', [MoodboardController::class, 'share']);
     // Layout Routes
     Route::apiResource('layouts', LayoutController::class);
+    // Project Routes
+    Route::apiResource('projects', ProjectController::class);
 });

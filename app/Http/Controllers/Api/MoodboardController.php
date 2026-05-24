@@ -26,6 +26,7 @@ class MoodboardController extends Controller
             'style_id' => 'nullable|exists:styles,id',
             'color_palette' => 'nullable|array',
             'items' => 'nullable|array',
+            'project_id' => 'nullable|exists:projects,id,user_id,' . $request->user()->id,
         ]);
 
         if ($validator->fails()) {
@@ -79,6 +80,7 @@ class MoodboardController extends Controller
             'style_id' => 'nullable|exists:styles,id',
             'color_palette' => 'nullable|array',
             'items' => 'nullable|array',
+            'project_id' => 'nullable|exists:projects,id,user_id,' . $request->user()->id,
         ]);
 
         if ($validator->fails()) {
@@ -114,6 +116,28 @@ class MoodboardController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Moodboard deleted successfully'
+        ]);
+    }
+
+    public function share(Request $request, $id)
+    {
+        $moodboard = $request->user()->moodboards()->find($id);
+
+        if (!$moodboard) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Moodboard not found'
+            ], 404);
+        }
+
+        $signature = hash_hmac('sha256', $id, config('app.key'));
+        $hash = base64_encode($id . ':' . $signature);
+
+        $shareUrl = url('/shared/moodboard/' . urlencode($hash));
+
+        return response()->json([
+            'success' => true,
+            'share_url' => $shareUrl,
         ]);
     }
 }

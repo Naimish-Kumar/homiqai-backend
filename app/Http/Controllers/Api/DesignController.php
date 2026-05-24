@@ -39,6 +39,7 @@ class DesignController extends Controller
             'room_type' => 'required|string|max:50',
             'budget' => 'required|in:low,medium,high',
             'image' => 'required|image|max:10240', // 10MB max
+            'project_id' => 'nullable|exists:projects,id,user_id,' . $request->user()->id,
         ]);
 
         $user = $request->user();
@@ -80,6 +81,7 @@ class DesignController extends Controller
             'budget' => $request->budget,
             'original_image_path' => $path,
             'status' => 'processing',
+            'project_id' => $request->project_id,
         ]);
 
         // Decrement free designs for non-premium users
@@ -177,6 +179,22 @@ class DesignController extends Controller
         return response()->json($this->formatDesign($newDesign->fresh(['style', 'furnitureRecommendations'])), 201);
     }
 
+    public function share(Request $request, RoomDesign $design)
+    {
+        abort_unless($design->user_id === $request->user()->id, 403);
+
+        $id = $design->id;
+        $signature = hash_hmac('sha256', $id, config('app.key'));
+        $hash = base64_encode($id . ':' . $signature);
+
+        $shareUrl = url('/shared/design/' . urlencode($hash));
+
+        return response()->json([
+            'success' => true,
+            'share_url' => $shareUrl,
+        ]);
+    }
+
     /**
      * Format a design with full public URLs instead of relative paths.
      * Uses signed/temporary URLs when S3 is configured (image privacy protection).
@@ -200,5 +218,32 @@ class DesignController extends Controller
         }
 
         return $data;
+    }
+
+    public function generateColorPalette(Request $request)
+    {
+        $request->validate([
+            'color' => 'nullable|string|max:10',
+            'image' => 'nullable|image|max:10240',
+        ]);
+
+        $baseColor = '#E5E5E7';
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('temp_color_extract', 'public');
+            $baseColor = $this->aiService->getDominantColor($path);
+            // Delete temp image
+            Storage::disk('public')->delete($path);
+        } elseif ($request->filled('color')) {
+            $baseColor = $request->color;
+        }
+
+        $palettes = $this->aiService->generateColorPalettes($baseColor);
+
+        return response()->json([
+            'success' => true,
+            'base_color' => $baseColor,
+            'data' => $palettes
+        ]);
     }
 }
