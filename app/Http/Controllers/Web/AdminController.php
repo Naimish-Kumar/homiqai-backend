@@ -205,6 +205,7 @@ class AdminController extends Controller
             'ai_provider' => $settings->get('ai_provider')->value ?? config('services.ai.provider'),
             'stability_ai_key' => $settings->get('stability_ai_key')->value ?? config('services.stability_ai.key'),
             'openai_key' => $settings->get('openai_key')->value ?? config('services.openai.key'),
+            'gemini_key' => $settings->get('gemini_key')->value ?? config('services.gemini.key') ?? env('GEMINI_API_KEY'),
             'amazon_affiliate_tag' => $settings->get('amazon_affiliate_tag')->value ?? config('services.affiliate.amazon_tag'),
             'apple_shared_secret' => $settings->get('apple_shared_secret')->value ?? config('services.apple.shared_secret'),
             'google_package_name' => $settings->get('google_package_name')->value ?? config('services.google_play.package_name'),
@@ -247,6 +248,7 @@ class AdminController extends Controller
             'ai_provider' => ['required', 'string', 'in:stability,openai'],
             'stability_ai_key' => ['nullable', 'string'],
             'openai_key' => ['nullable', 'string'],
+            'gemini_key' => ['nullable', 'string'],
             'amazon_affiliate_tag' => ['nullable', 'string'],
             'apple_shared_secret' => ['nullable', 'string'],
             'google_package_name' => ['nullable', 'string'],
@@ -294,7 +296,7 @@ class AdminController extends Controller
 
     protected function getGroupForKey(string $key): string
     {
-        if (str_contains($key, 'ai') || str_contains($key, 'openai')) return 'ai';
+        if (str_contains($key, 'ai') || str_contains($key, 'openai') || str_contains($key, 'gemini')) return 'ai';
         if (str_contains($key, 'amazon') || str_contains($key, 'affiliate')) return 'affiliate';
         if (str_contains($key, 'apple') || str_contains($key, 'google')) return 'payment';
         if (str_contains($key, 'budget') || str_contains($key, 'prompt')) return 'design';

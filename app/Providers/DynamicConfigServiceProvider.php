@@ -50,6 +50,7 @@ class DynamicConfigServiceProvider extends ServiceProvider
             'services.ai.provider' => $settings['ai_provider'] ?? $settings['ai_provider'] ?? config('services.ai.provider'),
             'services.stability_ai.key' => $settings['stability_ai_key'] ?? $settings['stability_ai_key'] ?? config('services.stability_ai.key'),
             'services.openai.key' => $settings['openai_key'] ?? $settings['openai_key'] ?? config('services.openai.key'),
+            'services.gemini.key' => $settings['gemini_key'] ?? $settings['gemini_key'] ?? config('services.gemini.key'),
             'services.affiliate.amazon_tag' => $settings['amazon_affiliate_tag'] ?? $settings['amazon_affiliate_tag'] ?? config('services.affiliate.amazon_tag'),
             'services.apple.shared_secret' => $settings['apple_shared_secret'] ?? config('services.apple.shared_secret'),
             'services.google_play.package_name' => $settings['google_package_name'] ?? config('services.google_play.package_name'),

@@ -31,6 +31,11 @@
                     <span class="mb-3 block text-[11px] font-bold uppercase tracking-[0.2em] text-[#a89078] group-focus-within:text-black transition-colors">OpenAI API Authorization</span>
                     <input type="password" name="openai_key" id="openai_key" value="{{ $config['openai_key'] }}" class="w-full rounded-[20px] border border-black/[0.04] bg-[#faf9f6] px-6 py-4.5 text-[14px] font-bold text-black outline-none shadow-sm focus:bg-white focus:ring-8 focus:ring-[#7a8a6b]/10 transition-all" placeholder="sk-auth-...">
                 </label>
+
+                <label class="block group">
+                    <span class="mb-3 block text-[11px] font-bold uppercase tracking-[0.2em] text-[#a89078] group-focus-within:text-black transition-colors">Gemini API Authorization</span>
+                    <input type="password" name="gemini_key" id="gemini_key" value="{{ $config['gemini_key'] }}" class="w-full rounded-[20px] border border-black/[0.04] bg-[#faf9f6] px-6 py-4.5 text-[14px] font-bold text-black outline-none shadow-sm focus:bg-white focus:ring-8 focus:ring-[#7a8a6b]/10 transition-all" placeholder="AIzaSy...">
+                </label>
             </div>
         </article>
 
